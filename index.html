@@ -1,0 +1,1994 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2f8f1b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Spaans leren">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>Spaans leren</title>
+<style>
+:root{--bg:#f6f4ef;--card:#fff;--ink:#1d1b16;--mut:#6b665c;--line:#e2ddd2;--acc:#2f8f1b;--accink:#fff;--bad:#8c1d18;--ok:#1f6b3a;--okbg:#e4f2e8;--warnbg:#fdf0d5;--errbg:#fbe3e1;--chip:#efe9dc}
+@media (prefers-color-scheme:dark){:root{--bg:#171512;--card:#221f1a;--ink:#f1ede4;--mut:#a39d90;--line:#3a352c;--acc:#6fd04a;--accink:#0d2406;--bad:#e8574d;--ok:#7fd49a;--okbg:#1d3326;--warnbg:#3a2f14;--errbg:#3d1d1a;--chip:#2e2a22}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+header{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:10px 14px 0}
+h1{margin:0 0 6px;font-size:22px}
+h1 span{color:var(--acc)}
+#nav{display:flex;gap:4px;overflow-x:auto}
+#nav button{flex:1;min-height:44px;border:0;background:none;color:var(--mut);font:inherit;font-weight:600;border-bottom:3px solid transparent;cursor:pointer}
+#nav button.on{color:var(--acc);border-bottom-color:var(--acc)}
+main{max-width:860px;margin:0 auto;padding:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:0 0 14px}
+h2{margin:0 0 8px;font-size:19px}
+h3{margin:12px 0 4px;font-size:16px}
+p{margin:8px 0}
+.hint,small{color:var(--mut);font-size:14px}
+.btn{min-height:46px;padding:10px 18px;border:0;border-radius:11px;background:var(--acc);color:var(--accink);font:inherit;font-weight:700;cursor:pointer}
+.btn.ghost{background:var(--chip);color:var(--ink)}
+.btn.danger{background:#8c1d18;color:#fff}
+.btn:disabled{opacity:.45}
+.field{display:block;font-weight:600;margin:10px 0}
+select,input[type=search],input[type=file]{display:block;width:100%;min-height:46px;margin-top:6px;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit}
+input[type=file]{padding:8px}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.row input{flex:2 1 220px;margin-top:0}
+.row select{flex:1 1 160px;margin-top:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 10px}
+.chip{min-height:40px;padding:6px 13px;border:1px solid var(--line);border-radius:20px;background:var(--chip);color:var(--ink);font:inherit;font-size:15px;cursor:pointer}
+.chip.on{background:var(--acc);color:var(--accink);border-color:var(--acc)}
+.list{list-style:none;margin:0;padding:0}
+.list li{display:flex;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid var(--line)}
+.list li:last-child{border-bottom:0}
+.msg{border-radius:12px;padding:12px 14px;margin:0 0 14px}
+.msg.ok{background:var(--okbg);color:var(--ok)}
+.msg.warn{background:var(--warnbg)}
+.msg.err{background:var(--errbg)}
+.tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th,td{text-align:left;padding:8px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--mut);font-size:14px;font-weight:600}
+td small{font-size:15px}
+tr.t-waarschuwing td{background:var(--warnbg)}
+tr.t-overgeslagen td{background:var(--errbg)}
+.plan{border-top:1px solid var(--line);padding-top:6px}
+details summary{cursor:pointer;min-height:40px;padding:8px 0;color:var(--acc);font-weight:600}
+.btn.small{min-height:40px;padding:6px 14px;font-size:15px}
+.fcbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0 0 8px;font-weight:600}
+.prog{height:8px;background:var(--chip);border-radius:6px;overflow:hidden;margin:0 0 12px}
+.prog i{display:block;height:100%;background:var(--acc)}
+.fcard{min-height:240px;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;user-select:none;-webkit-user-select:none}
+.fcard .tag{color:var(--mut);font-size:14px}
+.fcard .big{font-size:32px;font-weight:700;line-height:1.2;overflow-wrap:anywhere}
+.fcard .ans{font-size:28px;font-weight:700;color:var(--acc);line-height:1.2;overflow-wrap:anywhere}
+.fcard hr{border:0;border-top:1px solid var(--line);margin:14px 0;width:100%}
+.btnrow{display:flex;gap:10px;margin:0 0 14px}
+.btnrow .btn{flex:1;min-height:60px;font-size:19px}
+.btn.fout{background:#8c1d18;color:#fff}
+.btn.juist{background:#2f8f1b;color:#fff}
+
+.sp{min-height:44px;min-width:44px;border:1px solid var(--line);border-radius:22px;background:var(--chip);font-size:20px;cursor:pointer;vertical-align:middle}
+.btn.pick{background:var(--chip);color:var(--ink);border:2px solid var(--line);font-size:28px}
+.fcard.good{border-color:var(--acc);border-width:2px}
+.fcard.bad{border-color:var(--bad);border-width:2px}
+.verdict{font-size:20px;font-weight:700}
+.verdict.good{color:var(--acc)}
+.verdict.bad{color:var(--bad)}
+.mrform{padding:14px}
+#mr-input{display:block;width:100%;min-height:54px;padding:10px 14px;border:2px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);font:inherit;font-size:24px;text-align:center}
+#mr-input:focus{outline:none;border-color:var(--acc)}
+.accrow{display:flex;gap:6px;margin:10px 0}
+.acc{flex:1;min-height:46px;border:1px solid var(--line);border-radius:10px;background:var(--chip);color:var(--ink);font:inherit;font-size:22px;cursor:pointer}
+.mrform .btnrow{margin:6px 0}
+.mrform .btnrow .btn{min-height:54px;font-size:18px}
+.btn.mic{flex:0 0 auto;padding:10px 16px}
+.optgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 14px}
+.optgrid .btn.pick{min-height:72px;font-size:26px}
+.optgrid .btn small{display:inline-block;margin-right:6px;font-size:13px;font-weight:400;color:var(--mut)}
+.blank{color:var(--acc);letter-spacing:2px}
+.fcard .person{color:var(--acc)}
+.fcard .person small{font-size:18px;font-weight:400;color:var(--mut)}
+.vtab{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 14px;margin:12px auto 0;max-width:460px;text-align:left}
+.vtab div{padding:6px 10px;border-radius:10px;overflow-wrap:anywhere}
+.vtab div.on{background:#eaf5e4}
+.vtab small{display:block;font-size:13px;color:var(--mut)}
+.vtab span{font-size:19px}
+.vtab div.on span{font-weight:700}
+.boxes{display:flex;gap:6px;margin:8px 0}
+.boxes div{flex:1;text-align:center;background:var(--chip);border-radius:8px;padding:6px 2px;font-size:14px;color:var(--ink);font-weight:600}
+.boxes b{display:block;font-size:20px}
+.boxes small{display:block;font-weight:400;font-size:12px;line-height:1.2}
+.fcard .hint{font-size:18px}
+.formtab{width:auto;margin-top:8px}
+.formtab td{padding:5px 10px;font-size:21px;border:0}
+.formtab td small{font-size:17px}
+.selbar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 16px}
+.oef li{align-items:center}
+.oef .oeftxt{flex:1;cursor:pointer;min-height:44px;display:flex;flex-direction:column;justify-content:center}
+.oef .btn{min-width:90px}
+.oef li.off{color:var(--mut);padding:13px 0}
+@media (min-width:700px){body{font-size:18px}main{padding:22px}}
+</style>
+</head>
+<body>
+<header><h1>Spaans <span>leren</span></h1><nav id="nav"></nav></header>
+<main id="app"></main>
+<script>
+// <core>
+// ---------- Kernlogica (zonder scherm, getest in Node) ----------
+const SOORTEN = ['zelfstandig naamwoord', 'bijvoeglijk naamwoord', 'werkwoord', 'bijwoord', 'voornaamwoord', 'voorzetsel', 'voegwoord', 'telwoord', 'vraag', 'uitdrukking', 'tussenwerpsel', 'zin'];
+const GENERA = ['', 'm', 'v', 'm/v'];
+const WORD_FIELDS = ['spaans', 'lidwoord', 'nederlands', 'soort', 'genus', 'meervoud', 'thema', 'hoofdstuk', 'les', 'opmerking'];
+const VERB_FORMS = ['yo', 'tú', 'él/ella', 'nosotros', 'vosotros', 'ellos/ustedes'];
+const VERB_FIELDS = ['infinitief', 'nederlands', 'groep', 'type'].concat(VERB_FORMS, ['opmerking']);
+
+function stripBOM(t) { return t.charCodeAt(0) === 0xFEFF ? t.slice(1) : t; }
+
+function detectDelimiter(text) {
+  const first = text.split('\n')[0] || '';
+  const counts = { ';': 0, ',': 0, '\t': 0 };
+  for (const c of first) if (c in counts) counts[c]++;
+  let best = ';', max = -1;
+  for (const d of [';', ',', '\t']) if (counts[d] > max) { max = counts[d]; best = d; }
+  return best;
+}
+
+function parseCSV(text, delim) {
+  const rows = []; let row = [], f = '', q = false, i = 0; const n = text.length;
+  while (i < n) {
+    const c = text[i];
+    if (q) {
+      if (c === '"') { if (text[i + 1] === '"') { f += '"'; i += 2; continue; } q = false; i++; continue; }
+      f += c; i++; continue;
+    }
+    if (c === '"' && f === '') { q = true; i++; continue; }
+    if (c === delim) { row.push(f); f = ''; i++; continue; }
+    if (c === '\r') { i++; continue; }
+    if (c === '\n') { row.push(f); rows.push(row); row = []; f = ''; i++; continue; }
+    f += c; i++;
+  }
+  if (f !== '' || row.length) { row.push(f); rows.push(row); }
+  return rows.filter(r => r.some(x => x.trim() !== ''));
+}
+
+// Leest tekst, bepaalt scheidingsteken en soort bestand, geeft records terug.
+function readTable(text) {
+  text = stripBOM(text);
+  const delim = detectDelimiter(text);
+  const rows = parseCSV(text, delim);
+  if (rows.length < 2) return { kind: null, error: 'Het bestand bevat geen gegevensregels.' };
+  const head = rows[0].map(h => h.trim().toLowerCase());
+  let kind = null;
+  if (head.includes('spaans') && head.includes('nederlands')) kind = 'woorden';
+  else if (head.includes('infinitief')) kind = 'werkwoorden';
+  if (!kind) return { kind: null, error: 'Kolomkoppen niet herkend. Verwacht: spaans en nederlands (woorden) of infinitief (werkwoorden).' };
+  const records = rows.slice(1).map((r, i) => {
+    const o = { __regel: i + 2 };
+    head.forEach((h, k) => { o[h] = (r[k] || '').trim(); });
+    return o;
+  });
+  return { kind, records, delim, head };
+}
+
+function normKey(s) {
+  return (s || '').toLowerCase().normalize('NFC').replace(/[¿¡?!.,…]/g, '').replace(/\s+/g, ' ').trim();
+}
+function nlTokens(s) {
+  return (s || '').toLowerCase().replace(/\([^)]*\)/g, ' ').split(/[,\/;]/)
+    .map(x => x.trim().replace(/^(de|het|een)\s+/, '')).filter(Boolean);
+}
+function nlOverlap(a, b) {
+  const A = nlTokens(a), B = nlTokens(b);
+  if (!A.length || !B.length) return true;
+  const set = new Set(A);
+  return B.some(t => set.has(t));
+}
+function lesPos(w) { return (w.hoofdstuk || 0) * 1000 + (w.les || 0); }
+
+function cleanWord(rec) {
+  const f = k => (rec[k] || '').trim();
+  let hoofdstuk = parseInt(f('hoofdstuk'), 10) || 0;
+  let les = parseInt(f('les'), 10) || 0;
+  if (!hoofdstuk && /^\d+\.\d+$/.test(f('les'))) { const p = f('les').split('.'); hoofdstuk = +p[0]; les = +p[1]; }
+  const w = {
+    id: parseInt(f('id'), 10) || null,
+    spaans: f('spaans'), lidwoord: f('lidwoord').toLowerCase(), nederlands: f('nederlands'),
+    soort: f('soort').toLowerCase(), genus: f('genus').toLowerCase(), meervoud: f('meervoud'),
+    thema: f('thema').toLowerCase(), hoofdstuk, les, opmerking: f('opmerking')
+  };
+  const warn = [];
+  if (!w.spaans) return { error: 'spaans ontbreekt' };
+  if (!w.nederlands) return { error: 'nederlands ontbreekt' };
+  if (!w.soort) warn.push('soort ontbreekt');
+  else if (!SOORTEN.includes(w.soort)) warn.push("onbekende soort '" + w.soort + "'");
+  if (!GENERA.includes(w.genus)) warn.push("onbekend genus '" + w.genus + "'");
+  if (w.soort === 'zelfstandig naamwoord' && !w.genus) warn.push('genus ontbreekt bij zelfstandig naamwoord');
+  return { w, warn };
+}
+
+// Voegt binnenkomende records samen met de bestaande woorden. Wijzigt niets in de invoer.
+function mergeWords(existing, records) {
+  const list = existing.map(w => Object.assign({}, w, { altIds: (w.altIds || []).slice() }));
+  const byId = new Map(), byKey = new Map();
+  let maxId = 0;
+  const reg = w => {
+    byId.set(w.id, w); maxId = Math.max(maxId, w.id);
+    w.altIds.forEach(a => { byId.set(a, w); maxId = Math.max(maxId, a); });
+    const k = normKey(w.spaans) + '|' + w.soort + '|' + w.genus;
+    if (!byKey.has(k)) byKey.set(k, []);
+    byKey.get(k).push(w);
+  };
+  list.forEach(reg);
+  const rep = { nieuw: 0, bijgewerkt: 0, samengevoegd: 0, ongewijzigd: 0, overgeslagen: 0, details: [], waarschuwingen: 0 };
+  const log = (type, rec, tekst) => rep.details.push({ type, regel: rec.__regel, spaans: rec.spaans || '', tekst });
+  for (const rec of records) {
+    const c = cleanWord(rec);
+    if (c.error) { rep.overgeslagen++; log('overgeslagen', rec, c.error); continue; }
+    const inc = c.w;
+    if (c.warn.length) { rep.waarschuwingen++; log('waarschuwing', rec, c.warn.join('; ')); }
+    let m = null, via = null;
+    if (inc.id != null) { m = byId.get(inc.id) || null; if (m) via = (m.id === inc.id) ? 'id' : 'alt'; }
+    if (!m) {
+      const k = normKey(inc.spaans) + '|' + inc.soort + '|' + inc.genus;
+      m = (byKey.get(k) || []).find(x => nlOverlap(x.nederlands, inc.nederlands)) || null;
+      if (m) via = 'sleutel';
+    }
+    if (!m) {
+      const nw = Object.assign({}, inc, { altIds: [] });
+      if (nw.id == null || byId.has(nw.id)) nw.id = maxId + 1;
+      list.push(nw); reg(nw); rep.nieuw++;
+      continue;
+    }
+    const changes = [];
+    if (via === 'id') {
+      for (const f of WORD_FIELDS) {
+        const v = inc[f]; const empty = (v === '' || v === 0);
+        if (empty || v === m[f]) continue;
+        if (f === 'nederlands' && m.altIds.length) {
+          // samengevoegd woord: een vertaling die al in de samengevoegde tekst zit, niet terugzetten
+          const have = new Set(nlTokens(m.nederlands));
+          if (nlTokens(v).every(t => have.has(t))) continue;
+        }
+        changes.push(f); m[f] = v;
+      }
+      if (changes.length) { rep.bijgewerkt++; log('bijgewerkt', rec, 'id ' + m.id + ': ' + changes.join(', ')); }
+      else rep.ongewijzigd++;
+    } else {
+      for (const f of WORD_FIELDS) {
+        const v = inc[f];
+        if (f === 'nederlands') {
+          const have = new Set(nlTokens(m.nederlands));
+          if (nlTokens(v).some(t => !have.has(t))) { m.nederlands = m.nederlands + ' / ' + v; changes.push(f); }
+        } else if (f === 'hoofdstuk' || f === 'les') {
+          // de plaats van het eerste voorkomen blijft (de volgorde van de lijst is de leervolgorde)
+        } else if (v !== '' && (m[f] === '' || m[f] == null)) { m[f] = v; changes.push(f); }
+      }
+      if (inc.hoofdstuk && !m.hoofdstuk) { m.hoofdstuk = inc.hoofdstuk; m.les = inc.les; changes.push('les'); }
+      let nieuwAlt = false;
+      if (inc.id != null && inc.id !== m.id && !m.altIds.includes(inc.id)) { m.altIds.push(inc.id); byId.set(inc.id, m); nieuwAlt = true; }
+      if (via === 'alt' && !nieuwAlt && !changes.length) { rep.ongewijzigd++; }
+      else {
+        rep.samengevoegd++;
+        log('samengevoegd', rec, "samengevoegd met id " + m.id + (changes.length ? ' (aangevuld: ' + changes.join(', ') + ')' : ''));
+      }
+    }
+  }
+  list.sort((a, b) => a.id - b.id);
+  return { words: list, report: rep };
+}
+
+function cleanVerb(rec) {
+  const f = k => (rec[k] || '').trim();
+  const v = { id: parseInt(f('id'), 10) || null };
+  VERB_FIELDS.forEach(k => { v[k] = f(k); });
+  if (!v.infinitief) return { error: 'infinitief ontbreekt' };
+  if (!v.nederlands) return { error: 'nederlands ontbreekt' };
+  const warn = [];
+  const empty = VERB_FORMS.filter(k => !v[k]);
+  if (empty.length) warn.push('ontbrekende vormen: ' + empty.join(', '));
+  return { v, warn };
+}
+
+function mergeVerbs(existing, records) {
+  const list = existing.map(v => Object.assign({}, v));
+  const byId = new Map(), byKey = new Map(); let maxId = 0;
+  const reg = v => { byId.set(v.id, v); maxId = Math.max(maxId, v.id); byKey.set(normKey(v.infinitief), v); };
+  list.forEach(reg);
+  const rep = { nieuw: 0, bijgewerkt: 0, samengevoegd: 0, ongewijzigd: 0, overgeslagen: 0, details: [], waarschuwingen: 0 };
+  const log = (type, rec, tekst) => rep.details.push({ type, regel: rec.__regel, spaans: rec.infinitief || '', tekst });
+  for (const rec of records) {
+    const c = cleanVerb(rec);
+    if (c.error) { rep.overgeslagen++; log('overgeslagen', rec, c.error); continue; }
+    const inc = c.v;
+    if (c.warn.length) { rep.waarschuwingen++; log('waarschuwing', rec, c.warn.join('; ')); }
+    let m = inc.id != null ? byId.get(inc.id) : null;
+    if (!m) m = byKey.get(normKey(inc.infinitief)) || null;
+    if (!m) {
+      const nv = Object.assign({}, inc);
+      if (nv.id == null || byId.has(nv.id)) nv.id = maxId + 1;
+      list.push(nv); reg(nv); rep.nieuw++; continue;
+    }
+    const changes = [];
+    for (const f of VERB_FIELDS) { if (inc[f] !== '' && inc[f] !== m[f]) { changes.push(f); m[f] = inc[f]; } }
+    if (changes.length) { rep.bijgewerkt++; log('bijgewerkt', rec, 'id ' + m.id + ': ' + changes.join(', ')); }
+    else rep.ongewijzigd++;
+  }
+  list.sort((a, b) => a.id - b.id);
+  return { verbs: list, report: rep };
+}
+
+// Lesblokken in leervolgorde (op id). Dezelfde lesnaam die later terugkomt wordt een nieuwe ronde.
+function buildBlocks(words) {
+  const sorted = words.slice().sort((a, b) => a.id - b.id);
+  const blocks = [], seen = {}; let cur = null;
+  for (const w of sorted) {
+    if (!w.hoofdstuk) { if (cur) { cur.lastId = w.id; cur.count++; } continue; }
+    if (cur && cur.h === w.hoofdstuk && cur.l === w.les) { cur.lastId = w.id; cur.count++; continue; }
+    const label = w.hoofdstuk + '.' + w.les;
+    seen[label] = (seen[label] || 0) + 1;
+    cur = { h: w.hoofdstuk, l: w.les, label, round: seen[label], lastId: w.id, count: 1 };
+    blocks.push(cur);
+  }
+  blocks.forEach(b => { b.naam = b.round > 1 ? b.label + ' (ronde ' + b.round + ')' : b.label; });
+  return blocks;
+}
+
+function selectWords(words, blocks, settings) {
+  let list = words;
+  if (settings && settings.block != null && blocks[settings.block]) {
+    const last = blocks[settings.block].lastId;
+    list = list.filter(w => w.id <= last);
+  }
+  if (settings && settings.soorten && settings.soorten.length) list = list.filter(w => settings.soorten.includes(w.soort));
+  return list;
+}
+
+// ---------- Flashcards (Leitner, 5 vakken) ----------
+// Vak 1 komt meteen terug; vak 2 na 1 dag, vak 3 na 3, vak 4 na 7, vak 5 na 21 dagen.
+const BOX_DAYS = [0, 1, 3, 7, 21];
+const FC_DEFAULT = { size: 20, newMax: 10, dir: 'both', verbs: true };
+
+// richting 'a' = Spaans -> Nederlands, 'b' = Nederlands -> Spaans
+function cardKey(kind, id, dir) { return kind + id + ':' + dir; }
+
+// Begin van de lokale dag + dagen, zodat een kaart van gisteren vanochtend al aan de beurt is.
+function dueDate(box, now) {
+  const days = BOX_DAYS[box - 1];
+  if (!days) return now;
+  const d = new Date(now);
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate() + days).getTime();
+}
+
+function gradeCard(prev, key, correct, now) {
+  const p = prev ? Object.assign({}, prev) : { key, box: 1, seen: 0, correct: 0, wrong: 0 };
+  p.key = key;
+  p.box = correct ? Math.min(5, (p.box || 1) + 1) : 1;
+  p.due = dueDate(p.box, now);
+  p.seen++; if (correct) p.correct++; else p.wrong++;
+  p.last = now;
+  return p;
+}
+
+function buildCards(words, verbs, fc) {
+  const dirs = fc.dir === 'a' ? ['a'] : fc.dir === 'b' ? ['b'] : ['a', 'b'];
+  const cards = [];
+  for (const w of words) for (const d of dirs) cards.push({ key: cardKey('w', w.id, d), kind: 'w', id: w.id, dir: d, item: w });
+  if (fc.verbs) for (const v of verbs) for (const d of dirs) cards.push({ key: cardKey('v', v.id, d), kind: 'v', id: v.id, dir: d, item: v });
+  return cards;
+}
+
+function shuffle(a, rng) {
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); const t = a[i]; a[i] = a[j]; a[j] = t; }
+  return a;
+}
+
+// Stelt de volgende sessie samen: eerst wat aan de beurt is (zwakste vak eerst), daarna nieuwe kaarten.
+// In "beide richtingen" komt Nederlands -> Spaans van een woord pas als Spaans -> Nederlands in vak 2 of hoger zit.
+function sessionPlan(cards, progress, fc, now, rng) {
+  rng = rng || Math.random;
+  const both = !fc.dir || fc.dir === 'both';
+  const due = [], later = [], nieuwW = [], nieuwV = [], boxes = [0, 0, 0, 0, 0];
+  let learned = 0;
+  for (const c of cards) {
+    const p = progress.get(c.key);
+    if (p) { learned++; boxes[p.box - 1]++; (p.due <= now ? due : later).push(c); continue; }
+    if (both && c.dir === 'b') {
+      const a = progress.get(cardKey(c.kind, c.id, 'a'));
+      if (!a || a.box < 2) continue;
+    }
+    (c.kind === 'v' ? nieuwV : nieuwW).push(c);
+  }
+  if (fc.mix) for (const pool of [nieuwW, nieuwV]) {
+    // door elkaar: eerst één vorm van elk werkwoord (willekeurige persoon), pas daarna een tweede van hetzelfde werkwoord
+    shuffle(pool, rng); const seen = {};
+    pool.forEach(x => { x._r = seen[x.id] = (seen[x.id] || 0) + 1; });
+    pool.sort((x, y) => x._r - y._r); pool.forEach(x => { delete x._r; });
+  }
+  else if (fc.mix == null && fc.order !== 'list') { shuffle(nieuwW, rng); shuffle(nieuwV, rng); } // nieuwe kaarten willekeurig, tenzij "in volgorde van je lijst"
+  // Aan de beurt: zwakste niveau eerst, binnen een niveau door elkaar (anders krijgen steeds dezelfde kaarten voorrang).
+  shuffle(due, rng);
+  due.sort((x, y) => progress.get(x.key).box - progress.get(y.key).box);
+  const dueTaken = due.slice(0, fc.size);
+  const room = Math.max(0, Math.min(fc.newMax, fc.size - dueTaken.length));
+  let nv = Math.min(nieuwV.length, Math.max(room >= 2 ? 1 : 0, Math.round(room * 0.2)));
+  const nw = Math.min(nieuwW.length, room - nv);
+  nv = Math.min(nieuwV.length, room - nw);
+  let list = dueTaken.concat(nieuwW.slice(0, nw), nieuwV.slice(0, nv));
+  let extra = false;
+  if (!list.length && later.length) {
+    later.sort((x, y) => progress.get(x.key).due - progress.get(y.key).due);
+    list = later.slice(0, fc.size); extra = true;
+  }
+  shuffle(list, rng);
+  return { cards: list, due: dueTaken.length, nieuw: nw + nv, extra, dueTotal: due.length, newTotal: nieuwW.length + nieuwV.length, learned, boxes };
+}
+
+function newSession(cards) {
+  return { queue: cards.slice(), total: cards.length, answered: 0, juist: 0, fout: 0, missed: [] };
+}
+
+// Verwerkt één antwoord. Een fout antwoord komt na ongeveer 3 kaarten terug (herhaling);
+// de herhaling telt niet mee in de score en verandert het vak niet nog eens.
+function answerSession(sess, progress, correct, now) {
+  const card = sess.queue.shift();
+  let update = null;
+  if (!card.retry) {
+    update = gradeCard(progress.get(card.key), card.key, correct, now);
+    sess.answered++;
+    if (correct) sess.juist++; else { sess.fout++; sess.missed.push(card); }
+  }
+  if (!correct) sess.queue.splice(Math.min(3, sess.queue.length), 0, Object.assign({}, card, { retry: true }));
+  return { update, card };
+}
+
+// Alleen leerinfo uit de opmerking tonen; administratieve delen (bron, dubbel, spelling, samengevoegd...) blijven weg.
+function leerNotitie(t) {
+  return (t || '').split(/,\s*(?![^()']*['\)])/).map(x => x.trim()).filter(x => x &&
+    !/^(bron\b|dubbel|spelling gecorrigeerd|taalnaam|samengevoegd|toegevoegd|ontbrekende vormen)/i.test(x)).join(', ');
+}
+
+// Teksten op de kaart.
+function cardFace(card) {
+  const it = card.item;
+  if (card.kind === 'v') {
+    const forms = VERB_FORMS.map(f => [f, it[f]]).filter(x => x[1]);
+    return { es: it.infinitief, nl: it.nederlands, soort: 'werkwoord', meervoud: '', opmerking: leerNotitie(it.opmerking),
+      meta: [it.groep, it.type].filter(Boolean).join(' · '), forms };
+  }
+  return { es: (it.lidwoord ? it.lidwoord + ' ' : '') + it.spaans, nl: it.nederlands, soort: it.soort || '',
+    meervoud: it.meervoud || '', opmerking: leerNotitie(it.opmerking), meta: '', forms: [] };
+}
+
+// ---------- Oefening: lidwoord en genus ----------
+const GR_DEFAULT = { size: 20, newMax: 10 };
+// Alleen zelfstandige naamwoorden met een vast lidwoord (el of la) in het enkelvoud.
+function genusCards(words) {
+  return words.filter(w => w.soort === 'zelfstandig naamwoord' && (w.lidwoord === 'el' || w.lidwoord === 'la'))
+    .map(w => ({ key: cardKey('g', w.id, 'a'), kind: 'g', id: w.id, dir: 'a', item: w }));
+}
+const GENUS_RULES = [
+  [/(ción|sión|xión|dad|tad|tud|umbre)$/, 'la', 'woorden op -ción, -sión, -dad, -tad, -tud en -umbre zijn bijna altijd vrouwelijk (la)'],
+  [/o$/, 'el', 'woorden op -o zijn meestal mannelijk (el)'],
+  [/a$/, 'la', 'woorden op -a zijn meestal vrouwelijk (la)'],
+  [/(aje|or)$/, 'el', 'woorden op -aje en -or zijn meestal mannelijk (el)']
+];
+// Geeft de regel die bij het woord past en of het woord de regel volgt; null als er geen regel is.
+function genusTip(w) {
+  const head = (w.spaans || '').trim().toLowerCase().split(/\s+/)[0];
+  for (const [re, art, text] of GENUS_RULES) if (re.test(head)) return { rule: text, art, fits: art === w.lidwoord };
+  return null;
+}
+
+// ---------- Oefening: meervoud ----------
+const MR_DEFAULT = { size: 20, newMax: 10 };
+// Zelfstandige naamwoorden met een ingevuld meervoud (woorden die alleen in het meervoud bestaan hebben geen meervoud-kolom).
+function pluralCards(words) {
+  return words.filter(w => w.soort === 'zelfstandig naamwoord' && w.meervoud && ['el', 'la', 'el/la'].includes(w.lidwoord))
+    .map(w => ({ key: cardKey('m', w.id, 'a'), kind: 'm', id: w.id, dir: 'a', item: w }));
+}
+// Haalt de streepjes op klinkers (á é í ó ú ü) weg, maar laat de ñ staan.
+function stripAcc(s) { return (s || '').normalize('NFD').replace(/[̀́̈]/g, '').normalize('NFC'); }
+function normAns(s) { return (s || '').trim().toLowerCase().normalize('NFC').replace(/\s+/g, ' ').replace(/^(los|las)\s+/, ''); }
+// Typen: het accent moet kloppen. Spreken: accenten hoor je niet, dus die tellen niet mee.
+function checkPlural(expected, given, spoken) {
+  const e = normAns(expected), g = normAns(given);
+  if (!g) return { result: 'leeg' };
+  if (g === e) return { result: 'juist' };
+  if (stripAcc(g) === stripAcc(e)) return { result: spoken ? 'juist' : 'accent' };
+  return { result: 'fout' };
+}
+// Beschrijft wat er met het hoofdwoord gebeurt (bij samenstellingen het eerste woord), op basis van je eigen gegevens.
+function pluralTip(w) {
+  const t = pluralTipBase(w);
+  if (t && /\s(de|del|a|para|en)\s/i.test(' ' + (w.spaans || '').trim() + ' ')) return t + ' Bij een samenstelling met "de" wordt alleen het eerste woord meervoud; wat erna komt, blijft zoals het is.';
+  return t;
+}
+function pluralTipBase(w) {
+  const head = s => (s || '').trim().toLowerCase().split(/\s+/)[0];
+  const s = head(w.spaans), p = head(w.meervoud), hasAcc = x => stripAcc(x) !== x;
+  if (!s || !p) return null;
+  if (p === s) return 'Het meervoud is gelijk aan het enkelvoud (woorden op -s waarvan de klemtoon niet op het einde valt).';
+  if (s.endsWith('z') && p === s.slice(0, -1) + 'ces') return 'Een woord op -z krijgt -ces: de z wordt een c en er komt -es bij.';
+  if (p === s + 's') return 'Na een klinker komt er -s bij.';
+  if (p === s + 'es') return 'Na een medeklinker komt er -es bij.';
+  if (stripAcc(p) === stripAcc(s) + 'es' || stripAcc(p) === stripAcc(s) + 's') {
+    if (hasAcc(s) && !hasAcc(p)) return 'Er komt -es bij en het geschreven accent vervalt (de klemtoon blijft op dezelfde klinker).';
+    if (!hasAcc(s) && hasAcc(p)) return 'Er komt -es bij en de klemtoon verschuift: het meervoud krijgt een geschreven accent.';
+  }
+  return null;
+}
+
+// ---------- Oefening: overeenstemming (bijvoeglijk naamwoord past zich aan) ----------
+const OV_DEFAULT = { size: 20, newMax: 10 };
+// Woorden die vóór het zelfstandig naamwoord staan en meestal zonder lidwoord (muchas casas).
+const QUANTIFIERS = ['mucho', 'poco', 'demasiado', 'bastante', 'otro', 'tanto', 'todo', 'cuanto', 'varios'];
+// Bouwt "families": één bijvoeglijk naamwoord met zijn vier vormen (mannelijk/vrouwelijk, enkelvoud/meervoud).
+// Woorden die voor m en v hetzelfde zijn (grande, difícil) krijgen twee vormen.
+function adjectiveFamilies(words) {
+  const adj = words.filter(w => w.soort === 'bijvoeglijk naamwoord').sort((a, b) => a.id - b.id);
+  const fams = [], used = new Set();
+  const isQ = s => QUANTIFIERS.includes(stripAcc((s || '').toLowerCase()));
+  adj.forEach((w, i) => {
+    if (!w.meervoud || used.has(w.id)) return;
+    if (w.genus === 'm/v') { fams.push({ id: w.id, lemma: w.spaans, nl: w.nederlands, invariable: true, forms: { s: w.spaans, p: w.meervoud }, quant: isQ(w.spaans) }); return; }
+    if (w.genus !== 'm') return;
+    let fem = null;
+    for (let j = i + 1; j < Math.min(adj.length, i + 4); j++) {
+      const x = adj[j];
+      if (x.genus === 'v' && x.meervoud && !used.has(x.id) && nlOverlap(w.nederlands, x.nederlands)) { fem = x; break; }
+    }
+    if (!fem) return;
+    used.add(fem.id);
+    fams.push({ id: w.id, lemma: w.spaans, nl: w.nederlands, invariable: false, forms: { ms: w.spaans, fs: fem.spaans, mp: w.meervoud, fp: fem.meervoud }, quant: isQ(w.spaans) });
+  });
+  return fams;
+}
+function ovCards(fams) {
+  return fams.map(f => ({ key: cardKey('o', f.id, 'a'), kind: 'o', id: f.id, dir: 'a', item: f }));
+}
+// Zelfstandige naamwoorden met vast lidwoord (el of la), één woord, met meervoud.
+function agreementNouns(words) {
+  return words.filter(w => w.soort === 'zelfstandig naamwoord' && w.meervoud && !/\s/.test((w.spaans || '').trim()) &&
+    ((w.lidwoord === 'el' && w.genus === 'm') || (w.lidwoord === 'la' && w.genus === 'v')));
+}
+// Maakt één vraag: een zelfstandig naamwoord (enkelvoud of meervoud) en vier vormen om uit te kiezen.
+function agreementQuestion(fam, nouns, rng, avoid) {
+  rng = rng || Math.random;
+  if (!nouns.length) return null;
+  let noun, plural, sig;
+  for (let t = 0; t < 20; t++) {
+    noun = nouns[Math.floor(rng() * nouns.length)];
+    plural = fam.quant ? true : rng() < 0.5;
+    sig = noun.id + (plural ? 'p' : 's');
+    if (sig !== avoid) break;
+  }
+  const g = noun.genus === 'm' ? 'm' : 'v', f = fam.forms;
+  const answer = fam.invariable ? (plural ? f.p : f.s) : f[(g === 'm' ? 'm' : 'f') + (plural ? 'p' : 's')];
+  let opts;
+  if (!fam.invariable) opts = [f.ms, f.fs, f.mp, f.fp];
+  else { const stem = /e$/.test(f.s) ? f.s.slice(0, -1) : f.s; opts = [f.s, f.p].concat(plural ? [stem + 'os', stem + 'as'] : [stem + 'o', stem + 'a']); }
+  opts = Array.from(new Set(opts));
+  shuffle(opts, rng);
+  const art = plural ? (g === 'm' ? 'los' : 'las') : noun.lidwoord;
+  const nounText = plural ? noun.meervoud : noun.spaans;
+  const pre = fam.quant ? '' : art + ' ' + nounText + ' ', post = fam.quant ? ' ' + nounText : '';
+  return { sig, noun, plural, gender: g, answer, options: opts, pre, post,
+    full: fam.quant ? answer + ' ' + nounText : art + ' ' + nounText + ' ' + answer, nounFull: art + ' ' + nounText };
+}
+
+// ---------- Oefening: werkwoordtabel (persoonsvormen per vorm) ----------
+const WT_DEFAULT = { size: 20, newMax: 10, only: 'alle', mix: true };
+const PERSONS = [['yo', 'ik'], ['tú', 'jij'], ['él / ella', 'hij / zij / u'], ['nosotros', 'wij'], ['vosotros', 'jullie'], ['ellos / ustedes', 'zij / u (meervoud)']];
+const VERB_ENDINGS = { '-ar': ['o', 'as', 'a', 'amos', 'áis', 'an'], '-er': ['o', 'es', 'e', 'emos', 'éis', 'en'], '-ir': ['o', 'es', 'e', 'imos', 'ís', 'en'] };
+const CLITIC = /^(me|te|se|nos|os|le|les)\s+/;
+// Eén kaart per werkwoord en persoon. "only" = 'onregelmatig' laat alleen onregelmatige werkwoorden over.
+function verbFormCards(verbs, only) {
+  const list = only === 'onregelmatig' ? verbs.filter(v => /^onregelmatig/.test(v.type || '')) : verbs;
+  const cards = [];
+  for (const v of list) VERB_FORMS.forEach((f, i) => { if (v[f]) cards.push({ key: cardKey('f', v.id, String(i)), kind: 'f', id: v.id, dir: String(i), pi: i, item: v }); });
+  return cards;
+}
+const SUBJECT = /^(yo|tú|tu|él|el|ella|usted|nosotros|nosotras|vosotros|vosotras|ellos|ellas|ustedes)\s+/;
+function normForm(s) { return (s || '').trim().toLowerCase().normalize('NFC').replace(/\s+/g, ' '); }
+// Een voornaamwoord ervoor (yo hablo) mag; bij wederkerende werkwoorden en gustar mag het me/te/se weglaten.
+// Het wederkerend voornaamwoord (me baño) en bij gustar het voornaamwoord (me gusta) horen bij de vorm:
+// zonder dat voornaamwoord is het "bijna" (telt als fout, met uitleg).
+function checkForm(expected, given, spoken) {
+  const e = normForm(expected), e2 = e.replace(CLITIC, '');
+  let g = normForm(given);
+  if (!g) return { result: 'leeg' };
+  g = g.replace(SUBJECT, '');
+  if (g === e) return { result: 'juist' };
+  const ga = stripAcc(g);
+  if (ga === stripAcc(e)) return { result: spoken ? 'juist' : 'accent' };
+  if (e2 !== e && ga === stripAcc(e2)) return { result: 'pronoun' };
+  return { result: 'fout' };
+}
+function verbTip(v, i) {
+  if (v.infinitief === 'gustar') return 'gustar werkt omgekeerd: wat je leuk vindt is het onderwerp, dus gusta (meervoud: gustan). Wie het leuk vindt, zeg je met me, te, le, nos, os, les.';
+  const inf = (v.infinitief || '').replace(/se$/, ''), stem = inf.slice(0, -2);
+  const endings = VERB_ENDINGS['-' + inf.slice(-2)], form = v[VERB_FORMS[i]] || '', bare = form.replace(CLITIC, '');
+  if (!endings || !bare || /\s/.test(bare)) return null;
+  const regular = stem + endings[i];
+  if (bare === regular) return 'Regelmatig: stam ' + stem + '- + \u2011' + endings[i] + '.';
+  const t = v.type || '', par = t.includes('(') ? ' ' + t.slice(t.indexOf('(')) : '';
+  return (/^regelmatig/.test(t) ? 'Let op' : 'Onregelmatig') + par + ': gewoon zou het ' + regular + ' zijn, het is ' + bare + '.';
+}
+
+// ---------- Oefening: spreekoefening (zinnen uit je eigen woorden en werkwoorden) ----------
+const ZN_DEFAULT = { size: 10, newMax: 6 };
+const g_ = s => s.split('|');
+const ZG = {
+  eten: g_('pan|piña|sandía|durazno|mango|naranja|arroz|sopa|pollo|pasta|queso|huevo|carne|hamburguesa|frijol|papa|verdura|galleta|pastel|tomate|pizza|plátano|manzana|ensalada|pepino|zanahoria|fresa|pera|aguacate|pimiento'),
+  drank: g_('leche|jugo|batido|bebida'),
+  maaltijd: g_('sopa|ensalada|pizza|pasta|pastel|hamburguesa|arroz|pollo|desayuno|almuerzo|comida|postre'),
+  spullen: g_('tableta|mochila|cargador|cartera|reloj|bolsa|regalo|computadora|paraguas|souvenir|celular|lápiz|pluma|diccionario|maleta|pasaporte|boleto|mapa|libro'),
+  kleding: g_('gorra|vestido|suéter|chaqueta|abrigo|traje de baño|cinturón|bolso|sombrero|traje|falda|camisa|bufanda|collar|blusa|camiseta|zapato|bota|corbata|pantalón|guante|calcetín'),
+  plaats: g_('parque|teatro|museo|tienda|mercado|restaurante|supermercado|biblioteca|plaza|cine|hotel|pueblo|ciudad|centro|aeropuerto|puerto|hospital|farmacia|panadería|cafetería|librería|piscina|gimnasio|discoteca|centro comercial|estación de tren|estación de metro|bar|universidad|oficina'),
+  waar: g_('parque|teatro|museo|tienda|mercado|restaurante|supermercado|biblioteca|plaza|cine|hotel|aeropuerto|puerto|hospital|farmacia|panadería|cafetería|librería|piscina|gimnasio|discoteca|centro comercial|estación de tren|estación de metro|estación|bar|universidad|oficina|calle|estacionamiento|parada de taxi|oficina de información|baño|cocina|salida|andén|entrada|puerta|escuela|colegio'),
+  woon: g_('ciudad|pueblo|barrio|centro|casa|apartamento|edificio'),
+  natuur: g_('montaña|playa|lago|río|mar|bosque|isla|flor|desierto|campo|pájaro|caballo|vaca|perro|gato|animal|planta'),
+  huisdier: g_('perro|gato|caballo|mascota|pájaro|pez'),
+  familie: g_('hermano|hermana|hijo|hija|tío|tía|abuelo|abuela|primo|prima|sobrino|sobrina|madre|padre'),
+  reserv: g_('hotel|mesa|vuelo|boleto|taxi'),
+  open: g_('puerta|caja|maleta|mochila|bolsa'),
+  lees: g_('libro|diccionario|mapa'),
+  schrijf: g_('ejercicio|tarea|proyecto'),
+  leuk: g_('pan|piña|sandía|mango|naranja|arroz|sopa|pollo|pasta|queso|pizza|plátano|manzana|ensalada|leche|jugo|montaña|playa|lago|río|mar|bosque|isla|flor|perro|gato|caballo|ciudad|pueblo|barrio|casa|parque|museo|mercado|restaurante|cine|plaza|piscina|gimnasio'),
+};
+// Nederlandse werkwoordsvormen: [infinitief, ik (en jij bij een vraag), hij/zij, wij/zij (meervoud)]
+const ZV = {
+  querer: ['willen', 'wil', 'wil', 'willen'], tener: ['hebben', 'heb', 'heeft', 'hebben'], necesitar: ['nodig hebben', 'heb', 'heeft', 'hebben'],
+  comprar: ['kopen', 'koop', 'koopt', 'kopen'], llevar: ['dragen', 'draag', 'draagt', 'dragen'], usar: ['gebruiken', 'gebruik', 'gebruikt', 'gebruiken'],
+  comer: ['eten', 'eet', 'eet', 'eten'], beber: ['drinken', 'drink', 'drinkt', 'drinken'], preparar: ['bereiden', 'bereid', 'bereidt', 'bereiden'],
+  ver: ['zien', 'zie', 'ziet', 'zien'], mirar: ['kijken', 'kijk', 'kijkt', 'kijken'], visitar: ['bezoeken', 'bezoek', 'bezoekt', 'bezoeken'],
+  buscar: ['zoeken', 'zoek', 'zoekt', 'zoeken'], vivir: ['wonen', 'woon', 'woont', 'wonen'], abrir: ['openen', 'open', 'opent', 'openen'],
+  leer: ['lezen', 'lees', 'leest', 'lezen'], escribir: ['schrijven', 'schrijf', 'schrijft', 'schrijven'], reservar: ['reserveren', 'reserveer', 'reserveert', 'reserveren'],
+  ir: ['gaan', 'ga', 'gaat', 'gaan'], trabajar: ['werken', 'werk', 'werkt', 'werken'], estudiar: ['studeren', 'studeer', 'studeert', 'studeren'],
+  bailar: ['dansen', 'dans', 'danst', 'dansen'], cantar: ['zingen', 'zing', 'zingt', 'zingen'], nadar: ['zwemmen', 'zwem', 'zwemt', 'zwemmen'],
+  caminar: ['wandelen', 'wandel', 'wandelt', 'wandelen'], descansar: ['rusten', 'rust', 'rust', 'rusten'], viajar: ['reizen', 'reis', 'reist', 'reizen'],
+  correr: ['rennen', 'ren', 'rent', 'rennen'],
+};
+const ZPERS = ['yo', 'tú', 'él', 'nosotros', 'ellos'];
+const ZPI = { yo: 0, 'tú': 1, 'él': 2, nosotros: 3, ellos: 5 };
+const ZNL = { yo: 'Ik', 'tú': 'Jij', 'él': 'Hij', nosotros: 'Wij', ellos: 'Zij' };
+const ZNLI = { yo: 1, 'tú': 1, 'él': 2, nosotros: 3, ellos: 3 };
+const INTR = { verbs: ['trabajar', 'estudiar', 'bailar', 'cantar', 'nadar', 'caminar', 'descansar', 'viajar', 'correr'], comps: [['hoy', 'vandaag'], ['aquí', 'hier'], ['mucho', 'veel']] };
+const INF_COMBOS = [['reservar', ['reserv'], 'indef'], ['comprar', ['eten', 'spullen', 'kleding'], 'indef'], ['comer', ['eten'], 'indef'], ['visitar', ['plaats'], 'def'], ['buscar', ['plaats'], 'def']];
+const ZP = [
+  { id: 'querer', naam: 'Ik wil … (querer)', type: 'np', verb: 'querer', groups: ['eten', 'drank', 'spullen', 'kleding'], mode: 'indef', tip: 'Na querer volgt het voorwerp meteen: quiero un pan. "Een" is un (el-woord) of una (la-woord).' },
+  { id: 'tener', naam: 'Ik heb … (tener)', type: 'np', verb: 'tener', groups: ['spullen', 'kleding', 'huisdier', 'familie'], mode: 'indef', tip: 'tener = hebben. "Een" is un (el-woord) of una (la-woord).' },
+  { id: 'necesitar', naam: 'Ik heb … nodig (necesitar)', type: 'np', verb: 'necesitar', groups: ['spullen', 'kleding'], mode: 'indef', nlAfter: ' nodig', tip: 'Het Nederlandse "nodig hebben" is in het Spaans één werkwoord: necesitar + voorwerp.' },
+  { id: 'comprar', naam: 'Ik koop … (comprar)', type: 'np', verb: 'comprar', groups: ['eten', 'spullen', 'kleding'], mode: 'indef', tip: 'comprar is regelmatig (-ar). "Een" is un of una.' },
+  { id: 'llevar', naam: 'Ik draag … (llevar)', type: 'np', verb: 'llevar', groups: ['kleding'], mode: 'indef', tip: 'Kleding dragen is llevar (ook: meenemen, brengen).' },
+  { id: 'usar', naam: 'Ik gebruik … (usar)', type: 'np', verb: 'usar', groups: ['spullen'], mode: 'def', tip: '"De" of "het" is el (mannelijk) of la (vrouwelijk), afhankelijk van het woord.' },
+  { id: 'comer', naam: 'Ik eet … (comer)', type: 'np', verb: 'comer', groups: ['eten'], mode: 'indef', tip: 'comer is regelmatig (-er).' },
+  { id: 'beber', naam: 'Ik drink … (beber)', type: 'np', verb: 'beber', groups: ['drank'], mode: 'indef', tip: 'beber is regelmatig (-er).' },
+  { id: 'preparar', naam: 'Ik bereid … (preparar)', type: 'np', verb: 'preparar', groups: ['maaltijd'], mode: 'def', tip: 'preparar is regelmatig (-ar).' },
+  { id: 'ver', naam: 'Ik zie … (ver)', type: 'np', verb: 'ver', groups: ['natuur'], mode: 'def', tip: 'ver = zien. Bij een voorwerp van een plaats of ding zeg je geen "a".' },
+  { id: 'mirar', naam: 'Ik kijk naar … (mirar)', type: 'np', verb: 'mirar', groups: ['natuur'], mode: 'def', nlBefore: 'naar ', tip: 'Nederlands "kijken naar" is in het Spaans gewoon mirar + voorwerp, zonder voorzetsel.' },
+  { id: 'visitar', naam: 'Ik bezoek … (visitar)', type: 'np', verb: 'visitar', groups: ['plaats'], mode: 'def', tip: 'visitar is regelmatig (-ar).' },
+  { id: 'buscar', naam: 'Ik zoek … (buscar)', type: 'np', verb: 'buscar', groups: ['plaats'], mode: 'def', tip: 'buscar = zoeken, zonder voorzetsel.' },
+  { id: 'vivir', naam: 'Ik woon in … (vivir en)', type: 'np', verb: 'vivir', groups: ['woon'], mode: 'def', esBefore: 'en ', nlBefore: 'in ', tip: '"In" is en; en el / en la blijven twee woorden.' },
+  { id: 'abrir', naam: 'Ik open … (abrir)', type: 'np', verb: 'abrir', groups: ['open'], mode: 'def', tip: 'abrir is regelmatig (-ir).' },
+  { id: 'leer', naam: 'Ik lees … (leer)', type: 'np', verb: 'leer', groups: ['lees'], mode: 'def', tip: 'leer is regelmatig (-er) en wordt geschreven met ee in de stam.' },
+  { id: 'escribir', naam: 'Ik schrijf … (escribir)', type: 'np', verb: 'escribir', groups: ['schrijf'], mode: 'def', tip: 'escribir is regelmatig (-ir).' },
+  { id: 'querer-inf', naam: 'Ik wil … kopen/reserveren/eten (querer + infinitief)', type: 'inf', modal: 'querer', tip: 'Na querer blijft het tweede werkwoord in de infinitief: quiero reservar un hotel.' },
+  { id: 'ir-a', naam: 'Ik ga … kopen/reserveren/eten (ir a + infinitief)', type: 'inf', modal: 'ir', tip: 'De toekomst met "gaan": ir (voy, vas, va, vamos, van) + a + infinitief.' },
+  { id: 'donde', naam: 'Waar is …? (¿Dónde está …?)', type: 'donde', tip: 'Een plaats is vast: estar (está), niet ser.' },
+  { id: 'gusta', naam: 'Ik vind … leuk (me gusta)', type: 'gusta', tip: 'gustar is omgekeerd: het ding is het onderwerp. Me gusta + enkelvoud (bij meervoud: me gustan).' },
+  { id: 'intr', naam: 'Ik werk, ik dans, ik zwem … (zonder voorwerp)', type: 'intr', tip: 'Het onderwerp (yo, tú…) laat je in het Spaans meestal weg: de uitgang zegt wie het is.' },
+];
+function zinPick(arr, rng) { return arr[Math.min(arr.length - 1, Math.floor(rng() * arr.length))]; }
+function zinNounPool(words, groups) {
+  const lem = new Set(groups.flatMap(k => ZG[k])), seen = new Set(), out = [];
+  for (const w of words) {
+    if (w.soort !== 'zelfstandig naamwoord' || !lem.has((w.spaans || '').toLowerCase())) continue;
+    if (!((w.lidwoord === 'el' && w.genus === 'm') || (w.lidwoord === 'la' && (w.genus === 'v' || w.genus === 'f')))) continue;
+    const nl = (w.nederlands || '').split(',')[0].replace(/\s*\([^)]*\)/g, '').trim();
+    const m = nl.match(/^(de|het) (.+)$/);
+    if (!m) continue;
+    const k = w.lidwoord + ' ' + w.spaans; if (seen.has(k)) continue; seen.add(k);
+    out.push({ w, art: m[1], nl: m[2].trim() });
+  }
+  return out;
+}
+const ZMASS = new Set(['arroz', 'pasta', 'carne', 'pollo', 'verdura', 'azúcar', 'sal', 'leche']);
+function zinNP(n, mode) {
+  const w = n.w;
+  if (mode === 'indef' && ZMASS.has(w.spaans.toLowerCase())) mode = 'def'; // "een rijst" klinkt fout: dan met lidwoord
+  return mode === 'indef' ? { es: (w.lidwoord === 'el' ? 'un ' : 'una ') + w.spaans, nl: 'een ' + n.nl }
+    : { es: w.lidwoord + ' ' + w.spaans, nl: n.art + ' ' + n.nl };
+}
+// Andere Spaanse woorden met dezelfde Nederlandse betekenis (jas = chaqueta of abrigo) tellen ook goed.
+function zinAlts(es, pool, n, np, mode) {
+  return pool.filter(m => m !== n && m.nl === n.nl && m.art === n.art).map(m => es.replace(np.es, zinNP(m, mode).es)).filter(x => x !== es);
+}
+const zinCap = s => s.charAt(0).toUpperCase() + s.slice(1);
+// Bouwt één zin voor een patroon, of null als je woorden of werkwoorden daarvoor niet volstaan.
+function zinBuild(p, ctx, rng) {
+  const vrec = inf => ctx.verbs.find(v => v.infinitief === inf);
+  const vform = (inf, pk) => { const v = vrec(inf); return v ? v[VERB_FORMS[ZPI[pk]]] : null; };
+  const pk = p.type === 'gusta' ? zinPick(['yo', 'tú'], rng) : zinPick(ZPERS, rng);
+  const Q = pk === 'tú', pron = pk === 'él' && rng() < 0.4 ? 'Zij' : ZNL[pk];
+  const nlV = (inf, i) => (ZV[inf] || [])[i];
+  const fin = (es, nlverb, nlrest, info) => {
+    const e = zinCap(es);
+    const nlText = Q ? zinCap(nlverb) + ' jij' + (nlrest ? ' ' + nlrest : '') + '?' : pron + ' ' + nlverb + (nlrest ? ' ' + nlrest : '') + '.';
+    return Object.assign({ es: (Q ? '¿' : '') + e + (Q ? '?' : '.'), nl: nlText, person: pk }, info);
+  };
+  let r = null;
+  if (p.type === 'np') {
+    if (!vrec(p.verb)) return null;
+    const pool = zinNounPool(ctx.words, p.groups); if (!pool.length) return null;
+    const n = zinPick(pool, rng), np = zinNP(n, p.mode);
+    r = fin(vform(p.verb, pk) + ' ' + (p.esBefore || '') + np.es, nlV(p.verb, ZNLI[pk]), (p.nlBefore || '') + np.nl + (p.nlAfter || ''),
+      { hint: p.verb, verbs: [[p.verb, ZPI[pk]]], nouns: [n.w] });
+    r.alts = zinAlts(r.es, pool, n, np, p.mode);
+  } else if (p.type === 'inf') {
+    const opts = INF_COMBOS.filter(c => vrec(c[0]) && zinNounPool(ctx.words, c[1]).length);
+    if (!vrec(p.modal) || !opts.length) return null;
+    const c = zinPick(opts, rng), n = zinPick(zinNounPool(ctx.words, c[1]), rng), np = zinNP(n, c[2]);
+    const lead = vform(p.modal, pk) + (p.modal === 'ir' ? ' a ' : ' ') + c[0];
+    r = fin(lead + ' ' + np.es, nlV(p.modal, ZNLI[pk]), np.nl + ' ' + ZV[c[0]][0], { hint: p.modal + ' + ' + c[0], verbs: [[p.modal, ZPI[pk]]], nouns: [n.w] });
+    r.alts = zinAlts(r.es, zinNounPool(ctx.words, c[1]), n, np, c[2]);
+  } else if (p.type === 'donde') {
+    const pool = zinNounPool(ctx.words, ['waar']); if (!pool.length) return null;
+    const n = zinPick(pool, rng), np = zinNP(n, 'def');
+    r = { es: '¿Dónde está ' + np.es + '?', nl: 'Waar is ' + np.nl + '?', hint: 'estar', verbs: [], nouns: [n.w], person: null };
+    r.alts = zinAlts(r.es, pool, n, np, 'def');
+  } else if (p.type === 'gusta') {
+    const pool = zinNounPool(ctx.words, ['leuk']); if (!pool.length) return null;
+    const n = zinPick(pool, rng), np = zinNP(n, 'def');
+    const lekker = ZG.eten.concat(ZG.drank).includes(n.w.spaans.toLowerCase()) ? 'lekker' : 'leuk';
+    const es = (Q ? 'te' : 'me') + ' gusta ' + np.es;
+    r = { es: (Q ? '¿' : '') + zinCap(es) + (Q ? '?' : '.'), nl: Q ? 'Vind jij ' + np.nl + ' ' + lekker + '?' : 'Ik vind ' + np.nl + ' ' + lekker + '.',
+      hint: 'gustar', verbs: [], nouns: [n.w], person: pk };
+    r.alts = zinAlts(r.es, pool, n, np, 'def');
+  } else if (p.type === 'intr') {
+    const vs = INTR.verbs.filter(vrec); if (!vs.length) return null;
+    const inf = zinPick(vs, rng), c = zinPick(INTR.comps, rng);
+    r = fin(vform(inf, pk) + ' ' + c[0], nlV(inf, ZNLI[pk]), c[1], { hint: inf, verbs: [[inf, ZPI[pk]]], nouns: [] });
+  }
+  if (r) { r.id = p.id; r.sig = r.es; r.alts = r.alts || []; }
+  return r;
+}
+// Eén kaart per patroon dat met je selectie en werkwoorden kan; de zin zelf wordt bij de start van de sessie gemaakt.
+function zinCards(words, verbs) {
+  const ctx = { words, verbs }, mid = () => 0.5;
+  return ZP.filter(p => zinBuild(p, ctx, mid)).map(p => ({ key: cardKey('z', p.id, 'a'), kind: 'z', id: p.id, dir: 'a', item: p }));
+}
+function zinSentences(cards, words, verbs, rng) {
+  const ctx = { words, verbs }, used = new Set(), out = [];
+  for (const c of cards) {
+    let s = null;
+    for (let t = 0; t < 12; t++) { s = zinBuild(c.item, ctx, rng); if (s && !used.has(s.sig)) break; }
+    if (!s) continue;
+    used.add(s.sig); out.push(Object.assign({}, c, { sent: s }));
+  }
+  return out;
+}
+// Controleert tegen de zin en zijn gelijkwaardige varianten; het beste resultaat telt.
+// Gesproken zin die maar half is opgevangen (het begin van de juiste zin): niet beoordelen, opnieuw laten proberen.
+function sentencePartial(sent, given) {
+  const g = stripAcc(normSent(given).replace(SENT_SUBJ, ''));
+  if (!g) return false;
+  return [sent.es].concat(sent.alts || []).some(e => { const x = stripAcc(normSent(e)); return x !== g && x.startsWith(g + ' '); });
+}
+function checkSentenceAny(sent, given, spoken) {
+  const rank = { leeg: 0, fout: 1, accent: 2, juist: 3 };
+  let best = { result: 'leeg' };
+  for (const e of [sent.es].concat(sent.alts || [])) { const r = checkSentence(e, given, spoken); if (rank[r.result] > rank[best.result]) best = r; }
+  return best;
+}
+const SENT_SUBJ = /^(yo|tú|tu|él|el|ella|usted|nosotros|nosotras|ellos|ellas|ustedes)\s+/;
+function normSent(s) { return (s || '').toLowerCase().normalize('NFC').replace(/[¿¡?!.,;:"]/g, ' ').replace(/\s+/g, ' ').trim(); }
+// Een voornaamwoord vooraan mag; accent telt bij typen mee, bij spreken niet.
+function checkSentence(expected, given, spoken) {
+  const e = normSent(expected), g = normSent(given);
+  if (!g) return { result: 'leeg' };
+  const cands = [g, g.replace(SENT_SUBJ, '')];
+  if (cands.includes(e)) return { result: 'juist' };
+  const ea = stripAcc(e);
+  if (cands.some(x => stripAcc(x) === ea)) return { result: spoken ? 'juist' : 'accent' };
+  return { result: 'fout' };
+}
+
+// ---------- Activiteit en back-upherinnering ----------
+const BACKUP_DAGEN = 7; // vanaf zoveel dagen zonder back-up verschijnt de herinnering
+// Lokale datum als 'JJJJ-MM-DD' (de dag zoals jij hem ervaart, niet UTC).
+function dayKey(ts) {
+  const d = new Date(ts), p = n => (n < 10 ? '0' : '') + n;
+  return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+}
+// Telt een beantwoorde kaart bij de teller van vandaag; begint opnieuw op een nieuwe dag.
+function bumpActivity(act, now) {
+  const dag = dayKey(now);
+  return act && act.date === dag ? { date: dag, count: act.count + 1 } : { date: dag, count: 1 };
+}
+function activityToday(act, now) { return act && act.date === dayKey(now) ? act.count : 0; }
+// Hele kalenderdagen tussen twee tijdstippen (lokaal), minstens 0.
+function daysBetween(fromTs, toTs) {
+  const a = new Date(fromTs), b = new Date(toTs);
+  const da = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate()), db = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+  return Math.max(0, Math.round((db - da) / 86400000));
+}
+// Zin over de laatste back-up en of er een herinnering moet komen.
+// iso = datum van de laatste back-up (of null), hasData = er is iets om te bewaren.
+function backupStatus(iso, hasData, now) {
+  const t = iso ? Date.parse(iso) : NaN;
+  if (isNaN(t)) return { text: 'Nog geen back-up gemaakt.', due: !!hasData, days: null };
+  const n = daysBetween(t, now);
+  const text = 'Laatste back-up: ' + (n === 0 ? 'vandaag' : n === 1 ? 'gisteren' : n + ' dagen geleden') + '.';
+  return { text, due: !!hasData && n >= BACKUP_DAGEN, days: n };
+}
+// </core>
+
+// ---------- Opslag (IndexedDB, met geheugen als noodoplossing) ----------
+const DB_NAME = 'spaans-leren-app-ov1', DB_VER = 1;
+const STORE_DEFS = { words: 'id', verbs: 'id', progress: 'key', meta: 'key' };
+let db = null, memStore = null, storageNote = '';
+
+function openDB() {
+  return new Promise((resolve, reject) => {
+    if (!window.indexedDB) return reject(new Error('IndexedDB is niet beschikbaar'));
+    let rq;
+    try { rq = indexedDB.open(DB_NAME, DB_VER); } catch (e) { return reject(e); }
+    rq.onupgradeneeded = () => { for (const [n, k] of Object.entries(STORE_DEFS)) if (!rq.result.objectStoreNames.contains(n)) rq.result.createObjectStore(n, { keyPath: k }); };
+    rq.onsuccess = () => resolve(rq.result);
+    rq.onerror = () => reject(rq.error);
+    rq.onblocked = () => reject(new Error('opslag geblokkeerd door een ander venster'));
+  });
+}
+const store = {
+  async init() {
+    try { db = await openDB(); }
+    catch (e) {
+      memStore = { words: new Map(), verbs: new Map(), progress: new Map(), meta: new Map() };
+      storageNote = 'Let op: opslag op dit toestel is niet beschikbaar (' + e.message + '). Je gegevens verdwijnen als je dit venster sluit. Maak een back-up.';
+    }
+  },
+  req(rq) { return new Promise((res, rej) => { rq.onsuccess = () => res(rq.result); rq.onerror = () => rej(rq.error); }); },
+  async getAll(name) {
+    if (memStore) return Array.from(memStore[name].values());
+    return this.req(db.transaction(name).objectStore(name).getAll());
+  },
+  async get(name, key) {
+    if (memStore) return memStore[name].get(key);
+    return this.req(db.transaction(name).objectStore(name).get(key));
+  },
+  async put(name, item) {
+    if (memStore) { memStore[name].set(item[STORE_DEFS[name]], item); return; }
+    return this.req(db.transaction(name, 'readwrite').objectStore(name).put(item));
+  },
+  // Vervangt meerdere tabellen in één transactie (voor het terugzetten van een back-up).
+  async replaceMany(data) {
+    const names = Object.keys(data);
+    if (memStore) { for (const n of names) memStore[n] = new Map(data[n].map(i => [i[STORE_DEFS[n]], i])); return; }
+    return new Promise((res, rej) => {
+      const tx = db.transaction(names, 'readwrite');
+      for (const n of names) { const os = tx.objectStore(n); os.clear(); data[n].forEach(i => os.put(i)); }
+      tx.oncomplete = () => res(); tx.onerror = () => rej(tx.error); tx.onabort = () => rej(tx.error || new Error('afgebroken'));
+    });
+  },
+  // Vervangt de hele inhoud in één transactie: helemaal gelukt of helemaal niet.
+  async replaceAll(name, items) {
+    if (memStore) { memStore[name] = new Map(items.map(i => [i[STORE_DEFS[name]], i])); return; }
+    return new Promise((res, rej) => {
+      const tx = db.transaction(name, 'readwrite'), os = tx.objectStore(name);
+      os.clear(); items.forEach(i => os.put(i));
+      tx.oncomplete = () => res(); tx.onerror = () => rej(tx.error); tx.onabort = () => rej(tx.error || new Error('afgebroken'));
+    });
+  }
+};
+
+// ---------- Toestand ----------
+const S = { view: 'start', words: [], verbs: [], blocks: [], settings: { block: null, soorten: [], fc: Object.assign({}, FC_DEFAULT), gr: Object.assign({}, GR_DEFAULT), mr: Object.assign({}, MR_DEFAULT), ov: Object.assign({}, OV_DEFAULT), wt: Object.assign({}, WT_DEFAULT), zn: Object.assign({}, ZN_DEFAULT), lang: 'es-ES' }, progress: new Map(), fc: null, gr: null, mr: null, ov: null, wt: null, zn: null, plan: null, msg: null, search: '', soortFilter: '', limit: 150, persisted: null, activity: null, lastBackup: null };
+
+async function loadAll() {
+  S.words = (await store.getAll('words')).sort((a, b) => a.id - b.id);
+  S.verbs = (await store.getAll('verbs')).sort((a, b) => a.id - b.id);
+  S.blocks = buildBlocks(S.words);
+  S.progress = new Map((await store.getAll('progress')).map(p => [p.key, p]));
+  const act = await store.get('meta', 'activity'), lb = await store.get('meta', 'lastBackup');
+  S.activity = act ? act.value : null; S.lastBackup = lb ? lb.value : null;
+  const st = await store.get('meta', 'settings');
+  S.settings = Object.assign({ block: null, soorten: [] }, st ? st.value : {});
+  S.settings.fc = Object.assign({}, FC_DEFAULT, S.settings.fc || {});
+  S.settings.gr = Object.assign({}, GR_DEFAULT, S.settings.gr || {});
+  S.settings.mr = Object.assign({}, MR_DEFAULT, S.settings.mr || {});
+  S.settings.ov = Object.assign({}, OV_DEFAULT, S.settings.ov || {});
+  S.settings.wt = Object.assign({}, WT_DEFAULT, S.settings.wt || {});
+  S.settings.zn = Object.assign({}, ZN_DEFAULT, S.settings.zn || {});
+  if (!['es-ES', 'es-MX'].includes(S.settings.lang)) S.settings.lang = 'es-ES';
+  if (S.settings.block != null && !S.blocks[S.settings.block]) S.settings.block = null;
+}
+const saveSettings = () => store.put('meta', { key: 'settings', value: S.settings });
+
+// ---------- Hulpfuncties ----------
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const $ = sel => document.querySelector(sel);
+const plural = (n, een, meer) => n + ' ' + (n === 1 ? een : meer);
+function setMsg(type, text) { S.msg = { type, text }; }
+
+// ---------- Schermen ----------
+// Niveau van een kaart = Leitner-vak. Hoger niveau = langer wachten voor de kaart terugkomt.
+const LEVELS = [['Zwak', 'zo weer'], ['Leren', 'morgen'], ['Redelijk', 'na 3 dagen'], ['Goed', 'na 1 week'], ['Sterk', 'na 3 weken']];
+const NAV = [['start', 'Home'], ['woorden', 'Woorden'], ['import', 'Importeren'], ['beheer', 'Beheer']];
+
+function render() {
+  $('#nav').innerHTML = NAV.map(([k, t]) => `<button data-act="nav" data-v="${k}" class="${(S.view === k || (k === 'start' && ['flash', 'flashhome', 'genus', 'genushome', 'meervoud', 'meervoudhome', 'overeen', 'overeenhome', 'werkwoord', 'werkwoordhome', 'spreek', 'spreekhome', 'selectie'].includes(S.view))) ? 'on' : ''}">${t}</button>`).join('');
+  const views = { start: viewStart, woorden: viewWoorden, import: viewImport, beheer: viewBeheer, flash: viewFlash, flashhome: viewFlashHome, genus: viewGenus, genushome: viewGenusHome, meervoud: viewMeervoud, meervoudhome: viewMeervoudHome, overeen: viewOvereen, overeenhome: viewOvereenHome, werkwoord: viewWerkwoord, werkwoordhome: viewWerkwoordHome, spreek: viewSpreek, spreekhome: viewSpreekHome, selectie: viewSelectie };
+  let html = '';
+  if (storageNote) html += `<div class="msg warn">${esc(storageNote)}</div>`;
+  if (S.msg) html += `<div class="msg ${S.msg.type}">${esc(S.msg.text)}</div>`;
+  $('#app').innerHTML = html + views[S.view]();
+  window.scrollTo(0, 0);
+  const touch = window.matchMedia && matchMedia('(pointer: coarse)').matches;
+  if (S.view === 'meervoud' || S.view === 'werkwoord' || (S.view === 'spreek' && !touch)) { const i = $('#mr-input'); if (i) setTimeout(() => i.focus(), 60); }
+}
+
+function selLabel() {
+  const b = S.settings.block != null ? S.blocks[S.settings.block] : null;
+  return (b ? 'alles t/m ' + b.naam : 'hele lijst') + (S.settings.soorten.length ? ' · ' + S.settings.soorten.join(', ') : '');
+}
+
+function viewStart() {
+  if (!S.words.length && !S.verbs.length) {
+    return `<section class="card"><h2>Welkom</h2><p>Er staan nog geen woorden in de app. Importeer eerst je woordenlijst (CSV uit Numbers) en je werkwoorden.</p>
+    <p><button class="btn" data-act="nav" data-v="import">Naar importeren</button></p></section>`;
+  }
+  const sel = selectWords(S.words, S.blocks, S.settings);
+  const plan = fcPlan(sel);
+  const fcStatus = plan.dueTotal ? `<b>${plan.dueTotal}</b> aan de beurt · ${plan.newTotal} nieuw` : plan.newTotal ? `${plan.newTotal} nieuw` : plan.learned ? 'niets aan de beurt' : 'geen kaarten';
+  const gp = grPlan(sel);
+  const grStatus = gp.dueTotal ? `<b>${gp.dueTotal}</b> aan de beurt · ${gp.newTotal} nieuw` : gp.newTotal ? `${gp.newTotal} nieuw` : gp.learned ? 'niets aan de beurt' : 'geen woorden in je selectie';
+  const mp = mrPlan(sel);
+  const mrStatus = mp.dueTotal ? `<b>${mp.dueTotal}</b> aan de beurt · ${mp.newTotal} nieuw` : mp.newTotal ? `${mp.newTotal} nieuw` : mp.learned ? 'niets aan de beurt' : 'geen woorden in je selectie';
+  const op = ovPlan(sel);
+  const ovStatus = op.dueTotal ? `<b>${op.dueTotal}</b> aan de beurt · ${op.newTotal} nieuw` : op.newTotal ? `${op.newTotal} nieuw` : op.learned ? 'niets aan de beurt' : 'geen woorden in je selectie';
+  const wp = wtPlan();
+  const wtStatus = wp.dueTotal ? `<b>${wp.dueTotal}</b> aan de beurt · ${wp.newTotal} nieuw` : wp.newTotal ? `${wp.newTotal} nieuw` : wp.learned ? 'niets aan de beurt' : 'geen werkwoorden';
+  const zp = znPlan(sel);
+  const znStatus = zp.dueTotal ? `<b>${zp.dueTotal}</b> aan de beurt · ${zp.newTotal} nieuw` : zp.newTotal ? `${zp.newTotal} nieuw` : zp.learned ? 'niets aan de beurt' : 'te weinig woorden in je selectie';
+  return `<section class="card selbar"><div><small>Selectie</small><br><b>${esc(selLabel())}</b> · ${sel.length} woorden${verbsOn() ? ' + ' + S.verbs.length + ' werkwoorden' : ''}</div>
+      <button class="btn ghost small" data-act="nav" data-v="selectie">Wijzigen</button></section>
+    <section class="card"><ul class="list oef">
+      <li><div class="oeftxt" data-act="nav" data-v="flashhome"><b>Flashcards</b><small>${fcStatus}</small></div>
+        ${plan.cards.length ? '<button class="btn small" data-act="fc-start">Start</button>' : ''}</li>
+      <li><div class="oeftxt" data-act="nav" data-v="genushome"><b>Lidwoord en genus</b><small>${grStatus}</small></div>
+        ${gp.cards.length ? '<button class="btn small" data-act="gr-start">Start</button>' : ''}</li>
+      <li><div class="oeftxt" data-act="nav" data-v="meervoudhome"><b>Meervoud</b><small>${mrStatus}</small></div>
+        ${mp.cards.length ? '<button class="btn small" data-act="mr-start">Start</button>' : ''}</li>
+      <li><div class="oeftxt" data-act="nav" data-v="overeenhome"><b>Overeenstemming</b><small>${ovStatus}</small></div>
+        ${op.cards.length ? '<button class="btn small" data-act="ov-start">Start</button>' : ''}</li>
+      <li><div class="oeftxt" data-act="nav" data-v="werkwoordhome"><b>Werkwoordtabel</b><small>${wtStatus}</small></div>
+        ${wp.cards.length ? '<button class="btn small" data-act="wt-start">Start</button>' : ''}</li>
+      <li><div class="oeftxt" data-act="nav" data-v="spreekhome"><b>Spreekoefening</b><small>${znStatus}</small></div>
+        ${zp.cards.length ? '<button class="btn small" data-act="zn-start">Start</button>' : ''}</li></ul></section>
+    <section class="card dagstand">
+      <p class="hint">${(() => { const n = activityToday(S.activity, Date.now()); return n ? 'Vandaag geoefend: <b>' + plural(n, 'kaart', 'kaarten') + '</b>.' : 'Vandaag nog niet geoefend.'; })()}</p>
+      ${(() => { const bs = backupStatus(S.lastBackup, S.progress.size > 0 || S.words.length > 0, Date.now());
+        return bs.due ? `<p class="hint">${esc(bs.text)} Maak een back-up, want je woorden en voortgang staan alleen op dit toestel.</p><p><button class="btn ghost small" data-act="nav" data-v="beheer">Back-up maken</button></p>` : `<p class="hint">${esc(bs.text)}</p>`; })()}
+    </section>`;
+}
+
+function viewSelectie() {
+  const sel = selectWords(S.words, S.blocks, S.settings);
+  const perSoort = {};
+  sel.forEach(w => { perSoort[w.soort || 'onbekend'] = (perSoort[w.soort || 'onbekend'] || 0) + 1; });
+  const soorten = Array.from(new Set(S.words.map(w => w.soort || 'onbekend').concat(S.verbs.length ? ['werkwoord'] : []))).sort();
+  const opts = ['<option value="">alles (hele lijst)</option>'].concat(S.blocks.map((b, i) =>
+    `<option value="${i}" ${S.settings.block === i ? 'selected' : ''}>${esc(b.naam)} — ${b.count} woorden</option>`)).join('');
+  const chips = soorten.map(s => `<button class="chip ${S.settings.soorten.includes(s) ? 'on' : ''}" data-act="soort" data-v="${esc(s)}">${esc(s)}</button>`).join('');
+  const vtxt = verbsOn() ? ` en <b>${S.verbs.length}</b> werkwoorden` : '';
+  return `<p><button class="btn ghost small" data-act="nav" data-v="start">← Home</button></p>
+    <section class="card"><h2>Selectie</h2>
+    <p><b>${S.words.length}</b> woorden en <b>${S.verbs.length}</b> werkwoorden in je lijst.</p>
+    <label class="field">Oefen met alles t/m<select id="blk" data-act="blok">${opts}</select></label>
+    <p class="hint">Dit filter geldt voor alle oefeningen. De volgorde is de volgorde van je lijst; een les die opnieuw voorkomt, heet "ronde 2".</p>
+    <p class="hint">Soort woord (leeg = alles):</p><div class="chips">${chips}</div>
+    <p>In je selectie: <b>${sel.length}</b> woorden${vtxt}${Object.keys(perSoort).length ? ' (' + Object.entries(perSoort).sort((a, b) => b[1] - a[1]).map(([k, v]) => v + ' ' + k).join(', ') + ')' : ''}.</p>
+    <p class="hint">Werkwoorden hebben geen les. Ze doen mee als je geen soort kiest en "werkwoorden meenemen" aan staat bij de flashcards, of als je hier het soort "werkwoord" aanvinkt. Het les-filter geldt voor de woorden.</p></section>`;
+}
+
+function viewFlashHome() {
+  return `<p><button class="btn ghost small" data-act="nav" data-v="start">← Home</button></p>` + flashStartCard(selectWords(S.words, S.blocks, S.settings));
+}
+
+// Werkwoorden doen mee als je niets filtert en "meenemen" aan staat, of als je het soort "werkwoord" aanvinkt.
+function verbsOn() {
+  const so = S.settings.soorten;
+  return so.length ? so.includes('werkwoord') : !!S.settings.fc.verbs;
+}
+function fcPlan(sel) {
+  const fc = S.settings.fc;
+  return sessionPlan(buildCards(sel, S.verbs, Object.assign({}, fc, { verbs: verbsOn() })), S.progress, fc, Date.now());
+}
+
+function flashStartCard(sel) {
+  const fc = S.settings.fc, plan = fcPlan(sel);
+  const opt = (v, cur, t) => `<option value="${v}" ${String(cur) === String(v) ? 'selected' : ''}>${t}</option>`;
+  const boxes = levelTiles(plan.boxes);
+  let info, btn;
+  if (!plan.cards.length) { info = 'Er zijn geen kaarten in je selectie.'; btn = 'Start flashcards'; }
+  else if (plan.extra) { info = 'Niets is vandaag nog aan de beurt. Je kunt toch oefenen: dan komen de kaarten die het eerst terugkomen.'; btn = 'Toch oefenen (' + plan.cards.length + ' kaarten)'; }
+  else { info = `Volgende sessie: <b>${plan.cards.length}</b> kaarten (${plan.due} herhalen, ${plan.nieuw} nieuw).`; btn = 'Start flashcards'; }
+  return `<section class="card"><h2>Flashcards</h2>
+    <p><b>${plan.dueTotal}</b> aan de beurt · <b>${plan.newTotal}</b> nieuw beschikbaar · <b>${plan.learned}</b> al geoefend</p>
+    <p class="hint">Hoe goed ken je je kaarten?</p>
+    <div class="boxes">${boxes}</div>
+    <p>${info}</p>
+    <p><button class="btn" data-act="fc-start" ${plan.cards.length ? '' : 'disabled'}>${btn}</button></p>
+    <details><summary>Instellingen flashcards</summary>
+      <label class="field">Kaarten per sessie<select id="fc-size">${[10, 20, 30, 50].map(n => opt(n, fc.size, n)).join('')}</select></label>
+      <label class="field">Nieuwe kaarten per sessie (maximum)<select id="fc-new">${[5, 10, 15, 20].map(n => opt(n, fc.newMax, n)).join('')}</select></label>
+      <label class="field">Nieuwe kaarten kiezen<select id="fc-order">${[['random', 'willekeurig uit je selectie'], ['list', 'in volgorde van je lijst']].map(([v, t]) => opt(v, fc.order || 'random', t)).join('')}</select></label>
+      <label class="field">Richting<select id="fc-dir">${opt('both', fc.dir, 'Beide (eerst Spaans → Nederlands, daarna omgekeerd)')}${opt('a', fc.dir, 'Alleen Spaans → Nederlands')}${opt('b', fc.dir, 'Alleen Nederlands → Spaans')}</select></label>
+      <label class="field">Werkwoorden meenemen<select id="fc-verbs">${opt('1', fc.verbs ? 1 : 0, 'Ja')}${opt('0', fc.verbs ? 1 : 0, 'Nee')}</select></label>
+      <p class="hint">${levelHint}</p>
+    </details></section>`;
+}
+
+const levelTiles = boxes => boxes.map((n, i) => `<div><b>${n}</b>${LEVELS[i][0]}<small>${LEVELS[i][1]}</small></div>`).join('');
+const levelHint = 'Elke kaart heeft een niveau: Zwak, Leren, Redelijk, Goed of Sterk. Tik je ✓ Juist, dan gaat de kaart een niveau omhoog en duurt het langer voor je hem terugziet: Zwak zo weer, Leren morgen, Redelijk na 3 dagen, Goed na 1 week, Sterk na 3 weken. Tik je ✗ Fout, dan gaat de kaart terug naar Zwak. Een foute kaart komt in dezelfde sessie nog een keer terug.';
+// Teller "vandaag geoefend": elke beantwoorde kaart telt één keer (een herhaling na een fout niet opnieuw).
+async function noteActivity() {
+  S.activity = bumpActivity(S.activity, Date.now());
+  try { await store.put('meta', { key: 'activity', value: S.activity }); } catch (_) {}
+}
+async function saveProgress(update) {
+  if (!update) return;
+  S.progress.set(update.key, update);
+  try { await store.put('progress', update); }
+  catch (e) { setMsg('err', 'Je voortgang opslaan is niet gelukt: ' + (e && e.message || e)); }
+  await noteActivity();
+}
+
+// ---------- Flashcards: sessie ----------
+function speak(text) {
+  if (!('speechSynthesis' in window)) return;
+  try {
+    speechSynthesis.cancel();
+    const lang = S.settings.lang || 'es-ES';
+    const u = new SpeechSynthesisUtterance(text); u.lang = lang;
+    const v = speechSynthesis.getVoices().find(x => x.lang.replace('_', '-').toLowerCase() === lang.toLowerCase());
+    if (v) u.voice = v;
+    speechSynthesis.speak(u);
+  } catch (_) {}
+}
+const speakBtn = text => ('speechSynthesis' in window) ? `<button class="sp" data-act="fc-speak" data-t="${esc(text)}" aria-label="Uitspraak beluisteren">🔊</button>` : '';
+
+function startFlash() {
+  const sel = selectWords(S.words, S.blocks, S.settings);
+  const plan = fcPlan(sel);
+  if (!plan.cards.length) { setMsg('warn', 'Er zijn geen kaarten om te oefenen.'); S.view = 'flashhome'; S.fc = null; render(); return; }
+  S.msg = null; S.fc = { sess: newSession(plan.cards), revealed: false, extra: plan.extra }; S.view = 'flash'; render();
+}
+
+function viewFlash() {
+  const F = S.fc;
+  if (!F) { S.view = 'flashhome'; return viewFlashHome(); }
+  const sess = F.sess;
+  if (!sess.queue.length) return viewFlashEnd();
+  const card = sess.queue[0], face = cardFace(card);
+  const p = S.progress.get(card.key);
+  const tag = [face.soort, card.retry ? 'herhaling' : (p ? 'niveau ' + LEVELS[p.box - 1][0].toLowerCase() : 'nieuw')].filter(Boolean).join(' · ');
+  const front = card.dir === 'a' ? face.es : face.nl, back = card.dir === 'a' ? face.nl : face.es;
+  const frontSp = card.dir === 'a', pos = Math.min(sess.answered + 1, sess.total);
+  const pct = Math.round(sess.answered / sess.total * 100);
+  let h = `<div class="fcbar"><span>${card.retry ? 'Herhaling' : 'Kaart ' + pos + ' van ' + sess.total}</span><button class="btn ghost small" data-act="fc-stop">Stoppen</button></div>
+    <div class="prog"><i style="width:${pct}%"></i></div>
+    <section class="card fcard" ${F.revealed ? '' : 'data-act="fc-reveal"'}>
+      <div class="tag">${esc(tag)}</div>
+      <div class="big">${esc(front)} ${frontSp ? speakBtn(face.es) : ''}</div>`;
+  if (F.revealed) {
+    h += `<hr><div class="ans">${esc(back)} ${frontSp ? '' : speakBtn(face.es)}</div>`;
+    if (face.meervoud) h += `<div class="hint">meervoud: ${esc(face.meervoud)}</div>`;
+    if (face.meta) h += `<div class="hint">${esc(face.meta)}</div>`;
+    if (face.forms.length) {
+      const f = face.forms, cell = i => f[i] ? `<td><small>${esc(f[i][0])}</small></td><td>${esc(f[i][1])}</td>` : '<td></td><td></td>';
+      h += `<table class="formtab">${[0, 1, 2].map(r => `<tr>${cell(r)}${cell(r + 3)}</tr>`).join('')}</table>`;
+    }
+    if (face.opmerking) h += `<div class="hint">${esc(face.opmerking)}</div>`;
+  } else {
+    h += `<div class="hint">Denk aan het antwoord en tik dan op de kaart.</div>`;
+  }
+  h += `</section>`;
+  h += F.revealed
+    ? `<div class="btnrow"><button class="btn fout" data-act="fc-fout">✗ Fout</button><button class="btn juist" data-act="fc-juist">✓ Juist</button></div>`
+    : `<div class="btnrow"><button class="btn" data-act="fc-reveal">Toon antwoord</button></div>`;
+  return h;
+}
+
+function viewFlashEnd() {
+  const s = S.fc.sess;
+  const pct = s.answered ? Math.round(s.juist / s.answered * 100) : 0;
+  const missed = s.missed.map(c => { const f = cardFace(c); return `<tr><td><b>${esc(f.es)}</b></td><td>${esc(f.nl)}</td></tr>`; }).join('');
+  const plan = fcPlan(selectWords(S.words, S.blocks, S.settings));
+  return `<section class="card"><h2>Sessie klaar</h2>
+    <p>Je beantwoordde <b>${s.answered}</b> kaarten: <b>${s.juist}</b> juist en <b>${s.fout}</b> fout (${pct}%).</p>
+    ${missed ? `<h3>Om te onthouden</h3><div class="tablewrap"><table><thead><tr><th>Spaans</th><th>Nederlands</th></tr></thead><tbody>${missed}</tbody></table></div>` : '<p>Geen enkele fout. Mooi werk!</p>'}
+    <p class="hint">Je kaarten nu: ${plan.boxes.map((n, i) => LEVELS[i][0].toLowerCase() + ' ' + n).join(' · ')}.</p>
+    <p><button class="btn" data-act="fc-start" ${plan.cards.length ? '' : 'disabled'}>${plan.extra ? 'Toch nog oefenen' : 'Nog een sessie'}</button> <button class="btn ghost" data-act="fc-stop">Klaar</button></p></section>`;
+}
+
+async function fcAnswer(correct) {
+  const F = S.fc; if (!F || !F.revealed || !F.sess.queue.length) return;
+  F.revealed = false;
+  const r = answerSession(F.sess, S.progress, correct, Date.now());
+  if (r.update) {
+    S.progress.set(r.update.key, r.update);
+    try { await store.put('progress', r.update); }
+    catch (e) { setMsg('err', 'Je voortgang opslaan is niet gelukt: ' + (e && e.message || e)); }
+    await noteActivity();
+  }
+  render();
+}
+
+// ---------- Oefening: lidwoord en genus ----------
+function grPlan(sel) {
+  return sessionPlan(genusCards(sel), S.progress, Object.assign({}, S.settings.gr, { dir: 'a', verbs: false }), Date.now());
+}
+
+function viewGenusHome() {
+  const sel = selectWords(S.words, S.blocks, S.settings), plan = grPlan(sel), gr = S.settings.gr;
+  const opt = (v, cur, t) => `<option value="${v}" ${String(cur) === String(v) ? 'selected' : ''}>${t}</option>`;
+  let info, btn = 'Start oefening';
+  if (!plan.cards.length) info = 'Er zijn geen zelfstandige naamwoorden in je selectie. Pas je selectie aan op de Home-pagina.';
+  else if (plan.extra) { info = 'Niets is vandaag nog aan de beurt. Je kunt toch oefenen: dan komen de woorden die het eerst terugkomen.'; btn = 'Toch oefenen (' + plan.cards.length + ' woorden)'; }
+  else info = `Volgende sessie: <b>${plan.cards.length}</b> woorden (${plan.due} herhalen, ${plan.nieuw} nieuw).`;
+  return `<p><button class="btn ghost small" data-act="nav" data-v="start">← Home</button></p>
+    <section class="card"><h2>Lidwoord en genus</h2>
+    <p class="hint">Je ziet een Spaans zelfstandig naamwoord zonder lidwoord. Kies <b>el</b> (mannelijk) of <b>la</b> (vrouwelijk). Woorden met twee vormen (el/la) en woorden die alleen in het meervoud bestaan komen hier niet in.</p>
+    <p><b>${plan.dueTotal}</b> aan de beurt · <b>${plan.newTotal}</b> nieuw beschikbaar · <b>${plan.learned}</b> al geoefend</p>
+    <p class="hint">Hoe goed ken je je woorden?</p>
+    <div class="boxes">${levelTiles(plan.boxes)}</div>
+    <p>${info}</p>
+    <p><button class="btn" data-act="gr-start" ${plan.cards.length ? '' : 'disabled'}>${btn}</button></p>
+    <details><summary>Instellingen oefening</summary>
+      <label class="field">Woorden per sessie<select id="gr-size">${[10, 20, 30, 50].map(n => opt(n, gr.size, n)).join('')}</select></label>
+      <label class="field">Nieuwe woorden per sessie (maximum)<select id="gr-new">${[5, 10, 15, 20].map(n => opt(n, gr.newMax, n)).join('')}</select></label>
+      <label class="field">Nieuwe kaarten kiezen<select id="gr-order">${[['random', 'willekeurig uit je selectie'], ['list', 'in volgorde van je lijst']].map(([v, t]) => opt(v, gr.order || 'random', t)).join('')}</select></label>
+      <p class="hint">${levelHint}</p>
+    </details></section>`;
+}
+
+function startGenus() {
+  const plan = grPlan(selectWords(S.words, S.blocks, S.settings));
+  if (!plan.cards.length) { setMsg('warn', 'Er zijn geen woorden om te oefenen.'); S.view = 'genushome'; S.gr = null; render(); return; }
+  S.msg = null; S.gr = { sess: newSession(plan.cards), feedback: null }; S.view = 'genus'; render();
+}
+
+function viewGenus() {
+  const G = S.gr;
+  if (!G) { S.view = 'genushome'; return viewGenusHome(); }
+  const sess = G.sess;
+  if (G.feedback) return genusFeedback();
+  if (!sess.queue.length) return genusEnd();
+  const card = sess.queue[0], w = card.item, p = S.progress.get(card.key);
+  const tag = card.retry ? 'herhaling' : (p ? 'niveau ' + LEVELS[p.box - 1][0].toLowerCase() : 'nieuw');
+  return genusBar(card.retry ? 'Herhaling' : 'Woord ' + Math.min(sess.answered + 1, sess.total) + ' van ' + sess.total) + `
+    <section class="card fcard"><div class="tag">${esc(tag)}</div>
+      <div class="big">${esc(w.spaans)}</div>
+      <div class="hint">${esc(w.nederlands)}</div>
+      <div class="hint">el of la?</div></section>
+    <div class="btnrow"><button class="btn pick" data-act="gr-pick" data-v="el">el</button><button class="btn pick" data-act="gr-pick" data-v="la">la</button></div>`;
+}
+
+function genusBar(label) {
+  const s = S.gr.sess, pct = Math.round(s.answered / s.total * 100);
+  return `<div class="fcbar"><span>${label}</span><button class="btn ghost small" data-act="gr-stop">Stoppen</button></div><div class="prog"><i style="width:${pct}%"></i></div>`;
+}
+
+function genusFeedback() {
+  const f = S.gr.feedback, w = f.card.item, full = w.lidwoord + ' ' + w.spaans;
+  const tip = genusTip(w), note = leerNotitie(w.opmerking);
+  const genus = w.genus === 'm' ? 'mannelijk' : w.genus === 'v' ? 'vrouwelijk' : '';
+  const verdict = f.correct ? '✓ Juist' : `✗ Het is <b>${esc(w.lidwoord)}</b>, niet ${esc(f.choice)}`;
+  let h = genusBar(f.card.retry ? 'Herhaling' : 'Woord ' + Math.min(S.gr.sess.answered, S.gr.sess.total) + ' van ' + S.gr.sess.total) + `
+    <section class="card fcard ${f.correct ? 'good' : 'bad'}"><div class="verdict ${f.correct ? 'good' : 'bad'}">${verdict}</div>
+      <div class="big">${esc(full)} ${speakBtn(full)}</div>
+      <div class="hint">${esc(w.nederlands)}${genus ? ' · ' + genus : ''}${w.meervoud ? ' · meervoud: ' + esc(w.meervoud) : ''}</div>`;
+  if (tip) h += `<div class="hint"><b>${tip.fits ? 'Regel' : 'Uitzondering'}:</b> ${esc(tip.rule)}${tip.fits ? '.' : ', maar dit woord is ' + esc(w.lidwoord) + '.'}</div>`;
+  if (note) h += `<div class="hint">${esc(note)}</div>`;
+  return h + `</section><div class="btnrow"><button class="btn" data-act="gr-next">Volgende</button></div>`;
+}
+
+function genusEnd() {
+  const s = S.gr.sess, pct = s.answered ? Math.round(s.juist / s.answered * 100) : 0;
+  const missed = s.missed.map(c => `<tr><td><b>${esc(c.item.lidwoord + ' ' + c.item.spaans)}</b></td><td>${esc(c.item.nederlands)}</td></tr>`).join('');
+  const plan = grPlan(selectWords(S.words, S.blocks, S.settings));
+  return `<section class="card"><h2>Sessie klaar</h2>
+    <p>Je beantwoordde <b>${s.answered}</b> woorden: <b>${s.juist}</b> juist en <b>${s.fout}</b> fout (${pct}%).</p>
+    ${missed ? `<h3>Om te onthouden</h3><div class="tablewrap"><table><thead><tr><th>Spaans</th><th>Nederlands</th></tr></thead><tbody>${missed}</tbody></table></div>` : '<p>Geen enkele fout. Mooi werk!</p>'}
+    <p class="hint">Je woorden nu: ${plan.boxes.map((n, i) => LEVELS[i][0].toLowerCase() + ' ' + n).join(' · ')}.</p>
+    <p><button class="btn" data-act="gr-start" ${plan.cards.length ? '' : 'disabled'}>${plan.extra ? 'Toch nog oefenen' : 'Nog een sessie'}</button> <button class="btn ghost" data-act="gr-stop">Klaar</button></p></section>`;
+}
+
+async function grPick(choice) {
+  const G = S.gr; if (!G || G.feedback || !G.sess.queue.length) return;
+  const card = G.sess.queue[0], correct = choice === card.item.lidwoord;
+  const r = answerSession(G.sess, S.progress, correct, Date.now());
+  G.feedback = { card, choice, correct };
+  await saveProgress(r.update);
+  render();
+}
+
+// ---------- Oefening: meervoud ----------
+const ACCENTS = ['á', 'é', 'í', 'ó', 'ú', 'ñ', 'ü'];
+const recSupported = () => !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+
+function mrPlan(sel) {
+  return sessionPlan(pluralCards(sel), S.progress, Object.assign({}, S.settings.mr, { dir: 'a', verbs: false }), Date.now());
+}
+
+function viewMeervoudHome() {
+  const sel = selectWords(S.words, S.blocks, S.settings), plan = mrPlan(sel), mr = S.settings.mr;
+  const opt = (v, cur, t) => `<option value="${v}" ${String(cur) === String(v) ? 'selected' : ''}>${t}</option>`;
+  let info, btn = 'Start oefening';
+  if (!plan.cards.length) info = 'Er zijn geen zelfstandige naamwoorden met een meervoud in je selectie. Pas je selectie aan op de Home-pagina.';
+  else if (plan.extra) { info = 'Niets is vandaag nog aan de beurt. Je kunt toch oefenen: dan komen de woorden die het eerst terugkomen.'; btn = 'Toch oefenen (' + plan.cards.length + ' woorden)'; }
+  else info = `Volgende sessie: <b>${plan.cards.length}</b> woorden (${plan.due} herhalen, ${plan.nieuw} nieuw).`;
+  return `<p><button class="btn ghost small" data-act="nav" data-v="start">← Home</button></p>
+    <section class="card"><h2>Meervoud</h2>
+    <p class="hint">Je ziet een Spaans zelfstandig naamwoord in het enkelvoud, met lidwoord en vertaling. Typ het meervoud of spreek het uit${recSupported() ? ' (tik op 🎤; werkt alleen online)' : ''}. Getypt moet het accent kloppen, want <i>examen</i> wordt <i>exámenes</i>. Bijvoeglijke naamwoorden (mucho, muchos) komen bij de oefening overeenstemming.</p>
+    <p><b>${plan.dueTotal}</b> aan de beurt · <b>${plan.newTotal}</b> nieuw beschikbaar · <b>${plan.learned}</b> al geoefend</p>
+    <p class="hint">Hoe goed ken je je woorden?</p>
+    <div class="boxes">${levelTiles(plan.boxes)}</div>
+    <p>${info}</p>
+    <p><button class="btn" data-act="mr-start" ${plan.cards.length ? '' : 'disabled'}>${btn}</button></p>
+    <details><summary>Instellingen oefening</summary>
+      <label class="field">Woorden per sessie<select id="mr-size">${[10, 20, 30, 50].map(n => opt(n, mr.size, n)).join('')}</select></label>
+      <label class="field">Nieuwe woorden per sessie (maximum)<select id="mr-new">${[5, 10, 15, 20].map(n => opt(n, mr.newMax, n)).join('')}</select></label>
+      <label class="field">Nieuwe kaarten kiezen<select id="mr-order">${[['random', 'willekeurig uit je selectie'], ['list', 'in volgorde van je lijst']].map(([v, t]) => opt(v, mr.order || 'random', t)).join('')}</select></label>
+      <p class="hint">${levelHint}</p>
+    </details></section>`;
+}
+
+function startMeervoud() {
+  const plan = mrPlan(selectWords(S.words, S.blocks, S.settings));
+  if (!plan.cards.length) { setMsg('warn', 'Er zijn geen woorden om te oefenen.'); S.view = 'meervoudhome'; S.mr = null; render(); return; }
+  S.msg = null; S.mr = { sess: newSession(plan.cards), feedback: null }; S.view = 'meervoud'; render();
+}
+
+function mrBar(label) {
+  const s = S.mr.sess, pct = Math.round(s.answered / s.total * 100);
+  return `<div class="fcbar"><span>${label}</span><button class="btn ghost small" data-act="mr-stop">Stoppen</button></div><div class="prog"><i style="width:${pct}%"></i></div>`;
+}
+
+function viewMeervoud() {
+  const M = S.mr;
+  if (!M) { S.view = 'meervoudhome'; return viewMeervoudHome(); }
+  const sess = M.sess;
+  if (M.feedback) return mrFeedback();
+  if (!sess.queue.length) return mrEnd();
+  const card = sess.queue[0], w = card.item, p = S.progress.get(card.key);
+  const tag = card.retry ? 'herhaling' : (p ? 'niveau ' + LEVELS[p.box - 1][0].toLowerCase() : 'nieuw');
+  const mic = recSupported() ? `<button class="btn ghost mic" data-act="mr-mic" aria-label="Meervoud uitspreken">🎤 Spreek</button>` : '';
+  return mrBar(card.retry ? 'Herhaling' : 'Woord ' + Math.min(sess.answered + 1, sess.total) + ' van ' + sess.total) + `
+    <section class="card fcard"><div class="tag">${esc(tag)}</div>
+      <div class="big">${esc(w.lidwoord + ' ' + w.spaans)}</div>
+      <div class="hint">${esc(w.nederlands)}</div>
+      <div class="hint">Wat is het meervoud?</div></section>
+    <section class="card mrform">
+      <input id="mr-input" type="text" inputmode="text" lang="es" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="Typ het meervoud">
+      <div class="accrow">${ACCENTS.map(x => `<button class="acc" type="button" data-act="mr-acc" data-v="${x}" aria-label="letter ${x}">${x}</button>`).join('')}</div>
+      <div class="btnrow"><button class="btn" data-act="mr-check">Controleer</button>${mic}</div>
+      <p class="hint" id="mr-status"></p>
+      <p><button class="btn ghost small" data-act="mr-skip">Ik weet het niet</button></p></section>`;
+}
+
+function mrFeedback() {
+  const f = S.mr.feedback, w = f.card.item, sing = w.lidwoord + ' ' + w.spaans;
+  const art = w.lidwoord === 'el' ? 'los' : w.lidwoord === 'la' ? 'las' : 'los/las';
+  const full = art + ' ' + w.meervoud;
+  const tip = pluralTip(w), note = leerNotitie(w.opmerking);
+  const verdict = f.result === 'juist' ? '✓ Juist' : f.result === 'accent' ? '✗ Bijna: let op het accent' : f.result === 'skip' ? '✗ Het meervoud is' : '✗ Niet juist';
+  let h = mrBar(f.card.retry ? 'Herhaling' : 'Woord ' + Math.min(S.mr.sess.answered, S.mr.sess.total) + ' van ' + S.mr.sess.total) + `
+    <section class="card fcard ${f.result === 'juist' ? 'good' : 'bad'}"><div class="verdict ${f.result === 'juist' ? 'good' : 'bad'}">${verdict}</div>
+      <div class="big">${esc(full)} ${speakBtn(w.meervoud)}</div>
+      <div class="hint">${esc(sing)} · ${esc(w.nederlands)}</div>`;
+  if (f.given && f.result !== 'juist' && f.result !== 'skip') h += `<div class="hint">Jouw antwoord: <b>${esc(f.given)}</b>${f.spoken ? ' (gesproken)' : ''}</div>`;
+  if (f.given && f.result === 'juist' && f.spoken) h += `<div class="hint">Je zei: <b>${esc(f.given)}</b>. Gesproken antwoorden tellen zonder accent.</div>`;
+  if (tip) h += `<div class="hint"><b>Regel:</b> ${esc(tip)}</div>`;
+  if (note) h += `<div class="hint">${esc(note)}</div>`;
+  return h + `</section><div class="btnrow"><button class="btn" data-act="mr-next">Volgende</button></div>`;
+}
+
+function mrEnd() {
+  const s = S.mr.sess, pct = s.answered ? Math.round(s.juist / s.answered * 100) : 0;
+  const missed = s.missed.map(c => `<tr><td><b>${esc(c.item.lidwoord + ' ' + c.item.spaans)}</b></td><td>${esc(c.item.meervoud)}</td></tr>`).join('');
+  const plan = mrPlan(selectWords(S.words, S.blocks, S.settings));
+  return `<section class="card"><h2>Sessie klaar</h2>
+    <p>Je beantwoordde <b>${s.answered}</b> woorden: <b>${s.juist}</b> juist en <b>${s.fout}</b> fout (${pct}%).</p>
+    ${missed ? `<h3>Om te onthouden</h3><div class="tablewrap"><table><thead><tr><th>Enkelvoud</th><th>Meervoud</th></tr></thead><tbody>${missed}</tbody></table></div>` : '<p>Geen enkele fout. Mooi werk!</p>'}
+    <p class="hint">Je woorden nu: ${plan.boxes.map((n, i) => LEVELS[i][0].toLowerCase() + ' ' + n).join(' · ')}.</p>
+    <p><button class="btn" data-act="mr-start" ${plan.cards.length ? '' : 'disabled'}>${plan.extra ? 'Toch nog oefenen' : 'Nog een sessie'}</button> <button class="btn ghost" data-act="mr-stop">Klaar</button></p></section>`;
+}
+
+async function mrSubmit(given, spoken, skip) {
+  const M = S.mr; if (!M || M.feedback || !M.sess.queue.length) return;
+  const card = M.sess.queue[0];
+  const chk = skip ? { result: 'skip' } : checkPlural(card.item.meervoud, given, spoken);
+  if (chk.result === 'leeg') { const st = $('#mr-status'); if (st) st.textContent = 'Typ eerst een antwoord, of tik op "Ik weet het niet".'; return; }
+  const correct = chk.result === 'juist';
+  const r = answerSession(M.sess, S.progress, correct, Date.now());
+  M.feedback = { card, given: given || '', spoken: !!spoken, result: chk.result };
+  await saveProgress(r.update);
+  render();
+}
+const mrCheck = () => { const i = $('#mr-input'); return mrSubmit(i ? i.value : '', false, false); };
+
+// Gesproken antwoord: stuurt het beste resultaat door naar submit(tekst). Werkt alleen online.
+function listenAnswer(expected, isRight, submit) {
+  const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const st = $('#mr-status'), btn = document.querySelector('.mic');
+  if (!Rec) { if (st) st.textContent = 'Spraakherkenning werkt niet in deze browser. Typ het antwoord.'; return; }
+  if (!navigator.onLine) { if (st) st.textContent = 'Spreken werkt alleen online. Typ het antwoord.'; return; }
+  const rec = new Rec(); rec.lang = S.settings.lang || 'es-ES'; rec.interimResults = false; rec.maxAlternatives = 5; rec.continuous = false;
+  let got = false;
+  if (btn) { btn.disabled = true; btn.textContent = '🎤 Ik luister…'; }
+  const reset = () => { const b = document.querySelector('.mic'); if (b) { b.disabled = false; b.textContent = '🎤 Spreek'; } };
+  rec.onresult = e => {
+    got = true;
+    const alts = Array.from(e.results[0]).map(a => a.transcript.trim()).filter(Boolean);
+    const hit = alts.find(t => isRight(expected, t));
+    reset(); submit(hit || alts[0] || '');
+  };
+  rec.onerror = e => {
+    const msg = { 'not-allowed': 'De microfoon is niet toegestaan. Geef toestemming in je browser, of typ het antwoord.', 'service-not-allowed': 'De microfoon is niet toegestaan. Typ het antwoord.',
+      'no-speech': 'Ik hoorde niets. Probeer opnieuw of typ het antwoord.', 'network': 'Spreken werkt alleen online. Typ het antwoord.', 'audio-capture': 'Geen microfoon gevonden. Typ het antwoord.' }[e.error] || 'Spreken lukte niet. Typ het antwoord.';
+    const s2 = $('#mr-status'); if (s2) s2.textContent = msg;
+  };
+  rec.onend = () => { if (!got) reset(); };
+  try { rec.start(); } catch (_) { reset(); if (st) st.textContent = 'Spreken lukte niet. Typ het antwoord.'; }
+}
+function mrListen() {
+  const M = S.mr; if (!M || M.feedback) return;
+  listenAnswer(M.sess.queue[0].item.meervoud, (e, t) => checkPlural(e, t, true).result === 'juist', t => mrSubmit(t, true, false));
+}
+
+// ---------- Oefening: overeenstemming ----------
+function ovPlan(sel) {
+  const ids = new Set(sel.map(w => w.id));
+  const fams = adjectiveFamilies(S.words).filter(f => ids.has(f.id));
+  return sessionPlan(ovCards(fams), S.progress, Object.assign({}, S.settings.ov, { dir: 'a', verbs: false }), Date.now());
+}
+// Zelfstandige naamwoorden voor de vragen: bij voorkeur uit je selectie, anders uit de hele lijst.
+function ovNouns() {
+  const sel = agreementNouns(selectWords(S.words, S.blocks, S.settings));
+  return sel.length >= 8 ? sel : agreementNouns(S.words);
+}
+
+function viewOvereenHome() {
+  const sel = selectWords(S.words, S.blocks, S.settings), plan = ovPlan(sel), ov = S.settings.ov;
+  const opt = (v, cur, t) => `<option value="${v}" ${String(cur) === String(v) ? 'selected' : ''}>${t}</option>`;
+  let info, btn = 'Start oefening';
+  if (!plan.cards.length) info = 'Er zijn geen bijvoeglijke naamwoorden in je selectie. Pas je selectie aan op de Home-pagina.';
+  else if (plan.extra) { info = 'Niets is vandaag nog aan de beurt. Je kunt toch oefenen: dan komen de woorden die het eerst terugkomen.'; btn = 'Toch oefenen (' + plan.cards.length + ' woorden)'; }
+  else info = `Volgende sessie: <b>${plan.cards.length}</b> woorden (${plan.due} herhalen, ${plan.nieuw} nieuw).`;
+  return `<p><button class="btn ghost small" data-act="nav" data-v="start">← Home</button></p>
+    <section class="card"><h2>Overeenstemming</h2>
+    <p class="hint">Een bijvoeglijk naamwoord past zich aan het zelfstandig naamwoord aan: <i>mucho, mucha, muchos, muchas</i>. Je ziet een zelfstandig naamwoord uit je lijst (enkelvoud of meervoud) en kiest uit vier vormen de juiste. Het zelfstandig naamwoord wisselt, het bijvoeglijk naamwoord is wat je oefent.</p>
+    <p><b>${plan.dueTotal}</b> aan de beurt · <b>${plan.newTotal}</b> nieuw beschikbaar · <b>${plan.learned}</b> al geoefend</p>
+    <p class="hint">Hoe goed ken je je woorden?</p>
+    <div class="boxes">${levelTiles(plan.boxes)}</div>
+    <p>${info}</p>
+    <p><button class="btn" data-act="ov-start" ${plan.cards.length ? '' : 'disabled'}>${btn}</button></p>
+    <details><summary>Instellingen oefening</summary>
+      <label class="field">Woorden per sessie<select id="ov-size">${[10, 20, 30, 50].map(n => opt(n, ov.size, n)).join('')}</select></label>
+      <label class="field">Nieuwe woorden per sessie (maximum)<select id="ov-new">${[5, 10, 15, 20].map(n => opt(n, ov.newMax, n)).join('')}</select></label>
+      <label class="field">Nieuwe kaarten kiezen<select id="ov-order">${[['random', 'willekeurig uit je selectie'], ['list', 'in volgorde van je lijst']].map(([v, t]) => opt(v, ov.order || 'random', t)).join('')}</select></label>
+      <p class="hint">${levelHint}</p>
+    </details></section>`;
+}
+
+function startOvereen() {
+  const plan = ovPlan(selectWords(S.words, S.blocks, S.settings)), nouns = ovNouns();
+  if (!plan.cards.length || !nouns.length) { setMsg('warn', 'Er zijn geen woorden om te oefenen.'); S.view = 'overeenhome'; S.ov = null; render(); return; }
+  S.msg = null; S.ov = { sess: newSession(plan.cards), feedback: null, nouns }; S.view = 'overeen'; render();
+}
+
+function ovBar(label) {
+  const s = S.ov.sess, pct = Math.round(s.answered / s.total * 100);
+  return `<div class="fcbar"><span>${label}</span><button class="btn ghost small" data-act="ov-stop">Stoppen</button></div><div class="prog"><i style="width:${pct}%"></i></div>`;
+}
+
+function viewOvereen() {
+  const O = S.ov;
+  if (!O) { S.view = 'overeenhome'; return viewOvereenHome(); }
+  const sess = O.sess;
+  if (O.feedback) return ovFeedback();
+  if (!sess.queue.length) return ovEnd();
+  const card = sess.queue[0], fam = card.item, p = S.progress.get(card.key);
+  if (!card.q) card.q = agreementQuestion(fam, O.nouns, Math.random, card.avoid);
+  const q = card.q;
+  const tag = card.retry ? 'herhaling' : (p ? 'niveau ' + LEVELS[p.box - 1][0].toLowerCase() : 'nieuw');
+  return ovBar(card.retry ? 'Herhaling' : 'Woord ' + Math.min(sess.answered + 1, sess.total) + ' van ' + sess.total) + `
+    <section class="card fcard"><div class="tag">${esc(tag)}</div>
+      <div class="big">${esc(q.pre)}<span class="blank">____</span>${esc(q.post)}</div>
+      <div class="hint">${esc(q.noun.nederlands)} · <b>${esc(fam.lemma)}</b> = ${esc(fam.nl)}</div>
+      <div class="hint">Welke vorm van <b>${esc(fam.lemma)}</b> past hier?</div></section>
+    <div class="optgrid">${q.options.map((o, i) => `<button class="btn pick" data-act="ov-pick" data-v="${esc(o)}"><small>${i + 1}</small> ${esc(o)}</button>`).join('')}</div>`;
+}
+
+function ovFeedback() {
+  const f = S.ov.feedback, q = f.card.q, fam = f.card.item, fm = fam.forms;
+  const verdict = f.correct ? '✓ Juist' : `✗ Het is <b>${esc(q.answer)}</b>, niet ${esc(f.choice)}`;
+  const gTxt = q.gender === 'm' ? 'mannelijk' : 'vrouwelijk', nTxt = q.plural ? 'meervoud' : 'enkelvoud';
+  let h = ovBar(f.card.retry ? 'Herhaling' : 'Woord ' + Math.min(S.ov.sess.answered, S.ov.sess.total) + ' van ' + S.ov.sess.total) + `
+    <section class="card fcard ${f.correct ? 'good' : 'bad'}"><div class="verdict ${f.correct ? 'good' : 'bad'}">${verdict}</div>
+      <div class="big">${esc(q.full)} ${speakBtn(q.full)}</div>
+      <div class="hint">${esc(q.noun.nederlands)} · ${esc(fam.nl)}</div>
+      <div class="hint"><b>Regel:</b> ${esc(q.noun.spaans)} is ${gTxt} en staat hier in het ${nTxt}. ${fam.invariable ? esc(fam.lemma) + ' heeft voor mannelijk en vrouwelijk dezelfde vorm; alleen enkelvoud of meervoud telt.' : 'Je neemt dus de vorm voor ' + gTxt + ' ' + nTxt + ': <b>' + esc(q.answer) + '</b>.'}</div>`;
+  h += fam.invariable
+    ? `<table class="formtab"><tr><td><small>enkelvoud</small></td><td>${esc(fm.s)}</td><td><small>meervoud</small></td><td>${esc(fm.p)}</td></tr></table>`
+    : `<table class="formtab"><tr><td></td><td><small>enkelvoud</small></td><td><small>meervoud</small></td></tr>
+       <tr><td><small>mannelijk</small></td><td>${esc(fm.ms)}</td><td>${esc(fm.mp)}</td></tr>
+       <tr><td><small>vrouwelijk</small></td><td>${esc(fm.fs)}</td><td>${esc(fm.fp)}</td></tr></table>`;
+  return h + `</section><div class="btnrow"><button class="btn" data-act="ov-next">Volgende</button></div>`;
+}
+
+function ovEnd() {
+  const s = S.ov.sess, pct = s.answered ? Math.round(s.juist / s.answered * 100) : 0;
+  const missed = s.missed.map(c => { const f = c.item.forms; return `<tr><td><b>${esc(c.item.lemma)}</b></td><td>${esc(c.item.invariable ? f.s + ' / ' + f.p : f.ms + ', ' + f.fs + ', ' + f.mp + ', ' + f.fp)}</td></tr>`; }).join('');
+  const plan = ovPlan(selectWords(S.words, S.blocks, S.settings));
+  return `<section class="card"><h2>Sessie klaar</h2>
+    <p>Je beantwoordde <b>${s.answered}</b> woorden: <b>${s.juist}</b> juist en <b>${s.fout}</b> fout (${pct}%).</p>
+    ${missed ? `<h3>Om te onthouden</h3><div class="tablewrap"><table><thead><tr><th>Woord</th><th>Vormen</th></tr></thead><tbody>${missed}</tbody></table></div>` : '<p>Geen enkele fout. Mooi werk!</p>'}
+    <p class="hint">Je woorden nu: ${plan.boxes.map((n, i) => LEVELS[i][0].toLowerCase() + ' ' + n).join(' · ')}.</p>
+    <p><button class="btn" data-act="ov-start" ${plan.cards.length ? '' : 'disabled'}>${plan.extra ? 'Toch nog oefenen' : 'Nog een sessie'}</button> <button class="btn ghost" data-act="ov-stop">Klaar</button></p></section>`;
+}
+
+async function ovPick(choice) {
+  const O = S.ov; if (!O || O.feedback || !O.sess.queue.length) return;
+  const card = O.sess.queue[0], correct = choice === card.q.answer;
+  const r = answerSession(O.sess, S.progress, correct, Date.now());
+  // een foute kaart komt terug met een andere zin (ander zelfstandig naamwoord of ander getal)
+  O.sess.queue.forEach(c => { if (c.retry && c.key === card.key && c.q === card.q) { c.avoid = card.q.sig; delete c.q; } });
+  O.feedback = { card, choice, correct };
+  await saveProgress(r.update);
+  render();
+}
+
+// ---------- Oefening: werkwoordtabel ----------
+function wtPlan() {
+  return sessionPlan(verbFormCards(S.verbs, S.settings.wt.only), S.progress, Object.assign({}, S.settings.wt, { dir: 'a', verbs: false, mix: S.settings.wt.mix !== false }), Date.now());
+}
+
+function viewWerkwoordHome() {
+  const plan = wtPlan(), wt = S.settings.wt;
+  const opt = (v, cur, t) => `<option value="${v}" ${String(cur) === String(v) ? 'selected' : ''}>${t}</option>`;
+  let info, btn = 'Start oefening';
+  if (!plan.cards.length) info = 'Er zijn geen werkwoorden. Importeer je werkwoorden bij Importeren.';
+  else if (plan.extra) { info = 'Niets is vandaag nog aan de beurt. Je kunt toch oefenen: dan komen de vormen die het eerst terugkomen.'; btn = 'Toch oefenen (' + plan.cards.length + ' vormen)'; }
+  else info = `Volgende sessie: <b>${plan.cards.length}</b> vormen (${plan.due} herhalen, ${plan.nieuw} nieuw).`;
+  return `<p><button class="btn ghost small" data-act="nav" data-v="start">← Home</button></p>
+    <section class="card"><h2>Werkwoordtabel</h2>
+    <p class="hint">Je ziet een werkwoord met een persoon, bijvoorbeeld <i>querer · nosotros</i>, en geeft de vorm: <i>queremos</i>. Typ de vorm of spreek hem uit${recSupported() ? ' (tik op 🎤; werkt alleen online)' : ''}. Getypt moet het accent kloppen. Een voornaamwoord ervoor (yo, nosotros…) mag. Werkwoorden hebben geen les; het filter op Home geldt hier niet.</p>
+    <p><b>${plan.dueTotal}</b> aan de beurt · <b>${plan.newTotal}</b> nieuw beschikbaar · <b>${plan.learned}</b> al geoefend</p>
+    <p class="hint">Hoe goed ken je je vormen?</p>
+    <div class="boxes">${levelTiles(plan.boxes)}</div>
+    <p>${info}</p>
+    <p><button class="btn" data-act="wt-start" ${plan.cards.length ? '' : 'disabled'}>${btn}</button></p>
+    <details><summary>Instellingen oefening</summary>
+      <label class="field">Welke werkwoorden<select id="wt-only">${opt('alle', wt.only, 'Alle werkwoorden')}${opt('onregelmatig', wt.only, 'Alleen onregelmatige werkwoorden')}</select></label>
+      <label class="field">Volgorde van nieuwe vormen<select id="wt-mix">${opt('1', wt.mix === false ? '0' : '1', 'Door elkaar: andere werkwoorden en personen')}${opt('0', wt.mix === false ? '0' : '1', 'Per werkwoord: alle zes personen samen')}</select></label>
+      <label class="field">Vormen per sessie<select id="wt-size">${[10, 20, 30, 50].map(n => opt(n, wt.size, n)).join('')}</select></label>
+      <label class="field">Nieuwe vormen per sessie (maximum)<select id="wt-new">${[5, 10, 15, 20].map(n => opt(n, wt.newMax, n)).join('')}</select></label>
+      <p class="hint">${levelHint}</p>
+    </details></section>`;
+}
+
+function startWerkwoord() {
+  const plan = wtPlan();
+  if (!plan.cards.length) { setMsg('warn', 'Er zijn geen vormen om te oefenen.'); S.view = 'werkwoordhome'; S.wt = null; render(); return; }
+  S.msg = null; S.wt = { sess: newSession(plan.cards), feedback: null }; S.view = 'werkwoord'; render();
+}
+
+function wtBar(label) {
+  const s = S.wt.sess, pct = Math.round(s.answered / s.total * 100);
+  return `<div class="fcbar"><span>${label}</span><button class="btn ghost small" data-act="wt-stop">Stoppen</button></div><div class="prog"><i style="width:${pct}%"></i></div>`;
+}
+
+function viewWerkwoord() {
+  const W = S.wt;
+  if (!W) { S.view = 'werkwoordhome'; return viewWerkwoordHome(); }
+  const sess = W.sess;
+  if (W.feedback) return wtFeedback();
+  if (!sess.queue.length) return wtEnd();
+  const card = sess.queue[0], v = card.item, p = S.progress.get(card.key), per = PERSONS[card.pi];
+  const tag = card.retry ? 'herhaling' : (p ? 'niveau ' + LEVELS[p.box - 1][0].toLowerCase() : 'nieuw');
+  const mic = recSupported() ? `<button class="btn ghost mic" data-act="wt-mic" aria-label="Vorm uitspreken">🎤 Spreek</button>` : '';
+  return wtBar(card.retry ? 'Herhaling' : 'Vorm ' + Math.min(sess.answered + 1, sess.total) + ' van ' + sess.total) + `
+    <section class="card fcard"><div class="tag">${esc(tag)}${v.type ? ' · ' + esc(v.groep || '') : ''}</div>
+      <div class="big">${esc(v.infinitief)}</div>
+      <div class="hint">${esc(v.nederlands)}</div>
+      <div class="big person">${esc(per[0])} <small>(${esc(per[1])})</small></div></section>
+    <section class="card mrform">
+      <input id="mr-input" type="text" inputmode="text" lang="es" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="Typ de vorm">
+      <div class="accrow">${ACCENTS.map(x => `<button class="acc" type="button" data-act="mr-acc" data-v="${x}" aria-label="letter ${x}">${x}</button>`).join('')}</div>
+      <div class="btnrow"><button class="btn" data-act="wt-check">Controleer</button>${mic}</div>
+      <p class="hint" id="mr-status"></p>
+      <p><button class="btn ghost small" data-act="wt-skip">Ik weet het niet</button></p></section>`;
+}
+
+function wtFeedback() {
+  const f = S.wt.feedback, v = f.card.item, i = f.card.pi, per = PERSONS[i], form = v[VERB_FORMS[i]];
+  const full = v.infinitief === 'gustar' ? form : per[0].split(' / ')[0] + ' ' + form;
+  const tip = verbTip(v, i), note = leerNotitie(v.opmerking);
+  const good = f.result === 'juist';
+  const verdict = good ? '✓ Juist' : f.result === 'accent' ? '✗ Bijna: let op het accent' : f.result === 'pronoun' ? '✗ Bijna: het voornaamwoord (me, te, se…) hoort erbij' : f.result === 'skip' ? '✗ De vorm is' : '✗ Niet juist';
+  let h = wtBar(f.card.retry ? 'Herhaling' : 'Vorm ' + Math.min(S.wt.sess.answered, S.wt.sess.total) + ' van ' + S.wt.sess.total) + `
+    <section class="card fcard ${good ? 'good' : 'bad'}"><div class="verdict ${good ? 'good' : 'bad'}">${verdict}</div>
+      <div class="big">${esc(full)} ${speakBtn(form)}</div>
+      <div class="hint">${esc(v.infinitief)} = ${esc(v.nederlands)}${v.type ? ' · ' + esc(v.groep) + ' · ' + esc(v.type) : ''}</div>`;
+  if (f.given && !good && f.result !== 'skip') h += `<div class="hint">Jouw antwoord: <b>${esc(f.given)}</b>${f.spoken ? ' (gesproken)' : ''}</div>`;
+  if (f.given && good && f.spoken) h += `<div class="hint">Je zei: <b>${esc(f.given)}</b>. Gesproken antwoorden tellen zonder accent.</div>`;
+  if (tip) h += `<div class="hint"><b>Regel:</b> ${esc(tip)}</div>`;
+  if (note && !/^(zie |meervoud van)/i.test(note)) h += `<div class="hint">${esc(note)}</div>`;
+  const cell = k => `<div class="${k === i ? 'on' : ''}"><small>${esc(PERSONS[k][0])}</small><span>${esc(v[VERB_FORMS[k]] || '')}</span></div>`;
+  h += `<div class="vtab">${[0, 3, 1, 4, 2, 5].map(cell).join('')}</div>`;
+  return h + `</section><div class="btnrow"><button class="btn" data-act="wt-next">Volgende</button></div>`;
+}
+
+function wtEnd() {
+  const s = S.wt.sess, pct = s.answered ? Math.round(s.juist / s.answered * 100) : 0;
+  const missed = s.missed.map(c => `<tr><td><b>${esc(c.item.infinitief)}</b> · ${esc(PERSONS[c.pi][0])}</td><td>${esc(c.item[VERB_FORMS[c.pi]])}</td></tr>`).join('');
+  const plan = wtPlan();
+  return `<section class="card"><h2>Sessie klaar</h2>
+    <p>Je beantwoordde <b>${s.answered}</b> vormen: <b>${s.juist}</b> juist en <b>${s.fout}</b> fout (${pct}%).</p>
+    ${missed ? `<h3>Om te onthouden</h3><div class="tablewrap"><table><thead><tr><th>Werkwoord · persoon</th><th>Vorm</th></tr></thead><tbody>${missed}</tbody></table></div>` : '<p>Geen enkele fout. Mooi werk!</p>'}
+    <p class="hint">Je vormen nu: ${plan.boxes.map((n, i) => LEVELS[i][0].toLowerCase() + ' ' + n).join(' · ')}.</p>
+    <p><button class="btn" data-act="wt-start" ${plan.cards.length ? '' : 'disabled'}>${plan.extra ? 'Toch nog oefenen' : 'Nog een sessie'}</button> <button class="btn ghost" data-act="wt-stop">Klaar</button></p></section>`;
+}
+
+async function wtSubmit(given, spoken, skip) {
+  const W = S.wt; if (!W || W.feedback || !W.sess.queue.length) return;
+  const card = W.sess.queue[0];
+  const chk = skip ? { result: 'skip' } : checkForm(card.item[VERB_FORMS[card.pi]], given, spoken);
+  if (chk.result === 'leeg') { const st = $('#mr-status'); if (st) st.textContent = 'Typ eerst een antwoord, of tik op "Ik weet het niet".'; return; }
+  const r = answerSession(W.sess, S.progress, chk.result === 'juist', Date.now());
+  W.feedback = { card, given: given || '', spoken: !!spoken, result: chk.result };
+  await saveProgress(r.update);
+  render();
+}
+const wtCheck = () => { const i = $('#mr-input'); return wtSubmit(i ? i.value : '', false, false); };
+function wtListen() {
+  const W = S.wt; if (!W || W.feedback) return;
+  const c = W.sess.queue[0];
+  listenAnswer(c.item[VERB_FORMS[c.pi]], (e, t) => checkForm(e, t, true).result === 'juist', t => wtSubmit(t, true, false));
+}
+
+// ---------- Oefening: spreekoefening (zinnen) ----------
+function znPlan(sel) {
+  const words = sel || selectWords(S.words, S.blocks, S.settings);
+  return sessionPlan(zinCards(words, S.verbs), S.progress, Object.assign({}, S.settings.zn, { dir: 'a', verbs: false }), Date.now());
+}
+
+function viewSpreekHome() {
+  const sel = selectWords(S.words, S.blocks, S.settings), plan = znPlan(sel), zn = S.settings.zn;
+  const opt = (v, cur, t) => `<option value="${v}" ${String(cur) === String(v) ? 'selected' : ''}>${t}</option>`;
+  let info, btn = 'Start oefening';
+  if (!plan.cards.length) info = 'Er zijn te weinig woorden of werkwoorden in je selectie om zinnen te maken. Pas je selectie aan op de Home-pagina of importeer je werkwoorden.';
+  else if (plan.extra) { info = 'Niets is vandaag nog aan de beurt. Je kunt toch oefenen.'; btn = 'Toch oefenen (' + plan.cards.length + ' zinnen)'; }
+  else info = `Volgende sessie: <b>${plan.cards.length}</b> zinnen (${plan.due} herhalen, ${plan.nieuw} nieuw).`;
+  return `<p><button class="btn ghost small" data-act="nav" data-v="start">← Home</button></p>
+    <section class="card"><h2>Spreekoefening</h2>
+    <p class="hint">Je krijgt een Nederlandse zin en zegt hem in het Spaans${recSupported() ? ': tik op 🎤 en spreek (werkt alleen online), of typ hem' : ': typ hem'}. De zinnen worden gemaakt van de woorden in je selectie en van je werkwoorden, steeds met een ander woord en een andere persoon. Het voornaamwoord (yo, tú…) mag je weglaten of zeggen. Spreken: accenten tellen niet; typen: wel.</p>
+    <p><b>${plan.dueTotal}</b> aan de beurt · <b>${plan.newTotal}</b> nieuw beschikbaar · <b>${plan.learned}</b> al geoefend</p>
+    <p class="hint">Hoe goed ken je de zinsbouw? (per zinsvorm, bijvoorbeeld "Ik wil …")</p>
+    <div class="boxes">${levelTiles(plan.boxes)}</div>
+    <p>${info}</p>
+    <p><button class="btn" data-act="zn-start" ${plan.cards.length ? '' : 'disabled'}>${btn}</button></p>
+    <details><summary>Instellingen oefening</summary>
+      <label class="field">Zinnen per sessie<select id="zn-size">${[5, 10, 15, 20].map(n => opt(n, zn.size, n)).join('')}</select></label>
+      <label class="field">Nieuwe zinsvormen per sessie (maximum)<select id="zn-new">${[3, 6, 10, 15].map(n => opt(n, zn.newMax, n)).join('')}</select></label>
+      <label class="field">Nieuwe kaarten kiezen<select id="zn-order">${[['random', 'willekeurig uit je selectie'], ['list', 'in volgorde van je lijst']].map(([v, t]) => opt(v, zn.order || 'random', t)).join('')}</select></label>
+      <p class="hint">${levelHint}</p>
+    </details></section>`;
+}
+
+function startSpreek() {
+  const sel = selectWords(S.words, S.blocks, S.settings), plan = znPlan(sel);
+  const cards = zinSentences(plan.cards, sel, S.verbs, Math.random);
+  if (!cards.length) { setMsg('warn', 'Er zijn geen zinnen om te oefenen.'); S.view = 'spreekhome'; S.zn = null; render(); return; }
+  S.msg = null; S.zn = { sess: newSession(cards), feedback: null }; S.view = 'spreek'; render();
+}
+
+function znBar(label) {
+  const s = S.zn.sess, pct = Math.round(s.answered / s.total * 100);
+  return `<div class="fcbar"><span>${label}</span><button class="btn ghost small" data-act="zn-stop">Stoppen</button></div><div class="prog"><i style="width:${pct}%"></i></div>`;
+}
+
+function viewSpreek() {
+  const Z = S.zn;
+  if (!Z) { S.view = 'spreekhome'; return viewSpreekHome(); }
+  const sess = Z.sess;
+  if (Z.feedback) return znFeedback();
+  if (!sess.queue.length) return znEnd();
+  const card = sess.queue[0], s = card.sent, p = S.progress.get(card.key);
+  const tag = card.retry ? 'herhaling' : (p ? 'niveau ' + LEVELS[p.box - 1][0].toLowerCase() : 'nieuw');
+  const mic = recSupported() ? `<button class="btn mic" data-act="zn-mic" aria-label="Zin uitspreken">🎤 Spreek</button>` : '';
+  return znBar(card.retry ? 'Herhaling' : 'Zin ' + Math.min(sess.answered + 1, sess.total) + ' van ' + sess.total) + `
+    <section class="card fcard"><div class="tag">${esc(tag)}</div>
+      <div class="big">${esc(s.nl)}</div>
+      <div class="hint">Zeg dit in het Spaans · werkwoord: ${esc(s.hint)}</div></section>
+    <section class="card mrform">
+      <div class="btnrow">${mic}<button class="btn ${mic ? 'ghost' : ''}" data-act="zn-check">Controleer</button></div>
+      <input id="mr-input" type="text" inputmode="text" lang="es" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="Of typ de Spaanse zin">
+      <div class="accrow">${ACCENTS.map(x => `<button class="acc" type="button" data-act="mr-acc" data-v="${x}" aria-label="letter ${x}">${x}</button>`).join('')}</div>
+      <p class="hint" id="mr-status"></p>
+      <p><button class="btn ghost small" data-act="zn-skip">Ik weet het niet</button></p></section>`;
+}
+
+function znFeedback() {
+  const f = S.zn.feedback, s = f.card.sent, good = f.result === 'juist';
+  const verdict = good ? '✓ Juist' : f.result === 'accent' ? '✗ Bijna: let op het accent' : f.result === 'skip' ? '✗ De zin is' : '✗ Niet juist';
+  const p = ZP.find(x => x.id === f.card.id);
+  let h = znBar(f.card.retry ? 'Herhaling' : 'Zin ' + Math.min(S.zn.sess.answered, S.zn.sess.total) + ' van ' + S.zn.sess.total) + `
+    <section class="card fcard ${good ? 'good' : 'bad'}"><div class="verdict ${good ? 'good' : 'bad'}">${verdict}</div>
+      <div class="big">${esc(s.es)} ${speakBtn(s.es)}</div>
+      <div class="hint">${esc(s.nl)}</div>`;
+  if (f.given && !good && f.result !== 'skip') h += `<div class="hint">Jouw antwoord: <b>${esc(f.given)}</b>${f.spoken ? ' (gesproken)' : ''}</div>`;
+  if (f.given && good && f.spoken) h += `<div class="hint">Je zei: <b>${esc(f.given)}</b>. Gesproken antwoorden tellen zonder accent.</div>`;
+  if (s.alts && s.alts.length) h += `<div class="hint">Ook goed: ${s.alts.map(x => esc(x)).join(' · ')}</div>`;
+  if (p && p.tip) h += `<div class="hint"><b>Regel:</b> ${esc(p.tip)}</div>`;
+  for (const [inf, i] of s.verbs) {
+    const v = S.verbs.find(x => x.infinitief === inf), t = v && verbTip(v, i);
+    if (t) h += `<div class="hint"><b>${esc(inf)}:</b> ${esc(t)}</div>`;
+  }
+  if (s.nouns.length) h += `<div class="hint">${s.nouns.map(n => `<b>${esc(n.lidwoord + ' ' + n.spaans)}</b> = ${esc(n.nederlands.split(',')[0])}`).join(' · ')}</div>`;
+  return h + `</section><div class="btnrow"><button class="btn" data-act="zn-next">Volgende</button></div>`;
+}
+
+function znEnd() {
+  const s = S.zn.sess, pct = s.answered ? Math.round(s.juist / s.answered * 100) : 0;
+  const missed = s.missed.map(c => `<tr><td>${esc(c.sent.nl)}</td><td>${esc(c.sent.es)}</td></tr>`).join('');
+  const plan = znPlan();
+  return `<section class="card"><h2>Sessie klaar</h2>
+    <p>Je beantwoordde <b>${s.answered}</b> zinnen: <b>${s.juist}</b> juist en <b>${s.fout}</b> fout (${pct}%).</p>
+    ${missed ? `<h3>Om te onthouden</h3><div class="tablewrap"><table><thead><tr><th>Nederlands</th><th>Spaans</th></tr></thead><tbody>${missed}</tbody></table></div>` : '<p>Geen enkele fout. Mooi werk!</p>'}
+    <p class="hint">Je zinsvormen nu: ${plan.boxes.map((n, i) => LEVELS[i][0].toLowerCase() + ' ' + n).join(' · ')}.</p>
+    <p><button class="btn" data-act="zn-start" ${plan.cards.length ? '' : 'disabled'}>${plan.extra ? 'Toch nog oefenen' : 'Nog een sessie'}</button> <button class="btn ghost" data-act="zn-stop">Klaar</button></p></section>`;
+}
+
+async function znSubmit(given, spoken, skip) {
+  const Z = S.zn; if (!Z || Z.feedback || !Z.sess.queue.length) return;
+  const card = Z.sess.queue[0];
+  if (spoken && !skip && checkSentenceAny(card.sent, given, true).result !== 'juist' && sentencePartial(card.sent, given)) {
+    const st = $('#mr-status'); if (st) st.textContent = 'Ik verstond alleen: "' + given + '". Dat telt niet. Tik opnieuw op 🎤 en spreek de hele zin, of typ hem.';
+    return;
+  }
+  const chk = skip ? { result: 'skip' } : checkSentenceAny(card.sent, given, spoken);
+  if (chk.result === 'leeg') { const st = $('#mr-status'); if (st) st.textContent = 'Zeg of typ eerst een zin, of tik op "Ik weet het niet".'; return; }
+  const r = answerSession(Z.sess, S.progress, chk.result === 'juist', Date.now());
+  Z.feedback = { card, given: given || '', spoken: !!spoken, result: chk.result };
+  await saveProgress(r.update);
+  render();
+}
+const znCheck = () => { const i = $('#mr-input'); return znSubmit(i ? i.value : '', false, false); };
+function znListen() {
+  const Z = S.zn; if (!Z || Z.feedback) return;
+  listenAnswer(Z.sess.queue[0].sent, (e, t) => checkSentenceAny(e, t, true).result === 'juist', t => znSubmit(t, true, false));
+}
+
+function viewWoorden() {
+  if (!S.words.length) return `<section class="card"><p>Nog geen woorden. Ga naar Importeren.</p></section>`;
+  const q = S.search.trim().toLowerCase();
+  let list = S.words.filter(w => (!S.soortFilter || w.soort === S.soortFilter) &&
+    (!q || w.spaans.toLowerCase().includes(q) || w.nederlands.toLowerCase().includes(q)));
+  const shown = list.slice(0, S.limit);
+  const soorten = Array.from(new Set(S.words.map(w => w.soort))).sort();
+  const rows = shown.map(w => {
+    const meta = [w.soort, w.genus, w.thema, w.hoofdstuk ? 'les ' + w.hoofdstuk + '.' + w.les : ''].filter(Boolean).join(' · ');
+    return `<tr><td><b>${esc((w.lidwoord ? w.lidwoord + ' ' : '') + w.spaans)}</b>${w.meervoud ? `<br><small>meervoud: ${esc(w.meervoud)}</small>` : ''}</td>
+    <td>${esc(w.nederlands)}<br><small>${esc(meta)}</small></td></tr>`;
+  }).join('');
+  return `<section class="card"><h2>Woorden</h2>
+    <div class="row"><input id="zoek" type="search" placeholder="Zoek in Spaans of Nederlands" value="${esc(S.search)}" autocomplete="off">
+    <select id="soortsel" data-act="soortsel"><option value="">alle soorten</option>${soorten.map(s => `<option ${S.soortFilter === s ? 'selected' : ''}>${esc(s)}</option>`).join('')}</select></div>
+    <p class="hint">${list.length} van ${S.words.length} woorden${list.length > shown.length ? ', de eerste ' + shown.length + ' getoond' : ''}.</p>
+    <div class="tablewrap"><table><thead><tr><th>Spaans</th><th>Nederlands</th></tr></thead><tbody>${rows}</tbody></table></div>
+    ${list.length > shown.length ? `<p><button class="btn ghost" data-act="meer">Toon meer</button></p>` : ''}</section>`;
+}
+
+function viewImport() {
+  let html = `<section class="card"><h2>Importeren</h2>
+    <p>Kies een of twee CSV-bestanden: je woordenlijst en/of je werkwoorden. De app herkent zelf welk bestand het is. Bestaande woorden blijven; dubbelen worden samengevoegd. Je ziet eerst een overzicht en niets wordt bewaard voordat je op "Toepassen" tikt.</p>
+    <p><input id="bestand" type="file" accept=".csv,.txt,text/csv,text/plain" multiple></p>
+    <p class="hint">Woorden: id; spaans; lidwoord; nederlands; soort; genus; meervoud; thema; hoofdstuk; les; opmerking.<br>
+    Werkwoorden: id; infinitief; nederlands; groep; type; yo; tú; él/ella; nosotros; vosotros; ellos/ustedes; opmerking.</p></section>`;
+  if (S.plan) html += viewPlan();
+  return html;
+}
+
+function repLine(r) {
+  const parts = [];
+  if (r.nieuw) parts.push(`<b>${r.nieuw}</b> nieuw`);
+  if (r.bijgewerkt) parts.push(`<b>${r.bijgewerkt}</b> bijgewerkt`);
+  if (r.samengevoegd) parts.push(`<b>${r.samengevoegd}</b> samengevoegd`);
+  if (r.ongewijzigd) parts.push(`<b>${r.ongewijzigd}</b> ongewijzigd`);
+  if (r.overgeslagen) parts.push(`<b>${r.overgeslagen}</b> overgeslagen`);
+  if (r.waarschuwingen) parts.push(`<b>${r.waarschuwingen}</b> waarschuwingen`);
+  return parts.join(' · ') || 'niets te doen';
+}
+
+function viewPlan() {
+  const p = S.plan;
+  const items = p.items.map(it => {
+    const det = it.report.details.filter(d => d.type !== 'ongewijzigd');
+    const rows = det.slice(0, 300).map(d => `<tr class="t-${d.type}"><td>${d.regel}</td><td>${esc(d.spaans)}</td><td>${esc(d.type)}</td><td>${esc(d.tekst)}</td></tr>`).join('');
+    return `<div class="plan"><h3>${esc(it.naam)} <small>(${it.kind})</small></h3><p>${repLine(it.report)}</p>
+      ${det.length ? `<details><summary>${det.length} meldingen bekijken</summary><div class="tablewrap"><table><thead><tr><th>Regel</th><th>Woord</th><th>Soort</th><th>Toelichting</th></tr></thead><tbody>${rows}</tbody></table></div>${det.length > 300 ? '<p class="hint">Alleen de eerste 300 getoond.</p>' : ''}</details>` : ''}</div>`;
+  }).join('');
+  const errs = p.errors.map(e => `<div class="msg err">${esc(e)}</div>`).join('');
+  return `<section class="card"><h2>Overzicht voor je tikt</h2>${errs}${items}
+    <p><button class="btn" data-act="toepassen" ${p.items.length ? '' : 'disabled'}>Toepassen</button> <button class="btn ghost" data-act="annuleer">Annuleren</button></p></section>`;
+}
+
+function viewBeheer() {
+  const pers = S.persisted === true ? 'Je toestel bewaart deze gegevens vast.' : S.persisted === false ? 'Je browser kan deze gegevens na verloop van tijd wissen. Voeg de app toe aan je beginscherm en maak regelmatig een back-up.' : '';
+  return `<section class="card"><h2>Back-up</h2>
+    <p>Bewaar woorden, werkwoorden en je voortgang in één bestand. Doe dit regelmatig, want je woorden staan alleen op dit toestel.</p>
+    <p class="hint">${esc(backupStatus(S.lastBackup, true, Date.now()).text)}</p>
+    <p class="hint">${esc(pers)}</p>
+    <p><button class="btn" data-act="backup">Back-up maken</button></p>
+    <p><label class="field">Back-up terugzetten<input id="terug" type="file" accept=".json,application/json"></label></p></section>
+    <section class="card"><h2>Spaanse spraak</h2><p>Voor de uitspraak (🔊) en voor spreken. Kies de variant die je wilt horen en gebruiken.</p>
+    <label class="field">Spaanse stem<select id="lang"><option value="es-ES" ${S.settings.lang === 'es-ES' ? 'selected' : ''}>Spanje (es-ES)</option><option value="es-MX" ${S.settings.lang === 'es-MX' ? 'selected' : ''}>Mexico (es-MX)</option></select></label></section>
+    <section class="card"><h2>Voortgang wissen</h2><p>Begin opnieuw met alle oefeningen. Je woorden en werkwoorden blijven staan.</p>
+    <p><button class="btn ghost" data-act="fc-reset">Voortgang wissen</button></p></section>
+    <section class="card"><h2>Alles wissen</h2><p>Verwijdert alle woorden, werkwoorden en voortgang van dit toestel.</p>
+    <p><button class="btn danger" data-act="wissen">Alles wissen</button></p></section>
+    <section class="card"><p class="hint">Spaans leren — Versie 0.9.1.</p></section>`;
+}
+
+// ---------- Acties ----------
+async function readFileText(file) {
+  const text = await file.text();
+  return text;
+}
+
+async function planImport(files) {
+  const plan = { items: [], errors: [] };
+  let wordsWork = S.words, verbsWork = S.verbs;
+  for (const f of files) {
+    let text;
+    try { text = await readFileText(f); } catch (e) { plan.errors.push(f.name + ': kan het bestand niet lezen.'); continue; }
+    if (text.includes('�')) plan.errors.push(f.name + ': het bestand lijkt niet in UTF-8 opgeslagen; speciale tekens (á, é, ñ) kunnen verkeerd staan. Exporteer opnieuw als CSV UTF-8.');
+    const t = readTable(text);
+    if (!t.kind) { plan.errors.push(f.name + ': ' + t.error); continue; }
+    if (t.kind === 'woorden') { const r = mergeWords(wordsWork, t.records); wordsWork = r.words; plan.items.push({ naam: f.name, kind: 'woorden', report: r.report }); }
+    else { const r = mergeVerbs(verbsWork, t.records); verbsWork = r.verbs; plan.items.push({ naam: f.name, kind: 'werkwoorden', report: r.report }); }
+  }
+  plan.words = wordsWork; plan.verbs = verbsWork;
+  return plan;
+}
+
+async function applyPlan() {
+  const p = S.plan; if (!p) return;
+  try {
+    if (p.items.some(i => i.kind === 'woorden')) await store.replaceAll('words', p.words);
+    if (p.items.some(i => i.kind === 'werkwoorden')) await store.replaceAll('verbs', p.verbs);
+    await loadAll();
+    S.plan = null;
+    setMsg('ok', 'Gelukt: ' + plural(S.words.length, 'woord', 'woorden') + ' en ' + plural(S.verbs.length, 'werkwoord', 'werkwoorden') + ' staan nu in de app.');
+    S.view = 'start';
+  } catch (e) { setMsg('err', 'Opslaan is niet gelukt: ' + (e && e.message || e) + '. Er is niets veranderd.'); }
+  render();
+}
+
+async function makeBackup() {
+  const progress = await store.getAll('progress');
+  const data = { app: 'spaans-leren', versie: 1, datum: new Date().toISOString(), words: S.words, verbs: S.verbs, progress, settings: S.settings };
+  const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'spaans-leren-backup-' + new Date().toISOString().slice(0, 10) + '.json';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  S.lastBackup = new Date().toISOString();
+  try { await store.put('meta', { key: 'lastBackup', value: S.lastBackup }); } catch (_) {}
+  setMsg('ok', 'Back-up gemaakt: ' + a.download + '. Bewaar het bestand op een veilige plek (bijvoorbeeld iCloud Drive of Google Drive).');
+  render();
+}
+
+async function restoreBackup(file) {
+  try {
+    const data = JSON.parse(await file.text());
+    if (!data || data.app !== 'spaans-leren' || !Array.isArray(data.words) || !Array.isArray(data.verbs)) throw new Error('dit is geen back-up van deze app');
+    if (!confirm('Dit vervangt alle gegevens in de app door de back-up van ' + (data.datum || '').slice(0, 10) + ' (' + data.words.length + ' woorden, ' + data.verbs.length + ' werkwoorden). Doorgaan?')) return;
+    const prog = (Array.isArray(data.progress) ? data.progress : []).filter(p => p && typeof p.key === 'string');
+    const ok = x => x && x.id != null;
+    if (!data.words.every(ok) || !data.verbs.every(ok)) throw new Error('de back-up is beschadigd (woorden zonder id)');
+    await store.replaceMany({ words: data.words, verbs: data.verbs, progress: prog, meta: [{ key: 'settings', value: data.settings || { block: null, soorten: [] } }].concat(Number.isNaN(Date.parse(data.datum)) ? [] : [{ key: 'lastBackup', value: data.datum }]) });
+    await loadAll();
+    S.msg = null;
+    setMsg('ok', 'Back-up teruggezet: ' + plural(S.words.length, 'woord', 'woorden') + ' en ' + plural(S.verbs.length, 'werkwoord', 'werkwoorden') + '.');
+    S.view = 'start';
+  } catch (e) { setMsg('err', 'Terugzetten is niet gelukt: ' + (e && e.message || e) + '. Er is niets veranderd.'); }
+  render();
+}
+
+async function resetProgress() {
+  if (!confirm('Alle voortgang van de oefeningen wissen? Je woorden blijven staan.')) return;
+  await store.replaceAll('progress', []);
+  await loadAll();
+  setMsg('ok', 'De voortgang van de oefeningen is gewist.'); S.view = 'start'; render();
+}
+
+async function wipeAll() {
+  if (!confirm('Alle woorden, werkwoorden en voortgang van dit toestel verwijderen?')) return;
+  if (!confirm('Zeker weten? Dit kan niet ongedaan worden gemaakt, tenzij je een back-up hebt.')) return;
+  for (const n of ['words', 'verbs', 'progress', 'meta']) await store.replaceAll(n, []);
+  await loadAll(); S.plan = null;
+  setMsg('ok', 'Alles is gewist.'); S.view = 'start'; render();
+}
+
+document.addEventListener('click', async e => {
+  const el = e.target.closest('[data-act]'); if (!el) return;
+  const act = el.dataset.act;
+  if (act === 'nav') { S.view = el.dataset.v; S.msg = null; S.fc = null; S.gr = null; S.mr = null; S.ov = null; S.wt = null; S.zn = null; if (S.view !== 'import') S.plan = null; render(); }
+  else if (act === 'fc-start') startFlash();
+  else if (act === 'fc-reveal') { if (S.fc && !S.fc.revealed) { S.fc.revealed = true; render(); } }
+  else if (act === 'fc-juist') fcAnswer(true);
+  else if (act === 'fc-fout') fcAnswer(false);
+  else if (act === 'fc-stop') { S.fc = null; S.view = 'flashhome'; S.msg = null; render(); }
+  else if (act === 'fc-speak') speak(el.dataset.t);
+  else if (act === 'fc-reset') resetProgress();
+  else if (act === 'zn-start') startSpreek();
+  else if (act === 'zn-check') znCheck();
+  else if (act === 'zn-skip') znSubmit('', false, true);
+  else if (act === 'zn-mic') znListen();
+  else if (act === 'zn-next') { if (S.zn) { S.zn.feedback = null; render(); } }
+  else if (act === 'zn-stop') { S.zn = null; S.view = 'spreekhome'; S.msg = null; render(); }
+  else if (act === 'wt-start') startWerkwoord();
+  else if (act === 'wt-check') wtCheck();
+  else if (act === 'wt-skip') wtSubmit('', false, true);
+  else if (act === 'wt-mic') wtListen();
+  else if (act === 'wt-next') { if (S.wt) { S.wt.feedback = null; render(); } }
+  else if (act === 'wt-stop') { S.wt = null; S.view = 'werkwoordhome'; S.msg = null; render(); }
+  else if (act === 'ov-start') startOvereen();
+  else if (act === 'ov-pick') ovPick(el.dataset.v);
+  else if (act === 'ov-next') { if (S.ov) { S.ov.feedback = null; render(); } }
+  else if (act === 'ov-stop') { S.ov = null; S.view = 'overeenhome'; S.msg = null; render(); }
+  else if (act === 'mr-start') startMeervoud();
+  else if (act === 'mr-check') mrCheck();
+  else if (act === 'mr-skip') mrSubmit('', false, true);
+  else if (act === 'mr-mic') mrListen();
+  else if (act === 'mr-acc') { const i = $('#mr-input'); if (i) { const p = i.selectionStart == null ? i.value.length : i.selectionStart, q = i.selectionEnd == null ? p : i.selectionEnd; i.value = i.value.slice(0, p) + el.dataset.v + i.value.slice(q); i.focus(); try { i.setSelectionRange(p + 1, p + 1); } catch (_) {} } }
+  else if (act === 'mr-next') { if (S.mr) { S.mr.feedback = null; render(); } }
+  else if (act === 'mr-stop') { S.mr = null; S.view = 'meervoudhome'; S.msg = null; render(); }
+  else if (act === 'gr-start') startGenus();
+  else if (act === 'gr-pick') grPick(el.dataset.v);
+  else if (act === 'gr-next') { if (S.gr) { S.gr.feedback = null; render(); } }
+  else if (act === 'gr-stop') { S.gr = null; S.view = 'genushome'; S.msg = null; render(); }
+  else if (act === 'soort') {
+    const s = el.dataset.v, a = S.settings.soorten;
+    S.settings.soorten = a.includes(s) ? a.filter(x => x !== s) : a.concat(s);
+    await saveSettings(); render();
+  }
+  else if (act === 'meer') { S.limit += 150; render(); }
+  else if (act === 'toepassen') applyPlan();
+  else if (act === 'annuleer') { S.plan = null; render(); }
+  else if (act === 'backup') makeBackup();
+  else if (act === 'wissen') wipeAll();
+});
+document.addEventListener('change', async e => {
+  const el = e.target;
+  if (el.id === 'blk') { S.settings.block = el.value === '' ? null : +el.value; await saveSettings(); render(); }
+  else if (/^(fc|gr|mr|ov|zn)-order$/.test(el.id)) {
+    S.settings[el.id.slice(0, 2)].order = el.value === 'list' ? 'list' : 'random';
+    await saveSettings(); render();
+    const d = document.querySelector('#app details'); if (d) d.open = true;
+  }
+  else if (el.id === 'soortsel') { S.soortFilter = el.value; S.limit = 150; render(); }
+  else if (el.id === 'zn-size' || el.id === 'zn-new') {
+    if (el.id === 'zn-size') S.settings.zn.size = +el.value; else S.settings.zn.newMax = +el.value;
+    await saveSettings(); render();
+    const d = document.querySelector('#app details'); if (d) d.open = true;
+  }
+  else if (el.id === 'wt-size' || el.id === 'wt-new' || el.id === 'wt-only' || el.id === 'wt-mix') {
+    if (el.id === 'wt-mix') S.settings.wt.mix = el.value === '1'; else if (el.id === 'wt-size') S.settings.wt.size = +el.value; else if (el.id === 'wt-new') S.settings.wt.newMax = +el.value; else S.settings.wt.only = el.value;
+    await saveSettings(); render();
+    const d = document.querySelector('#app details'); if (d) d.open = true;
+  }
+  else if (el.id === 'ov-size' || el.id === 'ov-new') {
+    if (el.id === 'ov-size') S.settings.ov.size = +el.value; else S.settings.ov.newMax = +el.value;
+    await saveSettings(); render();
+    const d = document.querySelector('#app details'); if (d) d.open = true;
+  }
+  else if (el.id === 'mr-size' || el.id === 'mr-new') {
+    if (el.id === 'mr-size') S.settings.mr.size = +el.value; else S.settings.mr.newMax = +el.value;
+    await saveSettings(); render();
+    const d = document.querySelector('#app details'); if (d) d.open = true;
+  }
+  else if (el.id === 'lang') { S.settings.lang = el.value; await saveSettings(); setMsg('ok', 'Spaanse spraak ingesteld op ' + (el.value === 'es-MX' ? 'Mexico (es-MX)' : 'Spanje (es-ES)') + '.'); render(); }
+  else if (el.id === 'gr-size' || el.id === 'gr-new') {
+    if (el.id === 'gr-size') S.settings.gr.size = +el.value; else S.settings.gr.newMax = +el.value;
+    await saveSettings(); render();
+    const d = document.querySelector('#app details'); if (d) d.open = true;
+  }
+  else if (el.id === 'fc-size' || el.id === 'fc-new' || el.id === 'fc-dir' || el.id === 'fc-verbs') {
+    const fc = S.settings.fc;
+    if (el.id === 'fc-size') fc.size = +el.value;
+    else if (el.id === 'fc-new') fc.newMax = +el.value;
+    else if (el.id === 'fc-dir') fc.dir = el.value;
+    else fc.verbs = el.value === '1';
+    await saveSettings();
+    render();
+    const d = document.querySelector('#app details'); if (d) d.open = true;
+  }
+  else if (el.id === 'bestand' && el.files.length) {
+    S.msg = null;
+    S.plan = await planImport(Array.from(el.files));
+    render();
+  }
+  else if (el.id === 'terug' && el.files.length) restoreBackup(el.files[0]);
+});
+document.addEventListener('keydown', e => {
+  if (S.view === 'spreek' && S.zn) {
+    if (e.target && e.target.id === 'mr-input' && e.key === 'Enter') { e.preventDefault(); znCheck(); }
+    else if (e.target === document.body && S.zn.feedback && (e.key === ' ' || e.key === 'Enter')) { e.preventDefault(); S.zn.feedback = null; render(); }
+    return;
+  }
+  if (S.view === 'werkwoord' && S.wt) {
+    if (e.target && e.target.id === 'mr-input' && e.key === 'Enter') { e.preventDefault(); wtCheck(); }
+    else if (e.target === document.body && S.wt.feedback && (e.key === ' ' || e.key === 'Enter')) { e.preventDefault(); S.wt.feedback = null; render(); }
+    return;
+  }
+  if (S.view === 'overeen' && S.ov && e.target === document.body) {
+    if (S.ov.feedback) { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); S.ov.feedback = null; render(); } }
+    else if (S.ov.sess.queue.length && /^[1-4]$/.test(e.key)) {
+      const q = S.ov.sess.queue[0].q; const o = q && q.options[+e.key - 1]; if (o) ovPick(o);
+    }
+    return;
+  }
+  if (S.view === 'meervoud' && S.mr) {
+    if (e.target && e.target.id === 'mr-input' && e.key === 'Enter') { e.preventDefault(); mrCheck(); }
+    else if (e.target === document.body && S.mr.feedback && (e.key === ' ' || e.key === 'Enter')) { e.preventDefault(); S.mr.feedback = null; render(); }
+    return;
+  }
+  if (S.view === 'genus' && S.gr && e.target === document.body) {
+    if (S.gr.feedback) { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); S.gr.feedback = null; render(); } }
+    else if (S.gr.sess.queue.length) {
+      if (e.key === '1' || e.key === 'e' || e.key === 'ArrowLeft') grPick('el');
+      else if (e.key === '2' || e.key === 'l' || e.key === 'ArrowRight') grPick('la');
+    }
+    return;
+  }
+  if (S.view !== 'flash' || !S.fc || e.target !== document.body) return;
+  if ((e.key === ' ' || e.key === 'Enter') && !S.fc.revealed) { e.preventDefault(); S.fc.revealed = true; render(); }
+  else if (S.fc.revealed && (e.key === 'ArrowRight' || e.key === '2')) fcAnswer(true);
+  else if (S.fc.revealed && (e.key === 'ArrowLeft' || e.key === '1')) fcAnswer(false);
+});
+document.addEventListener('input', e => {
+  if (e.target.id === 'zoek') {
+    S.search = e.target.value; S.limit = 150;
+    const pos = e.target.selectionStart; render();
+    const z = $('#zoek'); if (z) { z.focus(); try { z.setSelectionRange(pos, pos); } catch (_) {} }
+  }
+});
+
+// Offline-werking: alleen via https of localhost; mislukt het, dan werkt de app gewoon online.
+if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+  window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
+}
+
+(async function start() {
+  await store.init();
+  try { if (navigator.storage && navigator.storage.persist) S.persisted = await navigator.storage.persist(); } catch (_) {}
+  await loadAll();
+  render();
+})();
+
+</script>
+</body>
+</html>
