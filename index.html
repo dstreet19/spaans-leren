@@ -810,6 +810,12 @@ const GV = [];
 (function () {
   // [id, thema, vraag, Nederlands, werkwoord, persoon van het antwoord (0 yo, 1 tú, 2 él, 3 nosotros, 4 vosotros, 5 ellos), sleutelvorm, patronen, voorbeeld, vertaling voorbeeld, uitleg]
   const PRE = '((pues|bueno|si|hola|vale|no) )?';
+  // Gedeelde bouwstenen voor de antwoordpatronen (zonder accenten, kleine letters).
+  const NUM = '(un|una|uno|dos|tres|cuatro|cinco|seis|siete|ocho|nueve|diez|doce|quince|veinte|\\d+)';
+  const ITEM = '^' + PRE + '(para mi )?(un|una|unos|unas|dos|tres|cuatro) .+';
+  const PEDIR_YO = ['quiero .+', 'quisiera .+', 'me gustaria .+', 'voy a (tomar|pedir) .+', 'tomo .+', 'tomare .+'];
+  const PEDIR_NOS = ['queremos .+', 'quisieramos .+', 'nos gustaria .+', 'vamos a (tomar|pedir) .+', 'tomamos .+', 'tomaremos .+'];
+  const JA_NEE = new Set(['k14', 'k19', 'k20', 'b12', 'b13']); // ja/nee-vragen: "sí/no + het werkwoord" is genoeg
   const T = [
     ['k01', 'kennismaken', '¿Cómo te llamas?', 'Hoe heet je?', 'llamarse', 0, 'me llamo', ['me llamo .+', 'mi nombre es .+'], 'Me llamo Sofía.', 'Ik heet Sofía.', 'Je antwoordt over jezelf: yo → me llamo.'],
     ['k02', 'kennismaken', '¿Cómo se llama usted?', 'Hoe heet u?', 'llamarse', 0, 'me llamo', ['me llamo .+', 'mi nombre es .+'], 'Me llamo Pedro Martínez.', 'Ik heet Pedro Martínez.', '"Usted" is het beleefde "u". Je antwoordt over jezelf: yo → me llamo.'],
@@ -821,10 +827,10 @@ const GV = [];
     ['k08', 'kennismaken', '¿Dónde vive Marta?', 'Waar woont Marta?', 'vivir', 2, 'vive', ['vive en .+', 'vive cerca de .+', 'vive a .+'], 'Marta vive en Madrid.', 'Marta woont in Madrid.', 'Over één andere persoon: él/ella → vive.'],
     ['k09', 'kennismaken', '¿Dónde viven tus padres?', 'Waar wonen je ouders?', 'vivir', 5, 'viven', ['viven en .+', 'viven cerca de .+', 'viven a .+'], 'Mis padres viven en Amberes.', 'Mijn ouders wonen in Antwerpen.', 'Over meerdere andere personen: ellos → viven.'],
     ['k10', 'kennismaken', '¿Dónde vivís vosotros?', 'Waar wonen jullie?', 'vivir', 3, 'vivimos', ['vivimos en .+', 'vivimos cerca de .+', 'vivimos a .+'], 'Vivimos en Lovaina.', 'Wij wonen in Leuven.', 'Vraag aan jullie; je antwoordt namens jou en je gezelschap: nosotros → vivimos.'],
-    ['k11', 'kennismaken', '¿De dónde eres?', 'Waar kom je vandaan?', 'ser', 0, 'soy', ['soy (de )?.+'], 'Soy de Bélgica.', 'Ik kom uit België.', 'Over jezelf: yo → soy.'],
-    ['k12', 'kennismaken', '¿De dónde es Ana?', 'Waar komt Ana vandaan?', 'ser', 2, 'es', ['es (de )?.+'], 'Ana es de México.', 'Ana komt uit Mexico.', 'Over één andere persoon: él/ella → es.'],
+    ['k11', 'kennismaken', '¿De dónde eres?', 'Waar kom je vandaan?', 'ser', 0, 'soy', ['soy (de )?.+', '^mi pais es .+'], 'Soy de Bélgica.', 'Ik kom uit België.', 'Over jezelf: yo → soy.'],
+    ['k12', 'kennismaken', '¿De dónde es Ana?', 'Waar komt Ana vandaan?', 'ser', 2, 'es', ['^(\\w+ )?es (de )?.+'], 'Ana es de México.', 'Ana komt uit Mexico.', 'Over één andere persoon: él/ella → es.'],
     ['k13', 'kennismaken', '¿De dónde son ustedes?', 'Waar komen jullie vandaan?', 'ser', 3, 'somos', ['somos (de )?.+'], 'Somos de Bélgica.', 'Wij komen uit België.', 'Vraag aan jullie (ustedes); je antwoordt namens jou en je gezelschap: nosotros → somos.'],
-    ['k14', 'kennismaken', '¿Hablas español?', 'Spreek je Spaans?', 'hablar', 0, 'hablo', ['hablo .+'], 'Sí, hablo un poco de español.', 'Ja, ik spreek een beetje Spaans.', 'Over jezelf: yo → hablo.'],
+    ['k14', 'kennismaken', '¿Hablas español?', 'Spreek je Spaans?', 'hablar', 0, 'hablo', ['hablo .+', '^' + PRE + '(un )?poco( .+)?'], 'Sí, hablo un poco de español.', 'Ja, ik spreek een beetje Spaans.', 'Over jezelf: yo → hablo.'],
     ['k15', 'kennismaken', '¿Qué idiomas habla tu hermana?', 'Welke talen spreekt je zus?', 'hablar', 2, 'habla', ['habla .+'], 'Mi hermana habla inglés y francés.', 'Mijn zus spreekt Engels en Frans.', 'Over één andere persoon: ella → habla.'],
     ['k16', 'kennismaken', '¿Qué idiomas habláis vosotros?', 'Welke talen spreken jullie?', 'hablar', 3, 'hablamos', ['hablamos .+'], 'Hablamos neerlandés y un poco de español.', 'Wij spreken Nederlands en een beetje Spaans.', 'Vraag aan jullie; je antwoordt namens jou en je gezelschap: nosotros → hablamos.'],
     ['k17', 'kennismaken', '¿Cuántos años tienes?', 'Hoe oud ben je?', 'tener', 0, 'tengo', ['tengo .+'], 'Tengo cuarenta años.', 'Ik ben veertig jaar.', 'In het Spaans "heb" je jaren: tener años. Over jezelf: yo → tengo.'],
@@ -835,34 +841,39 @@ const GV = [];
     ['k22', 'kennismaken', '¿Dónde trabaja tu madre?', 'Waar werkt je moeder?', 'trabajar', 2, 'trabaja', ['trabaja (en|como|de|para) .+'], 'Mi madre trabaja en una escuela.', 'Mijn moeder werkt op een school.', 'Over één andere persoon: ella → trabaja.'],
     ['k23', 'kennismaken', '¿Qué estudias?', 'Wat studeer je?', 'estudiar', 0, 'estudio', ['estudio .+'], 'Estudio medicina.', 'Ik studeer geneeskunde.', 'Over jezelf: yo → estudio.'],
     ['k24', 'kennismaken', '¿Qué estudian tus hijos?', 'Wat studeren je kinderen?', 'estudiar', 5, 'estudian', ['estudian .+'], 'Mis hijos estudian música.', 'Mijn kinderen studeren muziek.', 'Over meerdere andere personen: ellos → estudian.'],
-    ['b01', 'bestellen', '¿Qué quiere tomar?', 'Wat wilt u nemen?', 'querer', 0, 'quiero', ['quiero .+', 'quisiera .+', 'me gustaria .+', 'voy a (tomar|pedir) .+', 'tomo .+', 'tomare .+', 'me pone .+', 'me pones .+', 'me da .+', 'deme .+', 'pongame .+', '^' + PRE + '(un|una|unos|unas) .+ por favor'], 'Quiero un café con leche, por favor.', 'Ik wil een koffie met melk, alstublieft.', 'De ober vraagt aan jou; je antwoordt over jezelf: yo → quiero (beleefder: quisiera / me gustaría).'],
-    ['b02', 'bestellen', '¿Y para beber?', 'En om te drinken?', 'querer', 0, 'quiero', ['quiero .+', 'quisiera .+', 'me gustaria .+', 'tomo .+', 'voy a (tomar|pedir) .+', 'tomare .+', '^' + PRE + '(un|una|unos|unas) .+'], 'Para beber, quiero agua.', 'Om te drinken wil ik water.', 'Je antwoordt over jezelf: yo → quiero.'],
-    ['b03', 'bestellen', '¿Qué quieren ustedes?', 'Wat willen jullie?', 'querer', 3, 'queremos', ['queremos .+', 'quisieramos .+', 'nos gustaria .+', 'vamos a (tomar|pedir) .+', 'tomamos .+', 'tomaremos .+', 'nos pone .+', 'nos trae .+', '^' + PRE + '(un|una|unos|unas|dos|tres) .+ por favor'], 'Queremos dos cafés, por favor.', 'Wij willen twee koffies, alstublieft.', 'De vraag is aan jullie; jij antwoordt namens jou en je gezelschap: nosotros → queremos.'],
+    ['b01', 'bestellen', '¿Qué quiere tomar?', 'Wat wilt u nemen?', 'querer', 0, 'quiero', PEDIR_YO.concat(['me pone .+', 'me pones .+', 'me da .+', 'deme .+', 'pongame .+', ITEM]), 'Quiero un café con leche, por favor.', 'Ik wil een koffie met melk, alstublieft.', 'De ober vraagt aan jou; je antwoordt over jezelf: yo → quiero (beleefder: quisiera / me gustaría).'],
+    ['b02', 'bestellen', '¿Y para beber?', 'En om te drinken?', 'querer', 0, 'quiero', PEDIR_YO.concat([ITEM, '^' + PRE + '(para mi )?(agua|cafe|te|cerveza|vino|zumo|jugo|leche|cola|refresco)( .+)?']), 'Para beber, quiero agua.', 'Om te drinken wil ik water.', 'Je antwoordt over jezelf: yo → quiero.'],
+    ['b03', 'bestellen', '¿Qué quieren ustedes?', 'Wat willen jullie?', 'querer', 3, 'queremos', PEDIR_NOS.concat(['nos pone .+', 'nos trae .+', ITEM]), 'Queremos dos cafés, por favor.', 'Wij willen twee koffies, alstublieft.', 'De vraag is aan jullie; jij antwoordt namens jou en je gezelschap: nosotros → queremos.'],
     ['b04', 'bestellen', '¿Qué quiere tu amigo?', 'Wat wil je vriend?', 'querer', 2, 'quiere', ['quiere .+', 'toma .+', 'va a (tomar|pedir) .+', 'prefiere .+'], 'Mi amigo quiere una cerveza.', 'Mijn vriend wil een biertje.', 'Over één andere persoon: él → quiere.'],
     ['b05', 'bestellen', '¿Qué quieren tus hijos?', 'Wat willen je kinderen?', 'querer', 5, 'quieren', ['quieren .+', 'toman .+', 'van a (tomar|pedir) .+', 'prefieren .+'], 'Mis hijos quieren un helado.', 'Mijn kinderen willen een ijsje.', 'Over meerdere andere personen: ellos → quieren.'],
     ['b06', 'bestellen', '¿Prefieres café o té?', 'Heb je liever koffie of thee?', 'preferir', 0, 'prefiero', ['prefiero .+', 'quiero .+'], 'Prefiero té.', 'Ik heb liever thee.', 'Over jezelf: yo → prefiero.'],
     ['b07', 'bestellen', '¿Qué prefiere usted, carne o pescado?', 'Wat heeft u liever, vlees of vis?', 'preferir', 0, 'prefiero', ['prefiero .+', 'quiero .+'], 'Prefiero pescado.', 'Ik heb liever vis.', '"Usted" is "u". Je antwoordt over jezelf: yo → prefiero.'],
     ['b08', 'bestellen', '¿Qué prefieren ellos?', 'Wat hebben zij liever?', 'preferir', 5, 'prefieren', ['prefieren .+'], 'Prefieren la sopa.', 'Zij hebben liever de soep.', 'Over meerdere andere personen: ellos → prefieren.'],
     ['b09', 'bestellen', '¿Qué preferís vosotros?', 'Wat hebben jullie liever?', 'preferir', 3, 'preferimos', ['preferimos .+'], 'Preferimos el pollo.', 'Wij hebben liever de kip.', 'Vraag aan jullie; je antwoordt namens jou en je gezelschap: nosotros → preferimos.'],
-    ['b10', 'bestellen', '¿Cuánto cuesta el café?', 'Hoeveel kost de koffie?', 'costar', 2, 'cuesta', ['cuesta .+', 'vale .+', 'son .+'], 'El café cuesta dos euros.', 'De koffie kost twee euro.', 'Eén ding: cuesta. Meerdere dingen: cuestan.'],
-    ['b11', 'bestellen', '¿Cuánto cuestan los churros?', 'Hoeveel kosten de churros?', 'costar', 5, 'cuestan', ['cuestan .+', 'valen .+', 'son .+'], 'Los churros cuestan tres euros.', 'De churros kosten drie euro.', 'Meerdere dingen: cuestan.'],
+    ['b10', 'bestellen', '¿Cuánto cuesta el café?', 'Hoeveel kost de koffie?', 'costar', 2, 'cuesta', ['cuesta .+', 'vale ' + NUM + ' .+', 'son ' + NUM + ' .+'], 'El café cuesta dos euros.', 'De koffie kost twee euro.', 'Eén ding: cuesta. Meerdere dingen: cuestan.'],
+    ['b11', 'bestellen', '¿Cuánto cuestan los churros?', 'Hoeveel kosten de churros?', 'costar', 5, 'cuestan', ['cuestan .+', 'valen ' + NUM + ' .+', 'son ' + NUM + ' .+'], 'Los churros cuestan tres euros.', 'De churros kosten drie euro.', 'Meerdere dingen: cuestan.'],
     ['b12', 'bestellen', '¿Tienes hambre?', 'Heb je honger?', 'tener', 0, 'tengo', ['tengo .+'], 'Sí, tengo mucha hambre.', 'Ja, ik heb veel honger.', 'Honger "heb" je in het Spaans: tener hambre. Over jezelf: yo → tengo.'],
     ['b13', 'bestellen', '¿Tienen sed ustedes?', 'Hebben jullie dorst?', 'tener', 3, 'tenemos', ['tenemos .+'], 'Sí, tenemos mucha sed.', 'Ja, wij hebben veel dorst.', 'Vraag aan jullie (ustedes); je antwoordt namens jou en je gezelschap: nosotros → tenemos.'],
     ['b14', 'bestellen', '¿Qué desayunas?', 'Wat ontbijt je?', 'desayunar', 0, 'desayuno', ['desayuno .+'], 'Desayuno pan con queso.', 'Ik ontbijt met brood met kaas.', 'Over jezelf: yo → desayuno.'],
     ['b15', 'bestellen', '¿Qué desayunan tus padres?', 'Wat ontbijten je ouders?', 'desayunar', 5, 'desayunan', ['desayunan .+'], 'Mis padres desayunan café y tostadas.', 'Mijn ouders ontbijten met koffie en toast.', 'Over meerdere andere personen: ellos → desayunan.'],
-    ['b16', 'bestellen', '¿Qué comes normalmente?', 'Wat eet je normaal?', 'comer', 0, 'como', ['como .+'], 'Como arroz con pollo.', 'Ik eet rijst met kip.', 'Over jezelf: yo → como.'],
+    ['b16', 'bestellen', '¿Qué comes normalmente?', 'Wat eet je normaal?', 'comer', 0, 'como', ['^' + PRE + '(yo )?como .+'], 'Como arroz con pollo.', 'Ik eet rijst met kip.', 'Over jezelf: yo → como.'],
     ['b17', 'bestellen', '¿Qué come tu hermano?', 'Wat eet je broer?', 'comer', 2, 'come', ['come .+'], 'Mi hermano come pasta.', 'Mijn broer eet pasta.', 'Over één andere persoon: él → come.'],
     ['b18', 'bestellen', '¿Qué bebe tu hermana?', 'Wat drinkt je zus?', 'beber', 2, 'bebe', ['bebe .+', 'toma .+'], 'Mi hermana bebe agua.', 'Mijn zus drinkt water.', 'Over één andere persoon: ella → bebe.'],
     ['b19', 'bestellen', '¿Qué beben ustedes?', 'Wat drinken jullie?', 'beber', 3, 'bebemos', ['bebemos .+', 'tomamos .+'], 'Bebemos jugo de naranja.', 'Wij drinken sinaasappelsap.', 'Vraag aan jullie (ustedes); je antwoordt namens jou en je gezelschap: nosotros → bebemos.'],
     ['b20', 'bestellen', '¿Qué necesitas?', 'Wat heb je nodig?', 'necesitar', 0, 'necesito', ['necesito .+', 'quiero .+', 'busco .+'], 'Necesito un mapa de la ciudad.', 'Ik heb een stadsplattegrond nodig.', 'Over jezelf: yo → necesito.'],
     ['b21', 'bestellen', '¿Qué necesita su amigo?', 'Wat heeft uw vriend nodig?', 'necesitar', 2, 'necesita', ['necesita .+'], 'Mi amigo necesita una maleta.', 'Mijn vriend heeft een koffer nodig.', 'Over één andere persoon: él → necesita.'],
-    ['b22', 'bestellen', '¿Quiere algo más?', 'Wilt u nog iets?', 'querer', 0, 'quiero', ['quiero .+', 'no quiero .+', '^' + PRE + '(no )?nada mas', '^' + PRE + '(no )?gracias'], 'No, nada más, gracias.', 'Nee, niets meer, dank u.', 'Over jezelf: yo → quiero. Ook goed: "No, nada más" of "No, gracias".'],
-    ['b23', 'bestellen', '¿Qué quieres comer?', 'Wat wil je eten?', 'querer', 0, 'quiero', ['quiero .+', 'quisiera .+', 'me gustaria .+', 'voy a comer .+', 'como .+'], 'Quiero una ensalada.', 'Ik wil een salade.', 'Over jezelf: yo → quiero.'],
+    ['b22', 'bestellen', '¿Quiere algo más?', 'Wilt u nog iets?', 'querer', 0, 'quiero', ['quiero .+', 'no quiero .+', '^' + PRE + '(no )?nada( mas)?( .+)?', '^' + PRE + '(no )?(eso )?es todo', '^' + PRE + '(si )?la cuenta( .+)?', '^' + PRE + '(otro|otra|un|una|dos) .+', '^' + PRE + '(no )?gracias'], 'No, nada más, gracias.', 'Nee, niets meer, dank u.', 'Over jezelf: yo → quiero. Ook goed: "No, nada más" of "No, gracias".'],
+    ['b23', 'bestellen', '¿Qué quieres comer?', 'Wat wil je eten?', 'querer', 0, 'quiero', ['quiero .+', 'quisiera .+', 'me gustaria .+', 'voy a comer .+', '^' + PRE + '(yo )?como .+'], 'Quiero una ensalada.', 'Ik wil een salade.', 'Over jezelf: yo → quiero.'],
   ];
-  for (const t of T) GV.push({ id: t[0], thema: t[1], q: t[2], nl: t[3], vb: t[4], p: t[5], vorm: t[6], ans: t[7], ex: t[8], exnl: t[9], tip: t[10] });
+  for (const t of T) {
+    const ans = t[7].slice();
+    if (JA_NEE.has(t[0])) ans.push('^' + PRE + '(no )?' + t[6] + '( .+)?');
+    GV.push({ id: t[0], thema: t[1], q: t[2], nl: t[3], vb: t[4], p: t[5], vorm: t[6], ans, ex: t[8], exnl: t[9], tip: t[10] });
+  }
 })();
-function gvCards(thema) {
-  return GV.filter(x => !thema || thema === 'alle' || x.thema === thema).map(x => ({ key: cardKey('g', x.id, 'a'), kind: 'g', id: x.id, dir: 'a', item: x }));
+// Vragen met "vosotros" horen bij es-ES; bij es-MX (ustedes) worden ze overgeslagen.
+function gvCards(thema, lang) {
+  return GV.filter(x => (!thema || thema === 'alle' || x.thema === thema) && !(lang === 'es-MX' && /vosotros/i.test(x.q))).map(x => ({ key: cardKey('g', x.id, 'a'), kind: 'g', id: x.id, dir: 'a', item: x }));
 }
 const normAnt = s => stripAcc(normSent(s));
 const gvHas = (g, f) => !!f && (' ' + g + ' ').includes(' ' + f + ' ');
@@ -886,6 +897,15 @@ function overrideJuist(sess, card, prev, now) {
   if (card.retry) return null; // een herhaling telde niet mee en veranderde het niveau niet
   sess.fout--; sess.juist++; sess.missed = sess.missed.filter(c => c.key !== card.key);
   return gradeCard(prev, card.key, true, now);
+}
+
+// "Toch fout": het omgekeerde van "Toch goed": een als juist beoordeeld antwoord telt als fout (sessie, niveau en herhaling).
+// prev = de voortgang van vóór het antwoord. Geeft de nieuwe voortgang terug (null bij een herhaling: die veranderde het niveau niet).
+function overrideFout(sess, card, prev, now) {
+  if (!sess.queue.some(c => c.retry && c.key === card.key)) sess.queue.splice(Math.min(3, sess.queue.length), 0, Object.assign({}, card, { retry: true }));
+  if (card.retry) return null;
+  sess.juist--; sess.fout++; if (!sess.missed.some(c => c.key === card.key)) sess.missed.push(card);
+  return gradeCard(prev, card.key, false, now);
 }
 
 // ---------- Activiteit en back-upherinnering ----------
@@ -1846,7 +1866,7 @@ function znListen() {
 // ---------- Oefening: gesprek ----------
 function gvPlan() {
   const g = S.settings.gv;
-  return sessionPlan(gvCards(g.thema), S.progress, Object.assign({}, g, { dir: 'a', verbs: false }), Date.now());
+  return sessionPlan(gvCards(g.thema, S.settings.lang), S.progress, Object.assign({}, g, { dir: 'a', verbs: false }), Date.now());
 }
 const gvTagOf = card => { const p = S.progress.get(card.key); return card.retry ? 'herhaling' : (p ? 'niveau ' + LEVELS[p.box - 1][0].toLowerCase() : 'nieuw'); };
 
@@ -1859,7 +1879,7 @@ function viewGesprekHome() {
   const tg = S.tochgoed || [];
   return `<p><button class="btn ghost small" data-act="nav" data-v="start">← Home</button></p>
     <section class="card"><h2>Gesprek</h2>
-    <p class="hint">Je hoort een Spaanse vraag en antwoordt in het Spaans, ${recSupported() ? 'hardop (🎤, werkt alleen online) of getypt' : 'getypt'}. Je zegt iets dat bij de vraag past en gebruikt het juiste werkwoord: bij "¿Dónde vives?" zeg je "Vivo en …", bij "¿Dónde vive Marta?" zeg je "Vive en …". Je antwoord is niet voorgeschreven, er zijn meestal veel goede antwoorden. Accenten tellen niet. Staat jouw goede antwoord er toch niet bij, tik dan op "Toch goed".</p>
+    <p class="hint">Je hoort een Spaanse vraag en antwoordt in het Spaans, ${recSupported() ? 'hardop (🎤, werkt alleen online) of getypt' : 'getypt'}. Je zegt iets dat bij de vraag past en gebruikt het juiste werkwoord: bij "¿Dónde vives?" zeg je "Vivo en …", bij "¿Dónde vive Marta?" zeg je "Vive en …". Je antwoord is niet voorgeschreven, er zijn meestal veel goede antwoorden. Accenten tellen niet. Het is een oefening, geen examen: na je antwoord zie je een voorbeeld en beslis jij zelf met "Toch goed" of "Toch fout".</p>
     <label class="field">Thema<select id="gv-thema">${GV_THEMAS.map(([v, t]) => opt(v, g.thema || 'alle', t)).join('')}</select></label>
     <p><b>${plan.dueTotal}</b> aan de beurt · <b>${plan.newTotal}</b> nieuw beschikbaar · <b>${plan.learned}</b> al geoefend</p>
     <div class="boxes">${levelTiles(plan.boxes)}</div>
@@ -1870,9 +1890,9 @@ function viewGesprekHome() {
       <label class="field">Nieuwe vragen per sessie (maximum)<select id="gv-new">${[3, 6, 10, 15].map(n => opt(n, g.newMax, n)).join('')}</select></label>
       <p class="hint">${levelHint}</p>
     </details>
-    ${tg.length ? `<details><summary>Antwoorden die je als "toch goed" markeerde (${tg.length})</summary>
-      <p class="hint">Deze lijst is bedoeld om de toegelaten antwoorden later aan te vullen.</p>
-      <textarea readonly rows="6" style="width:100%">${esc(tg.map(x => x.id + ' | ' + x.given).join('\n'))}</textarea></details>` : ''}
+    ${tg.length ? `<details><summary>Antwoorden die je zelf als goed of fout markeerde (${tg.length})</summary>
+      <p class="hint">Deze lijst is bedoeld om de toegelaten antwoorden later aan te vullen of aan te scherpen.</p>
+      <textarea readonly rows="6" style="width:100%">${esc(tg.map(x => x.id + ' | ' + x.given + ' | ' + (x.v === 'fout' ? 'fout' : 'goed')).join('\n'))}</textarea></details>` : ''}
     </section>`;
 }
 
@@ -1908,20 +1928,21 @@ function viewGesprek() {
 }
 
 function gvFeedback() {
-  const f = S.gv.feedback, it = f.card.item, r = f.chk.result, good = r === 'juist' || f.over;
-  const verdict = good ? '✓ Juist' : r === 'vorm' ? '✗ Let op: verkeerde persoon' : r === 'skip' ? '✗ Een mogelijk antwoord' : '✗ Dat past niet bij de vraag';
+  const f = S.gv.feedback, it = f.card.item, r = f.chk.result, good = f.good, appGood = r === 'juist';
+  const verdict = good ? '✓ Juist' : r === 'vorm' ? '✗ Let op: verkeerde persoon' : r === 'kort' ? '✗ Nog niet af' : r === 'skip' ? '✗ Een mogelijk antwoord' : '✗ Dat past niet bij de vraag';
   let h = gvBar(f.card.retry ? 'Herhaling' : 'Vraag ' + Math.min(S.gv.sess.answered, S.gv.sess.total) + ' van ' + S.gv.sess.total) + `
     <section class="card fcard ${good ? 'good' : 'bad'}"><div class="verdict ${good ? 'good' : 'bad'}">${verdict}</div>
       <div class="big">${esc(it.q)} ${speakBtn(it.q)}</div>
       <div class="hint">${esc(it.nl)}</div>`;
   if (f.given && r !== 'skip') h += `<div class="hint">Jouw antwoord: <b>${esc(f.given)}</b>${f.spoken ? ' (gesproken)' : ''}</div>`;
-  if (f.over) h += `<div class="hint">Genoteerd als "toch goed". Het niveau is aangepast.</div>`;
+  if (good !== appGood) h += `<div class="hint">Genoteerd als "toch ${good ? 'goed' : 'fout'}". Het niveau is aangepast.</div>`;
+  if (r === 'kort' && !good) h += `<div class="hint">Je antwoord is nog niet af. Zeg of typ de hele zin, bv. met het voorbeeld hieronder.</div>`;
   if (r === 'vorm' && !good) h += `<div class="hint">Je zei <b>${esc(f.chk.gebruikt)}</b> (${esc(PERSONS[f.chk.persoon][0])}). Hier antwoord je met <b>${esc(it.vorm)}</b> (${esc(PERSONS[it.p][0])}).</div>`;
   h += `<div class="hint"><b>Voorbeeld:</b> ${esc(it.ex)} ${speakBtn(it.ex)}<br>${esc(it.exnl)}</div>`;
   h += `<div class="hint"><b>Regel:</b> ${esc(it.tip)}</div>`;
   const v = S.verbs.find(x => x.infinitief === it.vb), t = v && verbTip(v, it.p);
   if (t) h += `<div class="hint"><b>${esc(it.vb)}:</b> ${esc(t)}</div>`;
-  h += `</section><div class="btnrow"><button class="btn" data-act="gv-next">Volgende</button>${!good && r === 'fout' ? '<button class="btn ghost" data-act="gv-ok">Toch goed</button>' : ''}</div>`;
+  h += `</section><div class="btnrow"><button class="btn" data-act="gv-next">Volgende</button>${r === 'skip' ? '' : good ? '<button class="btn ghost" data-act="gv-no">Toch fout</button>' : '<button class="btn ghost" data-act="gv-ok">Toch goed</button>'}</div>`;
   return h;
 }
 
@@ -1941,10 +1962,9 @@ async function gvSubmit(given, spoken, skip) {
   const card = G.sess.queue[0];
   const chk = skip ? { result: 'skip' } : checkGesprek(card.item, given, S.verbs), st = $('#mr-status');
   if (chk.result === 'leeg') { if (st) st.textContent = 'Zeg of typ eerst een antwoord, of tik op "Ik weet het niet".'; return; }
-  if (chk.result === 'kort') { if (st) st.textContent = 'Ik hoorde: "' + given + '". Dat is nog niet af en telt niet. Tik opnieuw op 🎤 en zeg je hele antwoord, of typ het.'; return; }
   const prev = S.progress.get(card.key) || null;
   const r = answerSession(G.sess, S.progress, chk.result === 'juist', Date.now());
-  G.feedback = { card, given: given || '', spoken: !!spoken, chk, prev, over: false };
+  G.feedback = { card, given: given || '', spoken: !!spoken, chk, prev, good: chk.result === 'juist' };
   await saveProgress(r.update);
   render();
 }
@@ -1954,16 +1974,21 @@ function gvListen() {
   const it = G.sess.queue[0].item;
   listenAnswer(t => checkGesprek(it, t, S.verbs).result === 'juist');
 }
-// "Toch goed": het antwoord was goed Spaans dat niet in de lijst staat. Sessie en niveau worden hersteld, het antwoord komt in de lijst voor later.
-async function gvOk() {
-  const G = S.gv; if (!G || !G.feedback || G.feedback.over || G.feedback.chk.result !== 'fout') return;
-  const f = G.feedback, upd = overrideJuist(G.sess, f.card, f.prev, Date.now());
-  f.over = true;
+// "Toch goed" / "Toch fout": jij beslist, ook als de app het anders zag. Sessie, niveau en herhaling volgen jouw keuze;
+// opnieuw tikken op de andere knop zet het weer terug. De keuzes komen in een lijst om de patronen later bij te werken.
+async function gvZet(goed) {
+  const G = S.gv; if (!G || !G.feedback || G.feedback.chk.result === 'skip' || G.feedback.good === goed) return;
+  const f = G.feedback, appGood = f.chk.result === 'juist', now = Date.now();
+  const upd = goed ? overrideJuist(G.sess, f.card, f.prev, now) : overrideFout(G.sess, f.card, f.prev, now);
+  f.good = goed;
   if (upd) { S.progress.set(upd.key, upd); try { await store.put('progress', upd); } catch (_) {} }
-  S.tochgoed = (S.tochgoed || []).concat({ id: f.card.item.id, given: f.given }).slice(-200);
+  S.tochgoed = (S.tochgoed || []).filter(x => !(x.id === f.card.item.id && x.given === f.given));
+  if (goed !== appGood) S.tochgoed.push({ id: f.card.item.id, given: f.given, v: goed ? 'goed' : 'fout' });
+  S.tochgoed = S.tochgoed.slice(-200);
   try { await store.put('meta', { key: 'tochgoed', value: S.tochgoed }); } catch (_) {}
   render();
 }
+const gvOk = () => gvZet(true), gvNo = () => gvZet(false);
 
 function viewWoorden() {
   if (!S.words.length) return `<section class="card"><p>Nog geen woorden. Ga naar Importeren.</p></section>`;
@@ -2033,7 +2058,7 @@ function viewBeheer() {
     <p><button class="btn ghost" data-act="fc-reset">Voortgang wissen</button></p></section>
     <section class="card"><h2>Alles wissen</h2><p>Verwijdert alle woorden, werkwoorden en voortgang van dit toestel.</p>
     <p><button class="btn danger" data-act="wissen">Alles wissen</button></p></section>
-    <section class="card"><p class="hint">Spaans leren — Versie 0.10.</p></section>`;
+    <section class="card"><p class="hint">Spaans leren — Versie 0.11.</p></section>`;
 }
 
 // ---------- Acties ----------
@@ -2073,7 +2098,7 @@ async function applyPlan() {
 
 async function makeBackup() {
   const progress = await store.getAll('progress');
-  const data = { app: 'spaans-leren', versie: 1, datum: new Date().toISOString(), words: S.words, verbs: S.verbs, progress, settings: S.settings };
+  const data = { app: 'spaans-leren', versie: 1, datum: new Date().toISOString(), words: S.words, verbs: S.verbs, progress, settings: S.settings, tochgoed: S.tochgoed || [] };
   const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -2094,7 +2119,12 @@ async function restoreBackup(file) {
     const prog = (Array.isArray(data.progress) ? data.progress : []).filter(p => p && typeof p.key === 'string');
     const ok = x => x && x.id != null;
     if (!data.words.every(ok) || !data.verbs.every(ok)) throw new Error('de back-up is beschadigd (woorden zonder id)');
-    await store.replaceMany({ words: data.words, verbs: data.verbs, progress: prog, meta: [{ key: 'settings', value: data.settings || { block: null, soorten: [] } }].concat(Number.isNaN(Date.parse(data.datum)) ? [] : [{ key: 'lastBackup', value: data.datum }]) });
+    const act = await store.get('meta', 'activity'); // de teller "vandaag geoefend" staat niet in de back-up en blijft behouden
+    const tg = Array.isArray(data.tochgoed) ? data.tochgoed : (S.tochgoed || []);
+    const meta = [{ key: 'settings', value: data.settings || { block: null, soorten: [] } }, { key: 'tochgoed', value: tg }];
+    if (!Number.isNaN(Date.parse(data.datum))) meta.push({ key: 'lastBackup', value: data.datum });
+    if (act) meta.push(act);
+    await store.replaceMany({ words: data.words, verbs: data.verbs, progress: prog, meta });
     await loadAll();
     S.msg = null;
     setMsg('ok', 'Back-up teruggezet: ' + plural(S.words.length, 'woord', 'woorden') + ' en ' + plural(S.verbs.length, 'werkwoord', 'werkwoorden') + '.');
@@ -2138,10 +2168,11 @@ document.addEventListener('click', async e => {
   else if (act === 'gv-check') gvCheck();
   else if (act === 'gv-skip') gvSubmit('', false, true);
   else if (act === 'gv-mic') gvListen();
-  else if (act === 'gv-speak') { if (S.gv && S.gv.sess.queue.length) speak(S.gv.sess.queue[0].item.q); }
-  else if (act === 'gv-slow') { if (S.gv && S.gv.sess.queue.length) speak(S.gv.sess.queue[0].item.q, 0.6); }
-  else if (act === 'gv-show') { if (S.gv) { S.gv.shown = true; render(); } }
+  else if (act === 'gv-speak') { if (S.gv && S.gv.sess.queue.length) { if (L) endListening(L); speak(S.gv.sess.queue[0].item.q); } }
+  else if (act === 'gv-slow') { if (S.gv && S.gv.sess.queue.length) { if (L) endListening(L); speak(S.gv.sess.queue[0].item.q, 0.6); } }
+  else if (act === 'gv-show') { if (S.gv && S.gv.sess.queue.length) { S.gv.shown = true; const p = el.parentElement; if (p) p.outerHTML = `<div class="big">${esc(S.gv.sess.queue[0].item.q)}</div>`; else render(); } } // zonder te hertekenen: een lopende microfoon en je getypte tekst blijven
   else if (act === 'gv-ok') gvOk();
+  else if (act === 'gv-no') gvNo();
   else if (act === 'gv-next') { if (S.gv) { S.gv.feedback = null; S.gv.shown = false; render(); } }
   else if (act === 'gv-stop') { S.gv = null; S.view = 'gesprekhome'; S.msg = null; render(); }
   else if (act === 'zn-stop') { S.zn = null; S.view = 'spreekhome'; S.msg = null; render(); }

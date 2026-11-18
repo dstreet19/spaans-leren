@@ -2,11 +2,13 @@
 // Strategie: eerst uit het geheugen van het toestel (snel, ook offline), en op de achtergrond vernieuwen
 // wanneer er internet is. Een nieuwe versie van de app verschijnt dus bij het volgende openen.
 // Je woorden en voortgang staan in IndexedDB en worden hier nooit aangeraakt.
-const CACHE = 'spaans-leren-v0.10';
+const CACHE = 'spaans-leren-v0.11';
 const BESTANDEN = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png', './favicon-32.png'];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(BESTANDEN)).then(() => self.skipWaiting()));
+  // cache: 'reload' haalt de bestanden vers van de server en niet uit de browsercache (GitHub Pages bewaart tot 10 minuten),
+  // zodat een nieuwe versie nooit met oude bestanden in zijn eigen cache terechtkomt.
+  e.waitUntil(caches.open(CACHE).then(c => Promise.all(BESTANDEN.map(u => fetch(new Request(u, { cache: 'reload' })).then(r => { if (!r.ok) throw new Error(u + ' ' + r.status); return c.put(u, r); })))).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', e => {
@@ -19,7 +21,7 @@ self.addEventListener('fetch', e => {
   if (r.method !== 'GET' || new URL(r.url).origin !== self.location.origin) return;
   e.respondWith(caches.open(CACHE).then(async c => {
     const bewaard = await c.match(r, { ignoreSearch: true });
-    const vers = fetch(r).then(res => { if (res && res.ok) c.put(r, res.clone()); return res; }).catch(() => null);
+    const vers = fetch(r, { cache: 'no-cache' }).then(res => { if (res && res.ok) c.put(r, res.clone()); return res; }).catch(() => null);
     if (bewaard) { e.waitUntil(vers); return bewaard; }
     const res = await vers;
     if (res) return res;
