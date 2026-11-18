@@ -922,6 +922,7 @@ const LEVELS = [['Zwak', 'zo weer'], ['Leren', 'morgen'], ['Redelijk', 'na 3 dag
 const NAV = [['start', 'Home'], ['woorden', 'Woorden'], ['import', 'Importeren'], ['beheer', 'Beheer']];
 
 function render() {
+  stopListening();
   $('#nav').innerHTML = NAV.map(([k, t]) => `<button data-act="nav" data-v="${k}" class="${(S.view === k || (k === 'start' && ['flash', 'flashhome', 'genus', 'genushome', 'meervoud', 'meervoudhome', 'overeen', 'overeenhome', 'werkwoord', 'werkwoordhome', 'spreek', 'spreekhome', 'selectie'].includes(S.view))) ? 'on' : ''}">${t}</button>`).join('');
   const views = { start: viewStart, woorden: viewWoorden, import: viewImport, beheer: viewBeheer, flash: viewFlash, flashhome: viewFlashHome, genus: viewGenus, genushome: viewGenusHome, meervoud: viewMeervoud, meervoudhome: viewMeervoudHome, overeen: viewOvereen, overeenhome: viewOvereenHome, werkwoord: viewWerkwoord, werkwoordhome: viewWerkwoordHome, spreek: viewSpreek, spreekhome: viewSpreekHome, selectie: viewSelectie };
   let html = '';
@@ -1325,29 +1326,46 @@ async function mrSubmit(given, spoken, skip) {
 }
 const mrCheck = () => { const i = $('#mr-input'); return mrSubmit(i ? i.value : '', false, false); };
 
+// Houdt bij welke spraakherkenning nu luistert, zodat de microfoon altijd stopt
+// (anders blijft op een iPad het oranje microfoon-bolletje branden, ook op Home).
+let activeRec = null;
+function stopListening() {
+  const r = activeRec; activeRec = null;
+  if (r) { try { r.abort(); } catch (_) {} }
+}
+document.addEventListener('visibilitychange', () => { if (document.hidden) stopListening(); });
+window.addEventListener('pagehide', stopListening);
+
 // Gesproken antwoord: stuurt het beste resultaat door naar submit(tekst). Werkt alleen online.
 function listenAnswer(expected, isRight, submit) {
+  stopListening();
   const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
   const st = $('#mr-status'), btn = document.querySelector('.mic');
   if (!Rec) { if (st) st.textContent = 'Spraakherkenning werkt niet in deze browser. Typ het antwoord.'; return; }
   if (!navigator.onLine) { if (st) st.textContent = 'Spreken werkt alleen online. Typ het antwoord.'; return; }
   const rec = new Rec(); rec.lang = S.settings.lang || 'es-ES'; rec.interimResults = false; rec.maxAlternatives = 5; rec.continuous = false;
   let got = false;
+  activeRec = rec;
   if (btn) { btn.disabled = true; btn.textContent = '🎤 Ik luister…'; }
   const reset = () => { const b = document.querySelector('.mic'); if (b) { b.disabled = false; b.textContent = '🎤 Spreek'; } };
   rec.onresult = e => {
     got = true;
+    if (activeRec === rec) activeRec = null;
+    try { rec.stop(); } catch (_) {}
     const alts = Array.from(e.results[0]).map(a => a.transcript.trim()).filter(Boolean);
     const hit = alts.find(t => isRight(expected, t));
     reset(); submit(hit || alts[0] || '');
   };
   rec.onerror = e => {
+    if (activeRec === rec) activeRec = null;
+    try { rec.abort(); } catch (_) {}
+    if (e.error === 'aborted') return; // door ons zelf gestopt (scherm verlaten): geen melding
     const msg = { 'not-allowed': 'De microfoon is niet toegestaan. Geef toestemming in je browser, of typ het antwoord.', 'service-not-allowed': 'De microfoon is niet toegestaan. Typ het antwoord.',
       'no-speech': 'Ik hoorde niets. Probeer opnieuw of typ het antwoord.', 'network': 'Spreken werkt alleen online. Typ het antwoord.', 'audio-capture': 'Geen microfoon gevonden. Typ het antwoord.' }[e.error] || 'Spreken lukte niet. Typ het antwoord.';
     const s2 = $('#mr-status'); if (s2) s2.textContent = msg;
   };
-  rec.onend = () => { if (!got) reset(); };
-  try { rec.start(); } catch (_) { reset(); if (st) st.textContent = 'Spreken lukte niet. Typ het antwoord.'; }
+  rec.onend = () => { if (activeRec === rec) activeRec = null; if (!got) reset(); };
+  try { rec.start(); } catch (_) { activeRec = null; reset(); if (st) st.textContent = 'Spreken lukte niet. Typ het antwoord.'; }
 }
 function mrListen() {
   const M = S.mr; if (!M || M.feedback) return;
@@ -1747,7 +1765,7 @@ function viewBeheer() {
     <p><button class="btn ghost" data-act="fc-reset">Voortgang wissen</button></p></section>
     <section class="card"><h2>Alles wissen</h2><p>Verwijdert alle woorden, werkwoorden en voortgang van dit toestel.</p>
     <p><button class="btn danger" data-act="wissen">Alles wissen</button></p></section>
-    <section class="card"><p class="hint">Spaans leren — Versie 0.9.1.</p></section>`;
+    <section class="card"><p class="hint">Spaans leren — Versie 0.9.2.</p></section>`;
 }
 
 // ---------- Acties ----------
