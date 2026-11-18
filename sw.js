@@ -2,7 +2,7 @@
 // Strategie: eerst uit het geheugen van het toestel (snel, ook offline), en op de achtergrond vernieuwen
 // wanneer er internet is. Een nieuwe versie van de app verschijnt dus bij het volgende openen.
 // Je woorden en voortgang staan in IndexedDB en worden hier nooit aangeraakt.
-const CACHE = 'spaans-leren-v0.9.2';
+const CACHE = 'spaans-leren-v0.9.3';
 const BESTANDEN = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png', './favicon-32.png'];
 
 self.addEventListener('install', e => {

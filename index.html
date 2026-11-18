@@ -87,8 +87,11 @@ details summary{cursor:pointer;min-height:40px;padding:8px 0;color:var(--acc);fo
 .mrform .btnrow{margin:6px 0}
 .mrform .btnrow .btn{min-height:54px;font-size:18px}
 .btn.mic{flex:0 0 auto;padding:10px 16px}
-.optgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 14px}
-.optgrid .btn.pick{min-height:72px;font-size:26px}
+.btn.mic.listening{background:var(--acc);color:var(--accink)}
+.optgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 14px}
+.optgrid .btn.pick{min-height:72px;font-size:26px;padding:10px 8px;overflow-wrap:anywhere}
+.optgrid.l1 .btn.pick{font-size:21px}
+.optgrid.l2 .btn.pick{font-size:17px}
 .optgrid .btn small{display:inline-block;margin-right:6px;font-size:13px;font-weight:400;color:var(--mut)}
 .blank{color:var(--acc);letter-spacing:2px}
 .fcard .person{color:var(--acc)}
@@ -922,7 +925,7 @@ const LEVELS = [['Zwak', 'zo weer'], ['Leren', 'morgen'], ['Redelijk', 'na 3 dag
 const NAV = [['start', 'Home'], ['woorden', 'Woorden'], ['import', 'Importeren'], ['beheer', 'Beheer']];
 
 function render() {
-  stopListening();
+  stopListening(); spokenText = '';
   $('#nav').innerHTML = NAV.map(([k, t]) => `<button data-act="nav" data-v="${k}" class="${(S.view === k || (k === 'start' && ['flash', 'flashhome', 'genus', 'genushome', 'meervoud', 'meervoudhome', 'overeen', 'overeenhome', 'werkwoord', 'werkwoordhome', 'spreek', 'spreekhome', 'selectie'].includes(S.view))) ? 'on' : ''}">${t}</button>`).join('');
   const views = { start: viewStart, woorden: viewWoorden, import: viewImport, beheer: viewBeheer, flash: viewFlash, flashhome: viewFlashHome, genus: viewGenus, genushome: viewGenusHome, meervoud: viewMeervoud, meervoudhome: viewMeervoudHome, overeen: viewOvereen, overeenhome: viewOvereenHome, werkwoord: viewWerkwoord, werkwoordhome: viewWerkwoordHome, spreek: viewSpreek, spreekhome: viewSpreekHome, selectie: viewSelectie };
   let html = '';
@@ -1324,52 +1327,96 @@ async function mrSubmit(given, spoken, skip) {
   await saveProgress(r.update);
   render();
 }
-const mrCheck = () => { const i = $('#mr-input'); return mrSubmit(i ? i.value : '', false, false); };
+const mrCheck = () => { const i = $('#mr-input'); return mrSubmit(i ? i.value : '', i ? isSpoken(i.value) : false, false); };
 
-// Houdt bij welke spraakherkenning nu luistert, zodat de microfoon altijd stopt
+// Spreken: de app blijft luisteren tot jij op "✓ Klaar" tikt, toont live wat ze hoort in het invoerveld,
+// en beoordeelt pas als jij op Controleer tikt (zodat je eerst kunt corrigeren).
+// Houdt bij welke luistersessie actief is, zodat de microfoon altijd stopt
 // (anders blijft op een iPad het oranje microfoon-bolletje branden, ook op Home).
-let activeRec = null;
+let L = null;          // actieve luistersessie
+let spokenText = '';   // laatst gehoorde tekst die in het invoerveld is gezet
 function stopListening() {
-  const r = activeRec; activeRec = null;
-  if (r) { try { r.abort(); } catch (_) {} }
+  const s = L; L = null;
+  if (s) { s.cancelled = true; clearTimeout(s.timer); try { s.rec.abort(); } catch (_) {} }
 }
 document.addEventListener('visibilitychange', () => { if (document.hidden) stopListening(); });
 window.addEventListener('pagehide', stopListening);
 
-// Gesproken antwoord: stuurt het beste resultaat door naar submit(tekst). Werkt alleen online.
-function listenAnswer(expected, isRight, submit) {
-  stopListening();
+// Aarzelwoordjes ("eh", "ehm", "uh") tellen niet mee bij spreken.
+const FILLERS = /(^|\s)(e+h+m*|e+m+|m+m+|h+m+|u+h+m*|a+h+m+)(?=\s|$)/gi;
+const cleanSpoken = t => t.replace(FILLERS, ' ').replace(/\s+/g, ' ').trim();
+// Het antwoord telt als "gesproken" (accenten tellen niet) zolang je de gehoorde tekst niet zelf aanpast.
+const isSpoken = v => !!spokenText && v.trim() === spokenText;
+
+function micButton(listening) {
+  const b = document.querySelector('.mic'); if (!b) return;
+  b.disabled = false; b.classList.toggle('listening', listening);
+  b.textContent = listening ? '✓ Klaar' : '🎤 Spreek';
+}
+function micStatus(t) { const s = $('#mr-status'); if (s) s.textContent = t; }
+
+// Eén luistersessie voor Meervoud, Werkwoordtabel en Spreekoefening. Een tweede tik op de knop (✓ Klaar) beëindigt het luisteren.
+function listenAnswer(isRight) {
+  if (L) { finishListening(); return; }
   const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
-  const st = $('#mr-status'), btn = document.querySelector('.mic');
-  if (!Rec) { if (st) st.textContent = 'Spraakherkenning werkt niet in deze browser. Typ het antwoord.'; return; }
-  if (!navigator.onLine) { if (st) st.textContent = 'Spreken werkt alleen online. Typ het antwoord.'; return; }
-  const rec = new Rec(); rec.lang = S.settings.lang || 'es-ES'; rec.interimResults = false; rec.maxAlternatives = 5; rec.continuous = false;
-  let got = false;
-  activeRec = rec;
-  if (btn) { btn.disabled = true; btn.textContent = '🎤 Ik luister…'; }
-  const reset = () => { const b = document.querySelector('.mic'); if (b) { b.disabled = false; b.textContent = '🎤 Spreek'; } };
+  if (!Rec) return micStatus('Spraakherkenning werkt niet in deze browser. Typ het antwoord.');
+  if (!navigator.onLine) return micStatus('Spreken werkt alleen online. Typ het antwoord.');
+  const rec = new Rec(); rec.lang = S.settings.lang || 'es-ES'; rec.interimResults = true; rec.maxAlternatives = 5; rec.continuous = true;
+  const s = L = { rec, segs: [], error: '', finishing: false, cancelled: false, done: false, timer: null, isRight };
+  const field = $('#mr-input'); if (field) field.value = '';
+  spokenText = '';
+  micButton(true); micStatus('Ik luister… Spreek en tik op ✓ Klaar als je klaar bent.');
   rec.onresult = e => {
-    got = true;
-    if (activeRec === rec) activeRec = null;
-    try { rec.stop(); } catch (_) {}
-    const alts = Array.from(e.results[0]).map(a => a.transcript.trim()).filter(Boolean);
-    const hit = alts.find(t => isRight(expected, t));
-    reset(); submit(hit || alts[0] || '');
+    if (s.cancelled) return;
+    s.segs = Array.from(e.results).map(r => Array.from(r).map(x => x.transcript.trim()).filter(Boolean));
+    const live = spokenFrom(s, false), f = $('#mr-input');
+    if (f) f.value = live;
+    if (live) micStatus('Ik hoor: ' + live);
   };
   rec.onerror = e => {
-    if (activeRec === rec) activeRec = null;
-    try { rec.abort(); } catch (_) {}
-    if (e.error === 'aborted') return; // door ons zelf gestopt (scherm verlaten): geen melding
-    const msg = { 'not-allowed': 'De microfoon is niet toegestaan. Geef toestemming in je browser, of typ het antwoord.', 'service-not-allowed': 'De microfoon is niet toegestaan. Typ het antwoord.',
-      'no-speech': 'Ik hoorde niets. Probeer opnieuw of typ het antwoord.', 'network': 'Spreken werkt alleen online. Typ het antwoord.', 'audio-capture': 'Geen microfoon gevonden. Typ het antwoord.' }[e.error] || 'Spreken lukte niet. Typ het antwoord.';
-    const s2 = $('#mr-status'); if (s2) s2.textContent = msg;
+    if (s.cancelled || e.error === 'aborted') return;
+    if (e.error !== 'no-speech') {
+      s.error = { 'not-allowed': 'De microfoon is niet toegestaan. Geef toestemming in je browser, of typ het antwoord.', 'service-not-allowed': 'De microfoon is niet toegestaan. Typ het antwoord.',
+        'network': 'Spreken werkt alleen online. Typ het antwoord.', 'audio-capture': 'Geen microfoon gevonden. Typ het antwoord.' }[e.error] || 'Spreken lukte niet. Typ het antwoord.';
+    }
+    endListening(s);
   };
-  rec.onend = () => { if (activeRec === rec) activeRec = null; if (!got) reset(); };
-  try { rec.start(); } catch (_) { activeRec = null; reset(); if (st) st.textContent = 'Spreken lukte niet. Typ het antwoord.'; }
+  rec.onend = () => endListening(s);
+  try { rec.start(); } catch (_) { L = null; micButton(false); micStatus('Spreken lukte niet. Typ het antwoord.'); }
+}
+// Tekst uit de gehoorde stukken: bij één stuk de variant die klopt, anders de beste van elk stuk achter elkaar.
+function spokenFrom(s, final) {
+  let t;
+  if (s.segs.length === 1) t = s.segs[0].find(x => s.isRight(x)) || s.segs[0][0] || '';
+  else t = s.segs.map(g => g[0] || '').join(' ');
+  return final ? cleanSpoken(t) : t;
+}
+function finishListening() {
+  const s = L; if (!s || s.finishing) return;
+  s.finishing = true;
+  const b = document.querySelector('.mic'); if (b) b.disabled = true;
+  try { s.rec.stop(); } catch (_) {}
+  s.timer = setTimeout(() => endListening(s), 1500); // voor het geval iOS het einde niet meldt
+}
+// Zet het resultaat in het invoerveld; de microfoon is dan uit. Beoordelen doet de gebruiker met Controleer.
+function endListening(s) {
+  if (s.done || s.cancelled) return;
+  s.done = true; clearTimeout(s.timer);
+  if (L === s) L = null;
+  try { s.rec.abort(); } catch (_) {}
+  const text = spokenFrom(s, true), f = $('#mr-input');
+  micButton(false);
+  if (text) {
+    spokenText = text; if (f) { f.value = text; }
+    micStatus('Dit hoorde ik. Klopt het niet? Pas het aan of tik opnieuw op 🎤. Tik op Controleer als het goed is.');
+  } else {
+    micStatus(s.error || 'Ik hoorde niets. Probeer opnieuw of typ het antwoord.');
+  }
 }
 function mrListen() {
   const M = S.mr; if (!M || M.feedback) return;
-  listenAnswer(M.sess.queue[0].item.meervoud, (e, t) => checkPlural(e, t, true).result === 'juist', t => mrSubmit(t, true, false));
+  const exp = M.sess.queue[0].item.meervoud;
+  listenAnswer(t => checkPlural(exp, t, true).result === 'juist');
 }
 
 // ---------- Oefening: overeenstemming ----------
@@ -1433,7 +1480,7 @@ function viewOvereen() {
       <div class="big">${esc(q.pre)}<span class="blank">____</span>${esc(q.post)}</div>
       <div class="hint">${esc(q.noun.nederlands)} · <b>${esc(fam.lemma)}</b> = ${esc(fam.nl)}</div>
       <div class="hint">Welke vorm van <b>${esc(fam.lemma)}</b> past hier?</div></section>
-    <div class="optgrid">${q.options.map((o, i) => `<button class="btn pick" data-act="ov-pick" data-v="${esc(o)}"><small>${i + 1}</small> ${esc(o)}</button>`).join('')}</div>`;
+    <div class="optgrid${(m => m >= 12 ? ' l2' : m >= 9 ? ' l1' : '')(Math.max(...q.options.map(x => x.length)))}">${q.options.map((o, i) => `<button class="btn pick" data-act="ov-pick" data-v="${esc(o)}"><small>${i + 1}</small> ${esc(o)}</button>`).join('')}</div>`;
 }
 
 function ovFeedback() {
@@ -1577,11 +1624,12 @@ async function wtSubmit(given, spoken, skip) {
   await saveProgress(r.update);
   render();
 }
-const wtCheck = () => { const i = $('#mr-input'); return wtSubmit(i ? i.value : '', false, false); };
+const wtCheck = () => { const i = $('#mr-input'); return wtSubmit(i ? i.value : '', i ? isSpoken(i.value) : false, false); };
 function wtListen() {
   const W = S.wt; if (!W || W.feedback) return;
   const c = W.sess.queue[0];
-  listenAnswer(c.item[VERB_FORMS[c.pi]], (e, t) => checkForm(e, t, true).result === 'juist', t => wtSubmit(t, true, false));
+  const exp = c.item[VERB_FORMS[c.pi]];
+  listenAnswer(t => checkForm(exp, t, true).result === 'juist');
 }
 
 // ---------- Oefening: spreekoefening (zinnen) ----------
@@ -1691,10 +1739,11 @@ async function znSubmit(given, spoken, skip) {
   await saveProgress(r.update);
   render();
 }
-const znCheck = () => { const i = $('#mr-input'); return znSubmit(i ? i.value : '', false, false); };
+const znCheck = () => { const i = $('#mr-input'); return znSubmit(i ? i.value : '', i ? isSpoken(i.value) : false, false); };
 function znListen() {
   const Z = S.zn; if (!Z || Z.feedback) return;
-  listenAnswer(Z.sess.queue[0].sent, (e, t) => checkSentenceAny(e, t, true).result === 'juist', t => znSubmit(t, true, false));
+  const exp = Z.sess.queue[0].sent;
+  listenAnswer(t => checkSentenceAny(exp, t, true).result === 'juist');
 }
 
 function viewWoorden() {
@@ -1765,7 +1814,7 @@ function viewBeheer() {
     <p><button class="btn ghost" data-act="fc-reset">Voortgang wissen</button></p></section>
     <section class="card"><h2>Alles wissen</h2><p>Verwijdert alle woorden, werkwoorden en voortgang van dit toestel.</p>
     <p><button class="btn danger" data-act="wissen">Alles wissen</button></p></section>
-    <section class="card"><p class="hint">Spaans leren — Versie 0.9.2.</p></section>`;
+    <section class="card"><p class="hint">Spaans leren — Versie 0.9.3.</p></section>`;
 }
 
 // ---------- Acties ----------
