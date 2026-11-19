@@ -114,22 +114,24 @@ details summary{cursor:pointer;min-height:40px;padding:8px 0;color:var(--acc);fo
 .oef{display:grid;grid-template-columns:1fr;gap:10px;margin:0 0 14px}
 .oef li,.oef li:last-child{display:block;padding:0;border:0}
 @media (min-width:600px){.oef{grid-template-columns:1fr 1fr}}
+@media (min-width:760px){.oef{grid-template-columns:1fr 1fr 1fr}}
 /* kleurenpalet voor de oefeningen: zachte tint, donkerdere rand, geen rood (rood = fout) */
 :root{--tl1:95%;--tl2:87%;--tsat:58%;--tbd:52%;--tink:17%;--tgo:36%;--tsh:rgba(40,35,20,.10)}
 @media (prefers-color-scheme:dark){:root{--tl1:21%;--tl2:15%;--tsat:26%;--tbd:42%;--tink:93%;--tgo:50%;--tsh:rgba(0,0,0,.35)}}
 .t1{--h:122}.t2{--h:172}.t3{--h:40}.t4{--h:268}.t5{--h:205}.t6{--h:78}.t7{--h:232}
-.tegel{display:flex;align-items:center;gap:10px;width:100%;min-height:56px;padding:7px 10px 7px 8px;border-radius:16px;
+.tegel{display:flex;align-items:center;gap:10px;width:100%;min-height:64px;height:100%;padding:8px 10px 8px 8px;border-radius:16px;
   border:2px solid hsl(var(--h) calc(var(--tsat) - 12%) var(--tbd));
   background:linear-gradient(155deg,hsl(var(--h) var(--tsat) var(--tl1)),hsl(var(--h) var(--tsat) var(--tl2)));
   color:hsl(var(--h) 30% var(--tink));font:inherit;text-align:left;cursor:pointer;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 3px 8px var(--tsh);
   transition:transform .12s ease,box-shadow .12s ease;-webkit-tap-highlight-color:transparent}
 .tegel:active{transform:scale(.97);box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 1px 3px var(--tsh)}
-.tegel .tico{flex:0 0 auto;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:21px;
+.tegel .tico{flex:0 0 auto;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:19px;
   background:hsl(var(--h) calc(var(--tsat) - 8%) calc(var(--tl2) - 6%));box-shadow:inset 0 0 0 1.5px hsl(var(--h) calc(var(--tsat) - 12%) var(--tbd))}
 .tegel .ttxt{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.22}
-.tegel .ttxt b{font-size:17px}
-.tegel .ttxt small{font-size:13px;opacity:.8}
+.tegel .ttxt b{font-size:16px}
+.tegel .ttxt small{font-size:13px;opacity:.8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tegel .ttxt b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tegel .tgo{flex:0 0 auto;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;padding-left:2px;
   background:hsl(var(--h) 46% var(--tgo));color:#fff}
 .tegel.off{cursor:default;filter:grayscale(.85);opacity:.6;box-shadow:none}
@@ -140,6 +142,30 @@ details summary{cursor:pointer;min-height:40px;padding:8px 0;color:var(--acc);fo
 .blad .hico{width:38px;height:38px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:21px;
   background:hsl(var(--h) calc(var(--tsat) - 8%) calc(var(--tl2) - 6%));box-shadow:inset 0 0 0 1.5px hsl(var(--h) calc(var(--tsat) - 12%) var(--tbd))}
 .oef li.off{color:var(--mut);padding:13px 0}
+
+/* boven- en onderkader op Home in dezelfde stijl als de tegels (neutrale zandtint) */
+.selbar,.dagstand{--h:40;border:2px solid hsl(var(--h) 20% calc(var(--tbd) + 8%));background:linear-gradient(155deg,hsl(var(--h) 38% var(--tl1)),hsl(var(--h) 30% calc(var(--tl2) + 3%)));box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 3px 8px var(--tsh)}
+.selbar .btn.ghost,.dagstand .btn.ghost{background:hsl(var(--h) 30% calc(var(--tl2) - 6%));box-shadow:inset 0 0 0 1.5px hsl(var(--h) 22% var(--tbd))}
+.dagstand .hint{margin:4px 0}
+/* Nieuwe woorden toevoegen */
+.nwform input[type=text],.nwform input[type=number],.nwform textarea,.nwrij input[type=text],.nwrij select{display:block;width:100%;min-height:44px;margin-top:4px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit;font-size:16px}
+.nwform textarea{min-height:140px;line-height:1.4}
+.rij2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.rij2[hidden]{display:none}
+.nwlijst{display:grid;gap:10px}
+.nwrij{border:2px solid var(--line);border-radius:14px;padding:10px 12px;background:var(--card)}
+.nwrij.zeker{border-color:hsl(122 30% 62%)}
+.nwrij.twijfel{border-color:#d9a514;background:var(--warnbg)}
+.nwrij.dubbel{opacity:.75;border-style:dashed}
+.nwrij.fout{border-color:var(--bad);background:var(--errbg)}
+.nwmee{display:flex;align-items:center;gap:10px;flex-wrap:wrap;cursor:pointer}
+.nwmee input{width:24px;height:24px;flex:0 0 auto;accent-color:var(--acc)}
+.nwmee small{color:var(--mut)}
+.nwnotes{margin:6px 0 2px;padding-left:20px;font-size:14px;color:var(--mut)}
+.nwnotes .nwtw{color:var(--ink);font-weight:600}
+.nwvelden{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:8px}
+.nwf{display:block;font-size:13px;color:var(--mut);min-width:0}
+.nwf span{display:block}
 @media (min-width:700px){body{font-size:18px}main{padding:22px}}
 </style>
 </head>
@@ -374,6 +400,7 @@ function buildBlocks(words) {
   const sorted = words.slice().sort((a, b) => a.id - b.id);
   const blocks = [], seen = {}; let cur = null;
   for (const w of sorted) {
+    if (w.id >= EIGEN_ID) continue; // eigen woorden horen bij geen les
     if (!w.hoofdstuk) { if (cur) { cur.lastId = w.id; cur.count++; } continue; }
     if (cur && cur.h === w.hoofdstuk && cur.l === w.les) { cur.lastId = w.id; cur.count++; continue; }
     const label = w.hoofdstuk + '.' + w.les;
@@ -386,12 +413,16 @@ function buildBlocks(words) {
 }
 
 function selectWords(words, blocks, settings) {
-  let list = words;
-  if (settings && settings.block != null && blocks[settings.block]) {
-    const last = blocks[settings.block].lastId;
-    list = list.filter(w => w.id <= last);
+  const st = settings || {};
+  let les = words.filter(w => w.id < EIGEN_ID), eig = words.filter(w => w.id >= EIGEN_ID);
+  if (st.block != null && blocks[st.block]) {
+    const last = blocks[st.block].lastId;
+    les = les.filter(w => w.id <= last);
   }
-  if (settings && settings.soorten && settings.soorten.length) list = list.filter(w => settings.soorten.includes(w.soort));
+  // eigen woorden: 'met' (standaard, altijd mee), 'zonder' of 'alleen'
+  let list = st.eigen === 'alleen' ? eig : st.eigen === 'zonder' ? les : les.concat(eig);
+  if (st.soorten && st.soorten.length) list = list.filter(w => st.soorten.includes(w.soort));
+  if (st.themas && st.themas.length) list = list.filter(w => st.themas.includes(w.thema || ''));
   return list;
 }
 
@@ -849,7 +880,7 @@ function checkSentence(expected, given, spoken) {
 // ---------- Oefening: gesprek (een Spaanse vraag beluisteren en zelf antwoorden) ----------
 // Elke vraag heeft toegelaten antwoorden (patronen, zonder accenten, kleine letters). Het werkwoord moet kloppen bij de persoon van het antwoord.
 const GV_DEFAULT = { size: 8, newMax: 6, thema: 'alle' };
-const GV_THEMAS = [['alle', 'Alle thema\'s'], ['kennismaken', 'Kennismaken'], ['bestellen', 'Bestellen']];
+const GV_THEMAS = [['alle', 'Alle thema\'s'], ['kennismaken', 'Kennismaken'], ['bestellen', 'Bestellen'], ['weg', 'De weg vragen'], ['hotel', 'In het hotel'], ['bakker', 'Bij de bakker']];
 const GV = [];
 (function () {
   // [id, thema, vraag, Nederlands, werkwoord, persoon van het antwoord (0 yo, 1 tú, 2 él, 3 nosotros, 4 vosotros, 5 ellos), sleutelvorm, patronen, voorbeeld, vertaling voorbeeld, uitleg]
@@ -859,7 +890,11 @@ const GV = [];
   const ITEM = '^' + PRE + '(para mi )?(un|una|unos|unas|dos|tres|cuatro) .+';
   const PEDIR_YO = ['quiero .+', 'quisiera .+', 'me gustaria .+', 'voy a (tomar|pedir) .+', 'tomo .+', 'tomare .+'];
   const PEDIR_NOS = ['queremos .+', 'quisieramos .+', 'nos gustaria .+', 'vamos a (tomar|pedir) .+', 'tomamos .+', 'tomaremos .+'];
-  const JA_NEE = new Set(['k14', 'k19', 'k20', 'b12', 'b13']); // ja/nee-vragen: "sí/no + het werkwoord" is genoeg
+  const LOC = '(muy |bastante |un poco )?(cerca|lejos|aqui|alli|alla|ahi|a|en|al|enfrente|delante|detras|junto|entre|todo recto|recto)';
+  const BUS = '(a pie|andando|caminando|en (autobus|metro|taxi|tren|coche|bici|bicicleta|moto|tranvia))';
+  const HORA = '^' + PRE + '(a las|a la|sobre las|hacia las|antes de las|despues de las) .+';
+  const NADA = ['^' + PRE + '(no )?nada( mas)?( .+)?', '^' + PRE + '(no )?(eso )?es todo', '^' + PRE + '(no )?gracias'];
+  const JA_NEE = new Set(['k14', 'k19', 'k20', 'b12', 'b13', 'w03', 'w04', 'h01', 'h08', 'h12', 'p04']); // ja/nee-vragen: "sí/no + het werkwoord" is genoeg
   const T = [
     ['k01', 'kennismaken', '¿Cómo te llamas?', 'Hoe heet je?', 'llamarse', 0, 'me llamo', ['me llamo .+', 'mi nombre es .+'], 'Me llamo Sofía.', 'Ik heet Sofía.', 'Je antwoordt over jezelf: yo → me llamo.'],
     ['k02', 'kennismaken', '¿Cómo se llama usted?', 'Hoe heet u?', 'llamarse', 0, 'me llamo', ['me llamo .+', 'mi nombre es .+'], 'Me llamo Pedro Martínez.', 'Ik heet Pedro Martínez.', '"Usted" is het beleefde "u". Je antwoordt over jezelf: yo → me llamo.'],
@@ -908,10 +943,48 @@ const GV = [];
     ['b21', 'bestellen', '¿Qué necesita su amigo?', 'Wat heeft uw vriend nodig?', 'necesitar', 2, 'necesita', ['necesita .+'], 'Mi amigo necesita una maleta.', 'Mijn vriend heeft een koffer nodig.', 'Over één andere persoon: él → necesita.'],
     ['b22', 'bestellen', '¿Quiere algo más?', 'Wilt u nog iets?', 'querer', 0, 'quiero', ['quiero .+', 'no quiero .+', '^' + PRE + '(no )?nada( mas)?( .+)?', '^' + PRE + '(no )?(eso )?es todo', '^' + PRE + '(si )?la cuenta( .+)?', '^' + PRE + '(otro|otra|un|una|dos) .+', '^' + PRE + '(no )?gracias'], 'No, nada más, gracias.', 'Nee, niets meer, dank u.', 'Over jezelf: yo → quiero. Ook goed: "No, nada más" of "No, gracias".'],
     ['b23', 'bestellen', '¿Qué quieres comer?', 'Wat wil je eten?', 'querer', 0, 'quiero', ['quiero .+', 'quisiera .+', 'me gustaria .+', 'voy a comer .+', '^' + PRE + '(yo )?como .+'], 'Quiero una ensalada.', 'Ik wil een salade.', 'Over jezelf: yo → quiero.'],
+    // De weg vragen (v0.14)
+    ['w01', 'weg', '¿Dónde está la estación?', 'Waar is het station?', 'estar', 2, 'está', ['esta ' + LOC + '( .+)?'], 'Está cerca, a la derecha.', 'Het is dichtbij, aan de rechterkant.', 'Over één ding (la estación): está. Waar iets is: estar.'],
+    ['w02', 'weg', '¿Dónde están los servicios?', 'Waar zijn de toiletten?', 'estar', 5, 'están', ['estan ' + LOC + '( .+)?', '^' + PRE + 'al fondo( .+)?'], 'Están al fondo, a la izquierda.', 'Ze zijn achteraan, links.', 'Over meerdere dingen (los servicios): están.'],
+    ['w03', 'weg', '¿Está lejos la playa?', 'Is het strand ver?', 'estar', 2, 'está', ['esta ' + LOC + '( .+)?'], 'No, la playa está a un kilómetro.', 'Nee, het strand is een kilometer verderop.', 'Over één ding: está. Afstand: a + afstand (a un kilómetro, a cinco minutos).'],
+    ['w04', 'weg', '¿Está cerca el restaurante?', 'Is het restaurant dichtbij?', 'estar', 2, 'está', ['esta ' + LOC + '( .+)?'], 'Sí, está muy cerca.', 'Ja, het is heel dichtbij.', 'Over één ding (el restaurante): está.'],
+    ['w05', 'weg', '¿Adónde vas?', 'Waar ga je naartoe?', 'ir', 0, 'voy', ['voy (a|al|para|hacia) .+'], 'Voy a la playa.', 'Ik ga naar het strand.', 'Over jezelf: yo → voy. Naar = a (a + el = al).'],
+    ['w06', 'weg', '¿Adónde van ustedes?', 'Waar gaan jullie naartoe?', 'ir', 3, 'vamos', ['vamos (a|al|para|hacia) .+'], 'Vamos al centro.', 'Wij gaan naar het centrum.', 'Vraag aan jullie (ustedes); je antwoordt namens jou en je gezelschap: nosotros → vamos.'],
+    ['w07', 'weg', '¿Cómo vas al museo, a pie o en autobús?', 'Hoe ga je naar het museum, te voet of met de bus?', 'ir', 0, 'voy', ['voy .+', '^' + PRE + BUS + '( .+)?'], 'Voy a pie.', 'Ik ga te voet.', 'Over jezelf: yo → voy. Te voet = a pie, met de bus = en autobús.'],
+    ['w08', 'weg', '¿Cómo va tu hermano al trabajo?', 'Hoe gaat je broer naar het werk?', 'ir', 2, 'va', ['va ' + BUS + '( .+)?', 'va con .+', '^' + PRE + BUS + '( .+)?'], 'Mi hermano va en bicicleta.', 'Mijn broer gaat met de fiets.', 'Over één andere persoon: él → va.'],
+    ['w09', 'weg', '¿Qué buscas?', 'Wat zoek je?', 'buscar', 0, 'busco', ['busco .+'], 'Busco la oficina de turismo.', 'Ik zoek de toeristische dienst.', 'Over jezelf: yo → busco.'],
+    ['w10', 'weg', '¿Qué buscan ustedes?', 'Wat zoeken jullie?', 'buscar', 3, 'buscamos', ['buscamos .+'], 'Buscamos un supermercado.', 'Wij zoeken een supermarkt.', 'Vraag aan jullie (ustedes); je antwoordt namens jou en je gezelschap: nosotros → buscamos.'],
+    ['w11', 'weg', '¿Dónde está tu hotel?', 'Waar is je hotel?', 'estar', 2, 'está', ['esta ' + LOC + '( .+)?'], 'Mi hotel está en el centro, cerca de la plaza.', 'Mijn hotel is in het centrum, dicht bij het plein.', 'Over één ding (el hotel): está.'],
+    ['w12', 'weg', '¿A qué hora llegas a la estación?', 'Hoe laat kom je aan in het station?', 'llegar', 0, 'llego', ['llego .+', HORA], 'Llego a las seis y media.', 'Ik kom aan om half zeven.', 'Over jezelf: yo → llego. Om … uur = a las … .'],
+    // In het hotel (v0.14)
+    ['h01', 'hotel', '¿Tiene usted una reserva?', 'Heeft u een reservatie?', 'tener', 0, 'tengo', ['tengo .+'], 'Sí, tengo una reserva a nombre de Peeters.', 'Ja, ik heb een reservatie op naam van Peeters.', '"Usted" is "u". Je antwoordt over jezelf: yo → tengo.'],
+    ['h02', 'hotel', '¿Cuántas noches se quedan ustedes?', 'Hoeveel nachten blijven jullie?', 'quedarse', 3, 'nos quedamos', ['nos quedamos .+', '^' + PRE + NUM + ' noches?( .+)?'], 'Nos quedamos tres noches.', 'Wij blijven drie nachten.', 'Vraag aan jullie (ustedes); je antwoordt namens jou en je gezelschap: nosotros → nos quedamos.'],
+    ['h03', 'hotel', '¿Cuántas noches se queda usted?', 'Hoeveel nachten blijft u?', 'quedarse', 0, 'me quedo', ['me quedo .+', '^' + PRE + NUM + ' noches?( .+)?'], 'Me quedo dos noches.', 'Ik blijf twee nachten.', '"Usted" is "u". Je antwoordt over jezelf: yo → me quedo.'],
+    ['h04', 'hotel', '¿Para cuántas personas es la habitación?', 'Voor hoeveel personen is de kamer?', 'ser', 2, 'es', ['^' + PRE + '(la habitacion )?es para .+', '^' + PRE + '(para )?' + NUM + ' personas?( .+)?'], 'Es para dos personas.', 'Het is voor twee personen.', 'Over één ding (la habitación): es. Kort mag ook: "Para dos personas".'],
+    ['h05', 'hotel', '¿Qué habitación prefiere usted?', 'Welke kamer heeft u liever?', 'preferir', 0, 'prefiero', ['prefiero .+', 'quiero .+', 'quisiera .+', 'me gustaria .+', '^' + PRE + '(una|la) habitacion .+'], 'Prefiero una habitación con vistas al mar.', 'Ik heb liever een kamer met zicht op zee.', '"Usted" is "u". Je antwoordt over jezelf: yo → prefiero.'],
+    ['h06', 'hotel', '¿Qué habitación quieren ustedes?', 'Welke kamer willen jullie?', 'querer', 3, 'queremos', PEDIR_NOS.concat(['^' + PRE + '(una|la) habitacion .+']), 'Queremos una habitación doble.', 'Wij willen een tweepersoonskamer.', 'Vraag aan jullie (ustedes); je antwoordt namens jou en je gezelschap: nosotros → queremos.'],
+    ['h07', 'hotel', '¿A qué hora llegan ustedes mañana?', 'Hoe laat komen jullie morgen aan?', 'llegar', 3, 'llegamos', ['llegamos .+', HORA], 'Llegamos a las ocho de la tarde.', 'Wij komen om acht uur \'s avonds aan.', 'Vraag aan jullie (ustedes); je antwoordt namens jou en je gezelschap: nosotros → llegamos.'],
+    ['h08', 'hotel', '¿Le gusta la habitación?', 'Vindt u de kamer leuk?', 'gustar', 0, 'me gusta', ['me gusta .+', 'me encanta( .+)?'], 'Sí, me gusta mucho.', 'Ja, ik vind ze heel leuk.', 'Over jezelf: me gusta (ik vind het leuk). "Le gusta" is de beleefde vraag aan u.'],
+    ['h09', 'hotel', '¿Necesita algo más?', 'Heeft u nog iets nodig?', 'necesitar', 0, 'necesito', ['necesito .+'].concat(NADA), 'Sí, necesito una toalla más.', 'Ja, ik heb nog een handdoek nodig.', 'Over jezelf: yo → necesito. Ook goed: "No, nada más, gracias".'],
+    ['h10', 'hotel', '¿A qué hora salen ustedes?', 'Hoe laat vertrekken jullie?', 'salir', 3, 'salimos', ['salimos .+', HORA], 'Salimos mañana a las diez.', 'Wij vertrekken morgen om tien uur.', 'Vraag aan jullie (ustedes); je antwoordt namens jou en je gezelschap: nosotros → salimos.'],
+    ['h11', 'hotel', '¿Dónde está su coche?', 'Waar staat uw auto?', 'estar', 2, 'está', ['esta ' + LOC + '( .+)?', '^' + PRE + 'en (el|la) (parking|garaje|calle|aparcamiento)( .+)?'], 'Está en el parking del hotel.', 'Hij staat op de parking van het hotel.', 'Over één ding (el coche): está.'],
+    ['h12', 'hotel', '¿Desayuna usted en el hotel?', 'Ontbijt u in het hotel?', 'desayunar', 0, 'desayuno', ['desayuno .+'], 'Sí, desayuno aquí.', 'Ja, ik ontbijt hier.', '"Usted" is "u". Je antwoordt over jezelf: yo → desayuno.'],
+    // Bij de bakker (v0.14)
+    ['p01', 'bakker', '¿Qué le pongo?', 'Wat mag het zijn?', 'querer', 0, 'quiero', PEDIR_YO.concat(['me pone .+', 'me pones .+', 'me da .+', 'deme .+', 'pongame .+', ITEM]), 'Quiero una barra de pan, por favor.', 'Ik wil een stokbrood, alstublieft.', 'Letterlijk: "Wat zet ik voor u neer?". Je antwoordt over jezelf: yo → quiero (of: me pone…, póngame…).'],
+    ['p02', 'bakker', '¿Cuántas barras quiere?', 'Hoeveel stokbroden wilt u?', 'querer', 0, 'quiero', ['quiero .+', 'quisiera .+', '^' + PRE + '(para mi )?' + NUM + '( barras?)?( .+)?', '^' + PRE + 'media( barra)?( .+)?'], 'Quiero dos barras.', 'Ik wil twee stokbroden.', 'Over jezelf: yo → quiero. Kort mag ook: "Dos, por favor".'],
+    ['p03', 'bakker', '¿Algo más?', 'Nog iets?', 'querer', 0, 'quiero', ['quiero .+', 'no quiero .+', '^' + PRE + '(otro|otra|un|una|dos|tres) .+'].concat(NADA), 'Sí, quiero también dos croissants.', 'Ja, ik wil ook twee croissants.', 'Over jezelf: yo → quiero. Ook goed: "No, nada más" of "No, eso es todo".'],
+    ['p04', 'bakker', '¿Quiere una bolsa?', 'Wilt u een zakje?', 'querer', 0, 'quiero', ['quiero .+', '^' + PRE + '(no )?gracias', '^' + PRE + 'por favor', '^' + PRE + '(no )?hace falta( .+)?'], 'Sí, quiero una bolsa, por favor.', 'Ja, ik wil een zakje, alstublieft.', 'Over jezelf: yo → quiero. Kort mag: "Sí, por favor" of "No, gracias".'],
+    ['p05', 'bakker', '¿Prefiere pagar con tarjeta o en efectivo?', 'Betaalt u liever met de kaart of cash?', 'preferir', 0, 'prefiero', ['prefiero .+', '^' + PRE + '(con tarjeta|en efectivo|con dinero)( .+)?'], 'Prefiero pagar con tarjeta.', 'Ik betaal liever met de kaart.', '"Prefiere" (u) is de beleefde vorm. Je antwoordt over jezelf: yo → prefiero.'],
+    ['p06', 'bakker', '¿Qué pan prefieren ustedes?', 'Welk brood hebben jullie liever?', 'preferir', 3, 'preferimos', ['preferimos .+'], 'Preferimos el pan integral.', 'Wij hebben liever het volkorenbrood.', 'Vraag aan jullie (ustedes); je antwoordt namens jou en je gezelschap: nosotros → preferimos.'],
+    ['p07', 'bakker', '¿Cuántos croissants quieren tus hijos?', 'Hoeveel croissants willen je kinderen?', 'querer', 5, 'quieren', ['quieren .+'], 'Mis hijos quieren tres croissants.', 'Mijn kinderen willen drie croissants.', 'Over meerdere andere personen: ellos → quieren.'],
+    ['p08', 'bakker', '¿Cuánto cuesta la barra?', 'Hoeveel kost het stokbrood?', 'costar', 2, 'cuesta', ['cuesta .+', 'vale ' + NUM + ' .+', 'son ' + NUM + ' .+'], 'La barra cuesta un euro.', 'Het stokbrood kost één euro.', 'Eén ding: cuesta. Meerdere dingen: cuestan.'],
+    ['p09', 'bakker', '¿Es para llevar?', 'Is het om mee te nemen?', 'ser', 2, 'es', ['^' + PRE + '(si |no )?es para (llevar|tomar aqui|aqui)( .+)?', '^' + PRE + 'para (llevar|tomar aqui|aqui)( .+)?'], 'Sí, es para llevar.', 'Ja, het is om mee te nemen.', 'Over één ding (het): es. Kort mag: "Para llevar".'],
+    ['p10', 'bakker', '¿Qué quiere tu pareja?', 'Wat wil je partner?', 'querer', 2, 'quiere', ['quiere .+', 'toma .+', 'va a (tomar|pedir|comprar) .+', 'prefiere .+'], 'Mi pareja quiere una tarta de manzana.', 'Mijn partner wil een appeltaart.', 'Over één andere persoon: él/ella → quiere.'],
+    ['p11', 'bakker', '¿Qué compras para el desayuno?', 'Wat koop je voor het ontbijt?', 'comprar', 0, 'compro', ['compro .+'], 'Compro pan y dos magdalenas.', 'Ik koop brood en twee madeleines.', 'Over jezelf: yo → compro.'],
   ];
   for (const t of T) {
     const ans = t[7].slice();
-    if (JA_NEE.has(t[0])) ans.push('^' + PRE + '(no )?' + t[6] + '( .+)?');
+    if (JA_NEE.has(t[0])) ans.push('^' + PRE + '(no )?' + stripAcc(t[6]) + '( .+)?');
     GV.push({ id: t[0], thema: t[1], q: t[2], nl: t[3], vb: t[4], p: t[5], vorm: t[6], ans, ex: t[8], exnl: t[9], tip: t[10] });
   }
 })();
@@ -980,6 +1053,180 @@ function backupStatus(iso, hasData, now) {
   const text = 'Laatste back-up: ' + (n === 0 ? 'vandaag' : n === 1 ? 'gisteren' : n + ' dagen geleden') + '.';
   return { text, due: !!hasData && n >= BACKUP_DAGEN, days: n };
 }
+// ---------- Nieuwe woorden toevoegen (voorstel voor lidwoord, genus, meervoud, soort; werkwoorden vervoegen) ----------
+const EIGEN_ID = 100001; // eigen woorden krijgen ids vanaf hier; woorden van een les (Duolingo) blijven eronder
+const isEigen = w => w.id >= EIGEN_ID;
+const NW_ART = { el: ['el', 'm', 1], la: ['la', 'v', 1], los: ['el', 'm', 2], las: ['la', 'v', 2], un: ['el', 'm', 1], una: ['la', 'v', 1], unos: ['el', 'm', 2], unas: ['la', 'v', 2] };
+// Vrouwelijke woorden met beklemtoonde a- die in het enkelvoud "el" krijgen (el agua, las aguas).
+const NW_EL_FEM = ['agua', 'aguila', 'alma', 'arma', 'hambre', 'hacha', 'aula', 'area', 'ala', 'ancla', 'hada', 'haba', 'arca', 'asma'];
+// Genus dat niet uit de uitgang volgt (nagekeken).
+const NW_GENUS = { mapa: 'm', dia: 'm', problema: 'm', sistema: 'm', idioma: 'm', tema: 'm', programa: 'm', clima: 'm', planeta: 'm', poema: 'm', drama: 'm', sofa: 'm', pijama: 'm', cometa: 'm', telegrama: 'm', diploma: 'm', mano: 'v', yoga: 'm', pez: 'm', vez: 'v', ajedrez: 'm', foto: 'v', moto: 'v', radio: 'v', libido: 'v', modelo: 'm', piloto: 'm', guia: 'm/v', turista: 'm/v', artista: 'm/v', dentista: 'm/v', periodista: 'm/v', estudiante: 'm/v', cantante: 'm/v', joven: 'm/v', policia: 'm/v', deportista: 'm/v', taxista: 'm/v', pianista: 'm/v', futbolista: 'm/v', tenista: 'm/v', paciente: 'm/v', agente: 'm/v', colega: 'm/v', atleta: 'm/v', ciclista: 'm/v', recepcionista: 'm/v', especialista: 'm/v', electricista: 'm/v', lunes: 'm', martes: 'm', miercoles: 'm', jueves: 'm', viernes: 'm', sabado: 'm', domingo: 'm' };
+// Meervouden die niet uit de gewone regel volgen of waar de regel twijfelt (nagekeken).
+const NW_MV = { examen: 'exámenes', joven: 'jóvenes', imagen: 'imágenes', origen: 'orígenes', orden: 'órdenes', volumen: 'volúmenes', resumen: 'resúmenes', crimen: 'crímenes', margen: 'márgenes', virgen: 'vírgenes', germen: 'gérmenes', 'carácter': 'caracteres', 'régimen': 'regímenes',
+  'país': 'países', 'raíz': 'raíces', 'baúl': 'baúles', 'maíz': 'maíces', 'menú': 'menús', 'champú': 'champús', 'esquí': 'esquís', 'iglú': 'iglús', 'rubí': 'rubíes', 'tabú': 'tabúes', 'bambú': 'bambúes',
+  bus: 'buses', mes: 'meses', dios: 'dioses', tos: 'toses', gas: 'gases', jersey: 'jerséis', club: 'clubes', chalet: 'chalés', robot: 'robots', web: 'webs', chef: 'chefs', blog: 'blogs', 'cómic': 'cómics', 'récord': 'récords', 'álbum': 'álbumes', 'máster': 'másteres', 'tique': 'tiques' };
+const NW_LEEG = [];
+const nwSyl = w => (stripAcc(w.toLowerCase()).match(/[aeiouü]+/g) || NW_LEEG).length;
+const nwLastVowelAcc = w => { const m = w.toLowerCase().match(/[aeiouáéíóúü](?=[^aeiouáéíóúü]*$)/); return !!m && /[áéíóú]/.test(m[0]); };
+const nwStripLastAcc = w => w.replace(/[áéíóú](?=[^aeiouáéíóúü]*$)/, c => 'aeiou'['áéíóú'.indexOf(c)]);
+// Meervoud van één woord: { mv, zeker, opm }
+function nwMeervoudWoord(w) {
+  const lw = w.toLowerCase(), keep = s => (w[0] !== w[0].toLowerCase() ? s[0].toUpperCase() + s.slice(1) : s);
+  if (NW_MV[lw]) return { mv: keep(NW_MV[lw]), zeker: true };
+  if (/[aeiou]$/.test(lw) || /[áéó]$/.test(lw)) return { mv: w + 's', zeker: true };
+  if (/[íú]$/.test(lw)) return { mv: w + 's', zeker: false, opm: 'na -í of -ú kan ook -es' };
+  if (/z$/.test(lw)) return { mv: w.slice(0, -1) + 'ces', zeker: true };
+  if (/[sx]$/.test(lw)) {
+    if (nwSyl(lw) === 1) return { mv: w + 'es', zeker: true };
+    if (nwLastVowelAcc(lw)) return { mv: nwStripLastAcc(w) + 'es', zeker: true }; // autobús → autobuses, inglés → ingleses
+    return { mv: w, zeker: true, opm: 'blijft gelijk (laatste lettergreep zonder klemtoon)' }; // lunes, crisis, análisis
+  }
+  if (nwLastVowelAcc(lw)) return { mv: nwStripLastAcc(w) + 'es', zeker: true }; // canción → canciones, jardín → jardines
+  if (/en$/.test(lw) && !/[áéíóú]/.test(lw) && nwSyl(lw) >= 2) {
+    // examen → exámenes: de klemtoon komt op de derde lettergreep van achteren en krijgt een accent
+    const i = lw.slice(0, -2).search(/[aeiou][^aeiou]*$/);
+    const mv = w.slice(0, i) + 'áéíóú'['aeiou'.indexOf(lw[i])] + w.slice(i + 1) + 'es';
+    return { mv, zeker: false, opm: 'accent toegevoegd (zoals examen → exámenes)' };
+  }
+  if (/[^a-zñ]$/.test(lw) || /[kwt]$/.test(lw)) return { mv: w + 's', zeker: false, opm: 'leenwoord: controleer het meervoud' };
+  return { mv: w + 'es', zeker: true };
+}
+// Meervoud van een woordgroep: "compañero de trabajo" → "compañeros de trabajo"; "vino tinto" → "vinos tintos" (twijfel).
+function nwMeervoud(s) {
+  const t = s.trim(), d = t.search(/ (de|del|a|con|sin|para) /);
+  if (d > 0) { const head = t.slice(0, d).split(' '), r = nwMeervoudWoord(head[head.length - 1]); head[head.length - 1] = r.mv; return { mv: head.join(' ') + t.slice(d), zeker: r.zeker && head.length === 1, opm: r.opm }; }
+  const ws = t.split(' ');
+  if (ws.length === 1) return nwMeervoudWoord(t);
+  const rs = ws.map(nwMeervoudWoord);
+  return { mv: rs.map(r => r.mv).join(' '), zeker: false, opm: 'woordgroep: controleer het meervoud' };
+}
+// Genus uit de uitgang, als er geen lidwoord staat.
+function nwGenusUitgang(w) {
+  const p = stripAcc(w.toLowerCase().split(' ')[0]);
+  if (NW_GENUS[p]) return { g: NW_GENUS[p], zeker: true };
+  if (/(cion|sion|dad|tad|tud|umbre|itis)$/.test(p)) return { g: 'v', zeker: true };
+  if (/ez$/.test(p)) return { g: 'v', zeker: false };
+  if (/o$/.test(p)) return { g: 'm', zeker: true };
+  if (/ma$/.test(p)) return { g: 'm', zeker: false };
+  if (/a$/.test(p)) return { g: 'v', zeker: true };
+  if (/(or|aje|an|en|on|al|el|il|ol|ul)$/.test(p)) return { g: 'm', zeker: false };
+  return { g: '', zeker: false };
+}
+
+// Werkwoorden: regelmatig vervoegen; veelgebruikte onregelmatige werkwoorden staan vast (nagekeken, presente).
+const NW_ONREG = {
+  poder: 'puedo puedes puede podemos podéis pueden', dormir: 'duermo duermes duerme dormimos dormís duermen', pedir: 'pido pides pide pedimos pedís piden',
+  seguir: 'sigo sigues sigue seguimos seguís siguen', sentir: 'siento sientes siente sentimos sentís sienten', volver: 'vuelvo vuelves vuelve volvemos volvéis vuelven',
+  contar: 'cuento cuentas cuenta contamos contáis cuentan', recordar: 'recuerdo recuerdas recuerda recordamos recordáis recuerdan', empezar: 'empiezo empiezas empieza empezamos empezáis empiezan',
+  cerrar: 'cierro cierras cierra cerramos cerráis cierran', servir: 'sirvo sirves sirve servimos servís sirven', repetir: 'repito repites repite repetimos repetís repiten',
+  probar: 'pruebo pruebas prueba probamos probáis prueban', mostrar: 'muestro muestras muestra mostramos mostráis muestran', morir: 'muero mueres muere morimos morís mueren',
+  decir: 'digo dices dice decimos decís dicen', 'oír': 'oigo oyes oye oímos oís oyen', traer: 'traigo traes trae traemos traéis traen', poner: 'pongo pones pone ponemos ponéis ponen',
+  saber: 'sé sabes sabe sabemos sabéis saben', dar: 'doy das da damos dais dan', conducir: 'conduzco conduces conduce conducimos conducís conducen',
+  ofrecer: 'ofrezco ofreces ofrece ofrecemos ofrecéis ofrecen', parecer: 'parezco pareces parece parecemos parecéis parecen', elegir: 'elijo eliges elige elegimos elegís eligen',
+  coger: 'cojo coges coge cogemos cogéis cogen', caer: 'caigo caes cae caemos caéis caen', valer: 'valgo vales vale valemos valéis valen', 'reír': 'río ríes ríe reímos reís ríen',
+  construir: 'construyo construyes construye construimos construís construyen', 'huir': 'huyo huyes huye huimos huis huyen', oler: 'huelo hueles huele olemos oléis huelen',
+  acostarse: 'me acuesto|te acuestas|se acuesta|nos acostamos|os acostáis|se acuestan', despertarse: 'me despierto|te despiertas|se despierta|nos despertamos|os despertáis|se despiertan',
+  sentarse: 'me siento|te sientas|se sienta|nos sentamos|os sentáis|se sientan', vestirse: 'me visto|te vistes|se viste|nos vestimos|os vestís|se visten',
+  divertirse: 'me divierto|te diviertes|se divierte|nos divertimos|os divertís|se divierten', 'sentirse': 'me siento|te sientes|se siente|nos sentimos|os sentís|se sienten',
+  dormirse: 'me duermo|te duermes|se duerme|nos dormimos|os dormís|se duermen', 'irse': 'me voy|te vas|se va|nos vamos|os vais|se van',
+  gustar: 'me gusta|te gusta|le gusta|nos gusta|os gusta|les gusta', encantar: 'me encanta|te encanta|le encanta|nos encanta|os encanta|les encanta',
+  interesar: 'me interesa|te interesa|le interesa|nos interesa|os interesa|les interesa', doler: 'me duele|te duele|le duele|nos duele|os duele|les duele'
+};
+const NW_TYPE = { gustar: 'regelmatig, met voorwerpsvorm', encantar: 'regelmatig, met voorwerpsvorm', interesar: 'regelmatig, met voorwerpsvorm', doler: 'onregelmatig (o>ue), met voorwerpsvorm' };
+const NW_EIND = { ar: ['o', 'as', 'a', 'amos', 'áis', 'an'], er: ['o', 'es', 'e', 'emos', 'éis', 'en'], ir: ['o', 'es', 'e', 'imos', 'ís', 'en'] };
+const NW_REFL = ['me', 'te', 'se', 'nos', 'os', 'se'];
+function nwIsWerkwoord(es) { return /^[a-záéíóúñ]+(ar|er|ir|ír)(se)?$/i.test(es); }
+// Vervoegt in de presente. Geeft { vormen: [6], groep, type, zeker, opm }.
+function nwVervoeg(inf) {
+  const v = inf.toLowerCase().trim(), refl = /se$/.test(v) && v.length > 4, basis = refl ? v.slice(0, -2) : v;
+  const groep = '-' + stripAcc(basis.slice(-2));
+  if (NW_ONREG[v]) {
+    const f = NW_ONREG[v].split(NW_ONREG[v].includes('|') ? '|' : ' ');
+    return { vormen: f, groep, type: NW_TYPE[v] || (refl ? 'wederkerend, onregelmatig' : 'onregelmatig'), zeker: true };
+  }
+  const e = NW_EIND[stripAcc(basis.slice(-2))], stam = basis.slice(0, -2);
+  let vormen = e.map(x => stam + x);
+  if (refl) vormen = vormen.map((x, i) => NW_REFL[i] + ' ' + x);
+  const opm = [];
+  if (/[eo][^aeiou]*$/.test(stripAcc(stam))) opm.push('kan een stamwissel hebben (e→ie, o→ue, e→i)');
+  if (/[aeiou]c$/.test(stam) && groep !== '-ar') opm.push('werkwoorden op -cer/-cir hebben vaak yo -zco');
+  if (/g$/.test(stam) && groep !== '-ar') opm.push('werkwoorden op -ger/-gir hebben yo -jo');
+  if (/u$/.test(stam) && groep === '-ir') opm.push('werkwoorden op -uir krijgen een y');
+  if (/[iu]$/.test(stam) && groep === '-ar') opm.push('bij -iar/-uar soms een accent: envío, continúo');
+  // De app kent niet elk onregelmatig werkwoord: een regelmatig vervoegd voorstel moet je altijd even nakijken.
+  return { vormen, groep, type: refl ? 'wederkerend, regelmatig' : 'regelmatig', zeker: false, opm: 'Regelmatig vervoegd door de app: controleer of het werkwoord onregelmatig is' + (opm.length ? ' (' + opm.join('; ') + ')' : '') + '.' };
+}
+
+// Eén ingetypte regel → [spaans, nederlands]. Scheiding: =, tab, ; of " - ". Staat het Nederlands vooraan (de/het/een), dan wordt het omgedraaid.
+function nwSplitRegel(line) {
+  const parts = line.split(/\s*(?:=|\t|;|\s[-–—]\s)\s*/).map(x => x.trim()).filter(Boolean);
+  if (parts.length < 2) return null;
+  let es = parts[0], nl = parts.slice(1).join(', '), omgedraaid = false;
+  if (/^(de|het|een)\s/i.test(es) && /^(el|la|los|las|un|una)\s/i.test(nl)) { [es, nl] = [nl, es]; omgedraaid = true; }
+  return { es, nl, omgedraaid };
+}
+// Een voorstel voor één woord (geen werkwoord). Twijfel = lijst met redenen; leeg = zeker.
+function nwVoorstel(esIn, nlIn) {
+  const r = { kind: 'woord', spaans: '', lidwoord: '', nederlands: (nlIn || '').trim(), soort: '', genus: '', meervoud: '', twijfel: [], opm: [] };
+  let es = (esIn || '').trim().replace(/\s+/g, ' ');
+  if (!es || !r.nederlands) { r.fout = 'Spaans of Nederlands ontbreekt'; r.spaans = es; return r; }
+  if (/^[¿]/.test(es) || /\?$/.test(es)) { r.spaans = es; r.soort = 'vraag'; return r; }
+  let m = es.match(/^(el|la)\s*\/\s*(el|la)\s+(.+)$/i), core = null;
+  if (m) { r.lidwoord = 'el/la'; r.genus = 'm/v'; core = m[3]; }
+  else if ((m = es.match(/^(el|la|los|las|un|una|unos|unas)\s+(.+)$/i))) {
+    const a = NW_ART[m[1].toLowerCase()]; core = m[2];
+    r.lidwoord = a[0]; r.genus = a[1];
+    if (a[2] === 2) r.twijfel.push('je typte een meervoud: zet het enkelvoud bij Spaans');
+    const p = stripAcc(core.toLowerCase().split(' ')[0]), gu = NW_GENUS[p];
+    if (a[0] === 'el' && NW_EL_FEM.includes(p)) { r.genus = 'v'; r.opm.push('vrouwelijk woord met "el" (beklemtoonde a-): el ' + core + ', meervoud las'); }
+    else if (gu && gu !== 'm/v' && gu !== r.genus) r.twijfel.push('meestal ' + (gu === 'm' ? 'el (mannelijk)' : 'la (vrouwelijk)'));
+    else if (gu === 'm/v') r.opm.push('kan mannelijk en vrouwelijk zijn (el/la)');
+    else if (!gu) { const gg = nwGenusUitgang(core); if (gg.zeker && gg.g && gg.g !== r.genus) r.twijfel.push('ongewone uitgang voor ' + (r.genus === 'm' ? 'mannelijk' : 'vrouwelijk') + ': klopt het lidwoord?'); }
+  } else if (!/\s/.test(es) && nwIsWerkwoord(es) && !/^(de|het|een)\s/i.test(r.nederlands)) {
+    const c = nwVervoeg(es);
+    return Object.assign(r, { kind: 'werkwoord', spaans: es.toLowerCase(), soort: 'werkwoord', vormen: c.vormen, groep: c.groep, type: c.type, twijfel: c.zeker ? [] : [c.opm], opm: c.zeker && c.opm ? [c.opm] : [] });
+  } else if (/^(de|het)\s/i.test(r.nederlands) && !/[.!]$/.test(es)) {
+    core = es; const gg = nwGenusUitgang(core);
+    r.genus = gg.g; r.lidwoord = gg.g === 'm' ? 'el' : gg.g === 'v' ? 'la' : gg.g === 'm/v' ? 'el/la' : '';
+    r.twijfel.push(gg.g ? 'lidwoord voorgesteld uit de uitgang: controleer' : 'kies het lidwoord');
+  }
+  if (core != null) {
+    r.soort = 'zelfstandig naamwoord'; r.spaans = core;
+    const mv = nwMeervoud(core); r.meervoud = mv.mv;
+    if (!mv.zeker) r.twijfel.push('meervoud: ' + (mv.opm || 'controleer'));
+    else if (mv.opm) r.opm.push('meervoud ' + mv.opm);
+    return r;
+  }
+  r.spaans = es;
+  if (/[.!]$/.test(es) || es.split(' ').length > 3) r.soort = 'zin';
+  else if (/\s/.test(es)) { r.soort = 'uitdrukking'; r.twijfel.push('kies de soort'); }
+  else if (/mente$/i.test(es)) r.soort = 'bijwoord';
+  else { r.soort = 'bijvoeglijk naamwoord'; r.twijfel.push('kies de soort'); }
+  return r;
+}
+// Hele ingetypte tekst → lijst voorstellen. "abuelo / abuela = opa / oma" geeft twee woorden.
+function nwVoorstellen(text) {
+  const out = [];
+  for (const raw of (text || '').split(/\r?\n/)) {
+    const line = raw.trim(); if (!line) continue;
+    const sp = nwSplitRegel(line);
+    if (!sp) { out.push({ kind: 'woord', fout: 'geen = gevonden (schrijf: Spaans = Nederlands)', spaans: line, nederlands: '', lidwoord: '', soort: '', genus: '', meervoud: '', twijfel: [], opm: [] }); continue; }
+    const esP = /^(el|la)\s*\/\s*(el|la)\s/i.test(sp.es) ? [sp.es] : sp.es.split(/\s*\/\s*/).filter(Boolean);
+    const nlP = sp.nl.split(/\s*\/\s*/).filter(Boolean);
+    esP.forEach((es, i) => {
+      const v = nwVoorstel(es, esP.length > 1 && nlP.length === esP.length ? nlP[i] : sp.nl);
+      if (sp.omgedraaid) v.opm.push('Nederlands en Spaans omgedraaid');
+      out.push(v);
+    });
+  }
+  return out;
+}
+// Nieuwe ids: woorden van een les krijgen hoogste-les-id + 1, eigen woorden een id vanaf EIGEN_ID.
+function nwIds(list, n, eigen) {
+  const base = eigen ? Math.max(EIGEN_ID - 1, ...list.map(w => w.id)) : Math.max(0, ...list.filter(w => w.id < EIGEN_ID).map(w => w.id));
+  return Array.from({ length: n }, (_, i) => base + 1 + i);
+}
+
 // </core>
 
 // ---------- Opslag (IndexedDB, met geheugen als noodoplossing) ----------
@@ -1051,7 +1298,8 @@ async function loadAll() {
   const act = await store.get('meta', 'activity'), lb = await store.get('meta', 'lastBackup');
   S.activity = act ? act.value : null; S.lastBackup = lb ? lb.value : null;
   const st = await store.get('meta', 'settings');
-  S.settings = Object.assign({ block: null, soorten: [] }, st ? st.value : {});
+  S.settings = Object.assign({ block: null, soorten: [], themas: [], eigen: 'met' }, st ? st.value : {});
+  if (!Array.isArray(S.settings.themas)) S.settings.themas = [];
   S.settings.fc = Object.assign({}, FC_DEFAULT, S.settings.fc || {});
   S.settings.gr = Object.assign({}, GR_DEFAULT, S.settings.gr || {});
   S.settings.mr = Object.assign({}, MR_DEFAULT, S.settings.mr || {});
@@ -1075,9 +1323,10 @@ function setMsg(type, text) { S.msg = { type, text }; }
 // ---------- Schermen ----------
 // Niveau van een kaart = Leitner-vak. Hoger niveau = langer wachten voor de kaart terugkomt.
 const LEVELS = [['Zwak', 'zo weer'], ['Leren', 'morgen'], ['Redelijk', 'na 3 dagen'], ['Goed', 'na 1 week'], ['Sterk', 'na 3 weken']];
-const NAV = [['start', 'Home'], ['woorden', 'Woorden'], ['import', 'Importeren'], ['beheer', 'Beheer']];
+const NAV = [['start', 'Home'], ['woorden', 'Woorden'], ['import', 'Toevoegen'], ['beheer', 'Beheer']];
 
 function render() {
+  nwFormSync(); if (S.nw && S.nw === S.nwShown) nwSync();
   stopListening(); spokenText = '';
   $('#nav').innerHTML = NAV.map(([k, t]) => `<button data-act="nav" data-v="${k}" class="${(S.view === k || (k === 'start' && ['flash', 'flashhome', 'genus', 'genushome', 'meervoud', 'meervoudhome', 'overeen', 'overeenhome', 'werkwoord', 'werkwoordhome', 'spreek', 'spreekhome', 'gesprek', 'gesprekhome', 'selectie'].includes(S.view))) ? 'on' : ''}">${t}</button>`).join('');
   const views = { start: viewStart, woorden: viewWoorden, import: viewImport, beheer: viewBeheer, flash: viewFlash, flashhome: viewFlashHome, genus: viewGenus, genushome: viewGenusHome, meervoud: viewMeervoud, meervoudhome: viewMeervoudHome, overeen: viewOvereen, overeenhome: viewOvereenHome, werkwoord: viewWerkwoord, werkwoordhome: viewWerkwoordHome, spreek: viewSpreek, spreekhome: viewSpreekHome, gesprek: viewGesprek, gesprekhome: viewGesprekHome, selectie: viewSelectie };
@@ -1096,13 +1345,15 @@ function render() {
 
 function selLabel() {
   const b = S.settings.block != null ? S.blocks[S.settings.block] : null;
-  return (b ? 'alles t/m ' + b.naam : 'hele lijst') + (S.settings.soorten.length ? ' · ' + S.settings.soorten.join(', ') : '');
+  const e = S.settings.eigen, th = S.settings.themas || [];
+  return (e === 'alleen' ? 'alleen eigen woorden' : (b ? 'alles t/m ' + b.naam : 'hele lijst') + (e === 'zonder' ? ' zonder eigen woorden' : ''))
+    + (S.settings.soorten.length ? ' · ' + S.settings.soorten.join(', ') : '') + (th.length ? ' · thema ' + th.join(', ') : '');
 }
 
 // Een oefening op Home: de hele tegel is de startknop. Zonder kaarten is ze grijs en niet tikbaar.
 function tegel(cls, ico, naam, status, act) {
   const inh = `<span class="tico">${ico}</span><span class="ttxt"><b>${naam}</b><small>${status}</small></span>`;
-  return act ? `<li><button class="tegel ${cls}" data-act="${act}">${inh}<span class="tgo" aria-hidden="true">▶</span></button></li>`
+  return act ? `<li><button class="tegel ${cls}" data-act="${act}">${inh}</button></li>`
     : `<li><div class="tegel off ${cls}">${inh}</div></li>`;
 }
 
@@ -1152,12 +1403,16 @@ function viewSelectie() {
     `<option value="${i}" ${S.settings.block === i ? 'selected' : ''}>${esc(b.naam)} — ${b.count} woorden</option>`)).join('');
   const chips = soorten.map(s => `<button class="chip ${S.settings.soorten.includes(s) ? 'on' : ''}" data-act="soort" data-v="${esc(s)}">${esc(s)}</button>`).join('');
   const vtxt = verbsOn() ? ` en <b>${S.verbs.length}</b> werkwoorden` : '';
+  const nEigen = S.words.filter(w => w.id >= EIGEN_ID).length, th = S.settings.themas || [];
+  const themaChips = Array.from(new Set(S.words.map(w => w.thema).filter(Boolean))).sort().map(t => `<button class="chip ${th.includes(t) ? 'on' : ''}" data-act="thema" data-v="${esc(t)}">${esc(t)}</button>`).join('');
   return `<p><button class="btn ghost small" data-act="nav" data-v="start">← Home</button></p>
     <section class="card"><h2>Selectie</h2>
     <p><b>${S.words.length}</b> woorden en <b>${S.verbs.length}</b> werkwoorden in je lijst.</p>
     <label class="field">Oefen met alles t/m<select id="blk" data-act="blok">${opts}</select></label>
     <p class="hint">Dit filter geldt voor alle oefeningen. De volgorde is de volgorde van je lijst; een les die opnieuw voorkomt, heet "ronde 2".</p>
+    ${nEigen ? `<label class="field">Eigen woorden (${nEigen})<select id="eigensel">${[['met', 'meenemen'], ['zonder', 'niet meenemen'], ['alleen', 'alleen eigen woorden']].map(([v, t]) => `<option value="${v}" ${(S.settings.eigen || 'met') === v ? 'selected' : ''}>${t}</option>`).join('')}</select></label>` : ''}
     <p class="hint">Soort woord (leeg = alles):</p><div class="chips">${chips}</div>
+    <p class="hint">Thema (leeg = alles):</p><div class="chips">${themaChips}</div>
     <p>In je selectie: <b>${sel.length}</b> woorden${vtxt}${Object.keys(perSoort).length ? ' (' + Object.entries(perSoort).sort((a, b) => b[1] - a[1]).map(([k, v]) => v + ' ' + k).join(', ') + ')' : ''}.</p>
     <p class="hint">Werkwoorden hebben geen les. Ze doen mee als je geen soort kiest en "werkwoorden meenemen" aan staat bij de flashcards, of als je hier het soort "werkwoord" aanvinkt. Het les-filter geldt voor de woorden.</p></section>`;
 }
@@ -2035,14 +2290,14 @@ async function gvZet(goed) {
 const gvOk = () => gvZet(true), gvNo = () => gvZet(false);
 
 function viewWoorden() {
-  if (!S.words.length) return `<section class="card"><p>Nog geen woorden. Ga naar Importeren.</p></section>`;
+  if (!S.words.length) return `<section class="card"><p>Nog geen woorden. Ga naar Toevoegen.</p></section>`;
   const q = S.search.trim().toLowerCase();
   let list = S.words.filter(w => (!S.soortFilter || w.soort === S.soortFilter) &&
     (!q || w.spaans.toLowerCase().includes(q) || w.nederlands.toLowerCase().includes(q)));
   const shown = list.slice(0, S.limit);
   const soorten = Array.from(new Set(S.words.map(w => w.soort))).sort();
   const rows = shown.map(w => {
-    const meta = [w.soort, w.genus, w.thema, w.hoofdstuk ? 'les ' + w.hoofdstuk + '.' + w.les : ''].filter(Boolean).join(' · ');
+    const meta = [w.soort, w.genus, w.thema, w.id >= EIGEN_ID ? 'eigen woord' : w.hoofdstuk ? 'les ' + w.hoofdstuk + '.' + w.les : ''].filter(Boolean).join(' · ');
     return `<tr><td><b>${esc((w.lidwoord ? w.lidwoord + ' ' : '') + w.spaans)}</b>${w.meervoud ? `<br><small>meervoud: ${esc(w.meervoud)}</small>` : ''}</td>
     <td>${esc(w.nederlands)}<br><small>${esc(meta)}</small></td></tr>`;
   }).join('');
@@ -2054,14 +2309,121 @@ function viewWoorden() {
     ${list.length > shown.length ? `<p><button class="btn ghost" data-act="meer">Toon meer</button></p>` : ''}</section>`;
 }
 
+// ---------- Woorden toevoegen: nieuwe woorden typen (met voorstel) of een bestand importeren ----------
+const NW_THEMAS_STD = ['eten', 'kleding', 'familie', 'mensen', 'stad', 'huis', 'school', 'kunst', 'lichaam', 'natuur', 'tijd', 'vervoer', 'sport', 'talen', 'spullen', 'gevoel', 'uiterlijk', 'kleur', 'beschrijving', 'getallen', 'feest', 'algemeen'];
+const themaLijst = () => Array.from(new Set(NW_THEMAS_STD.concat(S.words.map(w => w.thema).filter(Boolean)))).sort();
+function nwDefaults() {
+  const les = S.words.filter(w => w.id < EIGEN_ID && w.hoofdstuk), last = les.length ? les[les.length - 1] : null;
+  return { doel: 'les', h: last ? last.hoofdstuk : 1, l: last ? last.les : 1, thema: 'algemeen', tekst: '' };
+}
 function viewImport() {
-  let html = `<section class="card"><h2>Importeren</h2>
-    <p>Kies een of twee CSV-bestanden: je woordenlijst en/of je werkwoorden. De app herkent zelf welk bestand het is. Bestaande woorden blijven; dubbelen worden samengevoegd. Je ziet eerst een overzicht en niets wordt bewaard voordat je op "Toepassen" tikt.</p>
+  const f = S.nwf || (S.nwf = nwDefaults());
+  let html = `<section class="card nwform"><h2>Nieuwe woorden toevoegen</h2>
+    <p class="hint">Typ per regel één woord: <b>Spaans = Nederlands</b>. Bijvoorbeeld <i>la ciudad = de stad</i>, <i>el abuelo / la abuela = de opa / de oma</i> of <i>nadar = zwemmen</i>. De app stelt lidwoord, genus, meervoud en soort voor (bij een werkwoord de zes vormen). Jij kijkt het na voor het wordt toegevoegd.</p>
+    <label class="field">Waar horen ze bij?<select id="nw-doel"><option value="les" ${f.doel === 'les' ? 'selected' : ''}>Een les (hoofdstuk en les, zoals in Duolingo)</option><option value="eigen" ${f.doel === 'eigen' ? 'selected' : ''}>Eigen woorden</option></select></label>
+    <div class="rij2" id="nw-lesvelden" ${f.doel === 'eigen' ? 'hidden' : ''}><label class="field">Hoofdstuk<input id="nw-h" type="number" inputmode="numeric" min="1" value="${f.h || ''}"></label><label class="field">Les<input id="nw-l" type="number" inputmode="numeric" min="1" value="${f.l || ''}"></label></div>
+    <label class="field">Thema<input id="nw-thema" type="text" list="nw-themas" value="${esc(f.thema || '')}" autocapitalize="off" autocorrect="off"></label>
+    <datalist id="nw-themas">${themaLijst().map(t => `<option value="${esc(t)}">`).join('')}</datalist>
+    <label class="field">Woorden<textarea id="nw-tekst" rows="6" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="la ciudad = de stad&#10;el abuelo / la abuela = de opa / de oma&#10;nadar = zwemmen">${esc(f.tekst || '')}</textarea></label>
+    <p><button class="btn" data-act="nw-voorstel">Voorstel maken</button></p></section>`;
+  if (S.nw) html += viewNwControle();
+  html += `<section class="card"><h2>Bestand importeren</h2>
+    <p>Kies een of twee csv-bestanden: je woordenlijst en/of je werkwoorden (bijvoorbeeld wat iemand met "Deel woordenlijst" stuurde). De app herkent zelf welk bestand het is. Bestaande woorden blijven; dubbelen worden samengevoegd. Je ziet eerst een overzicht en niets wordt bewaard voor je op Toepassen tikt.</p>
     <p><input id="bestand" type="file" accept=".csv,.txt,text/csv,text/plain" multiple></p>
     <p class="hint">Woorden: id; spaans; lidwoord; nederlands; soort; genus; meervoud; thema; hoofdstuk; les; opmerking.<br>
     Werkwoorden: id; infinitief; nederlands; groep; type; yo; tú; él/ella; nosotros; vosotros; ellos/ustedes; opmerking.</p></section>`;
   if (S.plan) html += viewPlan();
   return html;
+}
+function viewNwControle() {
+  const rows = S.nw; S.nwShown = rows;
+  const sel = (id, opts, cur) => `<select id="${id}">${opts.map(o => `<option value="${esc(o)}" ${o === (cur || '') ? 'selected' : ''}>${esc(o || '—')}</option>`).join('')}</select>`;
+  const inp = (id, v) => `<input id="${id}" type="text" value="${esc(v || '')}" autocapitalize="off" autocorrect="off" spellcheck="false">`;
+  const fld = (lab, html, cls) => `<label class="nwf ${cls || ''}"><span>${lab}</span>${html}</label>`;
+  const items = rows.map((r, i) => {
+    const cls = r.fout ? 'fout' : r.dubbel ? 'dubbel' : r.twijfel.length ? 'twijfel' : 'zeker';
+    const notes = [r.fout, r.dubbel].filter(Boolean).concat(r.twijfel).map(t => `<li class="nwtw">${esc(t)}</li>`).concat(r.opm.map(t => `<li>${esc(t)}</li>`)).join('');
+    const p = `nw-${i}-`;
+    const velden = r.kind === 'werkwoord'
+      ? fld('Infinitief', inp(p + 'spaans', r.spaans)) + fld('Nederlands', inp(p + 'nederlands', r.nederlands), 'breed') + VERB_FORMS.map((k, j) => fld(k, inp(p + 'v' + j, r.vormen[j]))).join('')
+      : fld('Lidwoord', sel(p + 'lidwoord', ['', 'el', 'la', 'el/la'], r.lidwoord), 'smal') + fld('Spaans', inp(p + 'spaans', r.spaans)) + fld('Nederlands', inp(p + 'nederlands', r.nederlands))
+        + fld('Soort', sel(p + 'soort', SOORTEN.filter(s => s !== 'werkwoord'), r.soort)) + fld('Genus', sel(p + 'genus', GENERA, r.genus), 'smal') + fld('Meervoud', inp(p + 'meervoud', r.meervoud)) + fld('Thema', `<input id="${p}thema" type="text" list="nw-themas" value="${esc(r.thema || '')}" autocapitalize="off" autocorrect="off">`);
+    return `<div class="nwrij ${cls}"><label class="nwmee"><input type="checkbox" id="${p}mee" ${r.mee ? 'checked' : ''} ${r.fout ? 'disabled' : ''}><b>${esc(r.kind === 'werkwoord' ? r.spaans : (r.lidwoord ? r.lidwoord + ' ' : '') + r.spaans)}</b><small>${esc(r.kind === 'werkwoord' ? 'werkwoord · ' + r.nederlands : r.nederlands)}</small></label>
+      ${notes ? `<ul class="nwnotes">${notes}</ul>` : ''}<div class="nwvelden">${velden}</div></div>`;
+  }).join('');
+  const nt = rows.filter(r => r.twijfel.length && !r.fout && !r.dubbel).length;
+  return `<section class="card" id="nw-controle"><h2>Nakijken</h2>
+    <p class="hint">${rows.length} regels${nt ? `, waarvan <b>${nt}</b> in het geel: daar twijfelt de app, kijk die zeker na` : ''}. Pas aan wat niet klopt en vink uit wat je niet wilt toevoegen. ${S.nwf.doel === 'eigen' ? 'Ze komen bij je <b>eigen woorden</b>.' : `Ze komen bij <b>hoofdstuk ${S.nwf.h}, les ${S.nwf.l}</b>.`}</p>
+    <div class="nwlijst">${items}</div>
+    <p><button class="btn" data-act="nw-ok">Toevoegen</button> <button class="btn ghost" data-act="nw-annuleer">Annuleren</button></p></section>`;
+}
+// Bewaart wat je in het formulier typte, zodat een nieuwe weergave (bv. een melding) het niet wist.
+function nwFormSync() {
+  const t = document.getElementById('nw-tekst'); if (!t || !S.nwf) return;
+  const g = id => document.getElementById(id);
+  Object.assign(S.nwf, { doel: g('nw-doel').value, h: parseInt(g('nw-h').value, 10) || 0, l: parseInt(g('nw-l').value, 10) || 0, thema: g('nw-thema').value.trim().toLowerCase(), tekst: t.value });
+}
+// Leest wat je in de controlelijst aanpaste terug in S.nw (zodat een nieuwe weergave niets wist).
+function nwSync() {
+  if (!S.nw) return;
+  S.nw.forEach((r, i) => {
+    const g = k => { const e = document.getElementById('nw-' + i + '-' + k); return e ? e.value.trim() : null; };
+    const m = document.getElementById('nw-' + i + '-mee'); if (m) r.mee = m.checked;
+    ['spaans', 'nederlands', 'lidwoord', 'soort', 'genus', 'meervoud', 'thema'].forEach(k => { const v = g(k); if (v != null) r[k] = v; });
+    if (r.kind === 'werkwoord') r.vormen = r.vormen.map((x, j) => { const v = g('v' + j); return v != null ? v : x; });
+  });
+}
+function nwMaakVoorstel() {
+  const g = id => document.getElementById(id);
+  S.nwf = { doel: g('nw-doel').value, h: parseInt(g('nw-h').value, 10) || 0, l: parseInt(g('nw-l').value, 10) || 0, thema: g('nw-thema').value.trim().toLowerCase(), tekst: g('nw-tekst').value };
+  const f = S.nwf;
+  if (!f.tekst.trim()) { setMsg('err', 'Typ eerst een of meer woorden, één per regel: Spaans = Nederlands.'); render(); return; }
+  if (f.doel === 'les' && (!f.h || !f.l)) { setMsg('err', 'Vul het hoofdstuk en de les in, of kies "Eigen woorden".'); render(); return; }
+  const keyW = (s, so) => normKey(s) + '|' + so, bestaand = new Map(S.words.map(w => [keyW(w.spaans, w.soort), w])), bestaandV = new Set(S.verbs.map(v => normKey(v.infinitief))), gezien = new Set();
+  S.nw = nwVoorstellen(f.tekst).map(r => {
+    r.thema = f.thema || 'algemeen'; r.mee = !r.fout;
+    const k = r.kind === 'werkwoord' ? 'v|' + normKey(r.spaans) : keyW(r.spaans, r.soort);
+    const oud = r.kind === 'werkwoord' ? bestaandV.has(normKey(r.spaans)) : bestaand.get(k);
+    if (!r.fout && oud) { r.dubbel = 'staat al in je lijst' + (oud.nederlands ? ' (' + oud.nederlands + ')' : '') + ': niet aangevinkt'; r.mee = false; }
+    else if (!r.fout && gezien.has(k)) { r.dubbel = 'staat twee keer in je tekst'; r.mee = false; }
+    gezien.add(k);
+    return r;
+  });
+  S.msg = null; render();
+  const c = document.getElementById('nw-controle'); if (c && c.scrollIntoView) c.scrollIntoView({ block: 'start' });
+}
+async function nwToevoegen() {
+  nwSync();
+  const f = S.nwf, words = [], verbs = [], fouten = [];
+  for (const r of S.nw) {
+    if (!r.mee || r.fout) continue;
+    if (r.kind === 'werkwoord') {
+      const rec = { infinitief: r.spaans.toLowerCase(), nederlands: r.nederlands, groep: r.groep, type: r.type, opmerking: 'zelf toegevoegd' };
+      VERB_FORMS.forEach((k, j) => { rec[k] = r.vormen[j] || ''; });
+      const c = cleanVerb(rec);
+      if (c.error) fouten.push((rec.infinitief || '?') + ': ' + c.error); else if (c.warn.length) fouten.push(rec.infinitief + ': ' + c.warn.join(', ')); else verbs.push(c.v);
+    } else {
+      const rec = { spaans: r.spaans, lidwoord: r.lidwoord, nederlands: r.nederlands, soort: r.soort, genus: r.genus, meervoud: r.meervoud, thema: (r.thema || '').toLowerCase(), hoofdstuk: f.doel === 'les' ? String(f.h) : '', les: f.doel === 'les' ? String(f.l) : '', opmerking: f.doel === 'eigen' ? 'eigen woord' : 'zelf toegevoegd' };
+      const c = cleanWord(rec);
+      if (c.error) fouten.push((rec.spaans || '?') + ': ' + c.error);
+      else if (c.w.soort === 'zelfstandig naamwoord' && !c.w.lidwoord) fouten.push(c.w.spaans + ': kies een lidwoord');
+      else words.push(c.w);
+    }
+  }
+  if (fouten.length) { setMsg('err', 'Nog niet toegevoegd. Pas eerst aan: ' + fouten.join('; ') + '.'); render(); return; }
+  if (!words.length && !verbs.length) { setMsg('err', 'Er is niets aangevinkt om toe te voegen.'); render(); return; }
+  const ids = nwIds(S.words, words.length, f.doel === 'eigen');
+  words.forEach((w, j) => { w.id = ids[j]; w.altIds = []; });
+  const vmax = Math.max(0, ...S.verbs.map(v => v.id));
+  verbs.forEach((v, j) => { v.id = vmax + 1 + j; v.altIds = []; });
+  try {
+    if (words.length) await store.replaceAll('words', S.words.concat(words));
+    if (verbs.length) await store.replaceAll('verbs', S.verbs.concat(verbs));
+  } catch (e) { setMsg('err', 'Opslaan is niet gelukt: ' + (e && e.message || e) + '. Er is niets veranderd.'); render(); return; }
+  await loadAll();
+  S.nw = null; S.nwf.tekst = '';
+  setMsg('ok', 'Toegevoegd: ' + plural(words.length, 'woord', 'woorden') + (verbs.length ? ' en ' + plural(verbs.length, 'werkwoord', 'werkwoorden') : '') + (words.length ? (f.doel === 'eigen' ? ', bij je eigen woorden' : ', bij hoofdstuk ' + f.h + ', les ' + f.l) : '') + '. Ze doen meteen mee in de oefeningen. Vergeet niet af en toe een back-up te maken.');
+  render();
 }
 
 function repLine(r) {
@@ -2106,7 +2468,7 @@ function viewBeheer() {
     <p><button class="btn ghost" data-act="fc-reset">Voortgang wissen</button></p></section>
     <section class="card"><h2>Alles wissen</h2><p>Verwijdert alle woorden, werkwoorden en voortgang van dit toestel.</p>
     <p><button class="btn danger" data-act="wissen">Alles wissen</button></p></section>
-    <section class="card"><p class="hint">Spaans leren — Versie 0.13.</p></section>`;
+    <section class="card"><p class="hint">Spaans leren — Versie 0.14.</p></section>`;
 }
 
 // ---------- Acties ----------
@@ -2284,6 +2646,14 @@ document.addEventListener('click', async e => {
   else if (act === 'gr-pick') grPick(el.dataset.v);
   else if (act === 'gr-next') { if (S.gr) { S.gr.feedback = null; render(); } }
   else if (act === 'gr-stop') { S.gr = null; S.view = 'genushome'; S.msg = null; render(); }
+  else if (act === 'thema') {
+    const s = el.dataset.v, a = S.settings.themas || [];
+    S.settings.themas = a.includes(s) ? a.filter(x => x !== s) : a.concat(s);
+    await saveSettings(); render();
+  }
+  else if (act === 'nw-voorstel') nwMaakVoorstel();
+  else if (act === 'nw-ok') nwToevoegen();
+  else if (act === 'nw-annuleer') { S.nw = null; S.msg = null; render(); }
   else if (act === 'soort') {
     const s = el.dataset.v, a = S.settings.soorten;
     S.settings.soorten = a.includes(s) ? a.filter(x => x !== s) : a.concat(s);
@@ -2299,7 +2669,9 @@ document.addEventListener('click', async e => {
 });
 document.addEventListener('change', async e => {
   const el = e.target;
-  if (el.id === 'blk') { S.settings.block = el.value === '' ? null : +el.value; await saveSettings(); render(); }
+  if (el.id === 'eigensel') { S.settings.eigen = el.value; await saveSettings(); render(); }
+  else if (el.id === 'nw-doel') { const d = document.getElementById('nw-lesvelden'); if (d) d.hidden = el.value === 'eigen'; }
+  else if (el.id === 'blk') { S.settings.block = el.value === '' ? null : +el.value; await saveSettings(); render(); }
   else if (/^(fc|gr|mr|ov|zn)-order$/.test(el.id)) {
     S.settings[el.id.slice(0, 2)].order = el.value === 'list' ? 'list' : 'random';
     await saveSettings(); render();
