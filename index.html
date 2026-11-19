@@ -285,6 +285,25 @@ function mergeWords(existing, records) {
   return { words: list, report: rep };
 }
 
+// ---- Woordenlijst delen: export als csv (zelfde kolommen als de import; UTF-8 met BOM, puntkomma) ----
+const WORD_COLS = ['id', 'spaans', 'lidwoord', 'nederlands', 'soort', 'genus', 'meervoud', 'thema', 'hoofdstuk', 'les', 'opmerking'];
+const VERB_COLS = ['id'].concat(VERB_FIELDS);
+function csvCell(v) {
+  v = (v == null) ? '' : String(v);
+  return /[;"\r\n]/.test(v) || v !== v.trim() ? '"' + v.replace(/"/g, '""') + '"' : v;
+}
+function tableToCSV(cols, rows) {
+  const lines = [cols.join(';')].concat(rows.map(r => cols.map(k => csvCell(r[k])).join(';')));
+  return '\ufeff' + lines.join('\r\n') + '\r\n';
+}
+function wordsToCSV(words) {
+  const rows = words.slice().sort((a, b) => a.id - b.id).map(w => Object.assign({}, w, { hoofdstuk: w.hoofdstuk || '', les: w.les || '' }));
+  return tableToCSV(WORD_COLS, rows);
+}
+function verbsToCSV(verbs) {
+  return tableToCSV(VERB_COLS, verbs.slice().sort((a, b) => a.id - b.id));
+}
+
 function cleanVerb(rec) {
   const f = k => (rec[k] || '').trim();
   const v = { id: parseInt(f('id'), 10) || null };
@@ -2052,13 +2071,17 @@ function viewBeheer() {
     <p class="hint">${esc(pers)}</p>
     <p><button class="btn" data-act="backup">Back-up maken</button></p>
     <p><label class="field">Back-up terugzetten<input id="terug" type="file" accept=".json,application/json"></label></p></section>
+    <section class="card"><h2>Woordenlijst delen</h2>
+    <p>Stuur je woorden en werkwoorden naar iemand anders, bijvoorbeeld met AirDrop, WhatsApp of mail. Dat zijn twee csv-bestanden, zonder je voortgang. De ander opent de app en kiest Importeren. Dit is geen back-up.</p>
+    <p class="hint">${plural(S.words.length, 'woord', 'woorden')} en ${plural(S.verbs.length, 'werkwoord', 'werkwoorden')}.</p>
+    <p><button class="btn" data-act="deel" ${S.words.length || S.verbs.length ? '' : 'disabled'}>Deel woordenlijst</button> <button class="btn ghost" data-act="exportcsv" ${S.words.length || S.verbs.length ? '' : 'disabled'}>Bewaar als csv-bestanden</button></p></section>
     <section class="card"><h2>Spaanse spraak</h2><p>Voor de uitspraak (🔊) en voor spreken. Kies de variant die je wilt horen en gebruiken.</p>
     <label class="field">Spaanse stem<select id="lang"><option value="es-ES" ${S.settings.lang === 'es-ES' ? 'selected' : ''}>Spanje (es-ES)</option><option value="es-MX" ${S.settings.lang === 'es-MX' ? 'selected' : ''}>Mexico (es-MX)</option></select></label></section>
     <section class="card"><h2>Voortgang wissen</h2><p>Begin opnieuw met alle oefeningen. Je woorden en werkwoorden blijven staan.</p>
     <p><button class="btn ghost" data-act="fc-reset">Voortgang wissen</button></p></section>
     <section class="card"><h2>Alles wissen</h2><p>Verwijdert alle woorden, werkwoorden en voortgang van dit toestel.</p>
     <p><button class="btn danger" data-act="wissen">Alles wissen</button></p></section>
-    <section class="card"><p class="hint">Spaans leren — Versie 0.11.</p></section>`;
+    <section class="card"><p class="hint">Spaans leren — Versie 0.12.</p></section>`;
 }
 
 // ---------- Acties ----------
@@ -2093,6 +2116,45 @@ async function applyPlan() {
     setMsg('ok', 'Gelukt: ' + plural(S.words.length, 'woord', 'woorden') + ' en ' + plural(S.verbs.length, 'werkwoord', 'werkwoorden') + ' staan nu in de app.');
     S.view = 'start';
   } catch (e) { setMsg('err', 'Opslaan is niet gelukt: ' + (e && e.message || e) + '. Er is niets veranderd.'); }
+  render();
+}
+
+function lijstBestanden() {
+  const dag = new Date().toISOString().slice(0, 10);
+  const mk = (naam, tekst) => new File([tekst], naam + '-' + dag + '.csv', { type: 'text/csv' });
+  const f = [];
+  if (S.words.length) f.push(mk('woorden', wordsToCSV(S.words)));
+  if (S.verbs.length) f.push(mk('werkwoorden', verbsToCSV(S.verbs)));
+  return f;
+}
+function downloadFiles(files) {
+  files.forEach((file, i) => setTimeout(() => {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(file); a.download = file.name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  }, i * 400));
+}
+function exportCSV() {
+  const files = lijstBestanden();
+  downloadFiles(files);
+  setMsg('ok', 'Bewaard als ' + files.map(f => f.name).join(' en ') + '. Een ander kan ze importeren bij Importeren.');
+  render();
+}
+async function deelLijst() {
+  const files = lijstBestanden();
+  if (navigator.canShare && navigator.canShare({ files })) {
+    try {
+      await navigator.share({ files, title: 'Spaans leren: woordenlijst' });
+      setMsg('ok', 'Woordenlijst gedeeld. De ander kiest in de app Importeren.');
+    } catch (e) {
+      if (e && e.name === 'AbortError') return; // jij annuleerde het deelmenu
+      setMsg('err', 'Delen is niet gelukt (' + (e && e.message || e) + '). Gebruik "Bewaar als csv-bestanden".');
+    }
+  } else {
+    downloadFiles(files);
+    setMsg('ok', 'Delen kan niet op dit toestel, dus de csv-bestanden zijn bewaard (' + files.map(f => f.name).join(' en ') + '). Verstuur ze zelf.');
+  }
   render();
 }
 
@@ -2206,6 +2268,8 @@ document.addEventListener('click', async e => {
   else if (act === 'toepassen') applyPlan();
   else if (act === 'annuleer') { S.plan = null; render(); }
   else if (act === 'backup') makeBackup();
+  else if (act === 'deel') deelLijst();
+  else if (act === 'exportcsv') exportCSV();
   else if (act === 'wissen') wipeAll();
 });
 document.addEventListener('change', async e => {
