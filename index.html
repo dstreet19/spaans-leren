@@ -111,9 +111,14 @@ details summary{cursor:pointer;min-height:40px;padding:8px 0;color:var(--acc);fo
 .formtab td{padding:5px 10px;font-size:21px;border:0}
 .formtab td small{font-size:17px}
 .selbar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 16px}
-.oef li{align-items:center}
-.oef .oeftxt{flex:1;cursor:pointer;min-height:44px;display:flex;flex-direction:column;justify-content:center}
-.oef .btn{min-width:90px}
+.oef{display:grid;grid-template-columns:1fr;gap:10px;margin:0 0 14px}
+.oef li{align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px 12px;min-height:64px}
+.oef li:last-child{border-bottom:1px solid var(--line)}
+.oef .oeftxt{flex:1;cursor:pointer;min-height:44px;display:flex;flex-direction:column;justify-content:center;min-width:0}
+.oef .oeftxt b{line-height:1.25}
+.oef .oeftxt small{line-height:1.25}
+.oef .btn{min-width:72px;flex:0 0 auto}
+@media (min-width:600px){.oef{grid-template-columns:1fr 1fr}}
 .oef li.off{color:var(--mut);padding:13px 0}
 @media (min-width:700px){body{font-size:18px}main{padding:22px}}
 </style>
@@ -1096,7 +1101,7 @@ function viewStart() {
   const gvStatus = gp2.dueTotal ? `<b>${gp2.dueTotal}</b> aan de beurt · ${gp2.newTotal} nieuw` : gp2.newTotal ? `${gp2.newTotal} nieuw` : gp2.learned ? 'niets aan de beurt' : 'geen vragen';
   return `<section class="card selbar"><div><small>Selectie</small><br><b>${esc(selLabel())}</b> · ${sel.length} woorden${verbsOn() ? ' + ' + S.verbs.length + ' werkwoorden' : ''}</div>
       <button class="btn ghost small" data-act="nav" data-v="selectie">Wijzigen</button></section>
-    <section class="card"><ul class="list oef">
+    <section class="tegels"><ul class="list oef">
       <li><div class="oeftxt" data-act="nav" data-v="flashhome"><b>Flashcards</b><small>${fcStatus}</small></div>
         ${plan.cards.length ? '<button class="btn small" data-act="fc-start">Start</button>' : ''}</li>
       <li><div class="oeftxt" data-act="nav" data-v="genushome"><b>Lidwoord en genus</b><small>${grStatus}</small></div>
@@ -2081,7 +2086,7 @@ function viewBeheer() {
     <p><button class="btn ghost" data-act="fc-reset">Voortgang wissen</button></p></section>
     <section class="card"><h2>Alles wissen</h2><p>Verwijdert alle woorden, werkwoorden en voortgang van dit toestel.</p>
     <p><button class="btn danger" data-act="wissen">Alles wissen</button></p></section>
-    <section class="card"><p class="hint">Spaans leren — Versie 0.12.</p></section>`;
+    <section class="card"><p class="hint">Spaans leren — Versie 0.12.1.</p></section>`;
 }
 
 // ---------- Acties ----------
