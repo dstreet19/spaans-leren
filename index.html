@@ -112,13 +112,33 @@ details summary{cursor:pointer;min-height:40px;padding:8px 0;color:var(--acc);fo
 .formtab td small{font-size:17px}
 .selbar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 16px}
 .oef{display:grid;grid-template-columns:1fr;gap:10px;margin:0 0 14px}
-.oef li{align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px 12px;min-height:64px}
-.oef li:last-child{border-bottom:1px solid var(--line)}
-.oef .oeftxt{flex:1;cursor:pointer;min-height:44px;display:flex;flex-direction:column;justify-content:center;min-width:0}
-.oef .oeftxt b{line-height:1.25}
-.oef .oeftxt small{line-height:1.25}
-.oef .btn{min-width:72px;flex:0 0 auto}
+.oef li,.oef li:last-child{display:block;padding:0;border:0}
 @media (min-width:600px){.oef{grid-template-columns:1fr 1fr}}
+/* kleurenpalet voor de oefeningen: zachte tint, donkerdere rand, geen rood (rood = fout) */
+:root{--tl1:95%;--tl2:87%;--tsat:58%;--tbd:52%;--tink:17%;--tgo:36%;--tsh:rgba(40,35,20,.10)}
+@media (prefers-color-scheme:dark){:root{--tl1:21%;--tl2:15%;--tsat:26%;--tbd:42%;--tink:93%;--tgo:50%;--tsh:rgba(0,0,0,.35)}}
+.t1{--h:122}.t2{--h:172}.t3{--h:40}.t4{--h:268}.t5{--h:205}.t6{--h:78}.t7{--h:232}
+.tegel{display:flex;align-items:center;gap:10px;width:100%;min-height:56px;padding:7px 10px 7px 8px;border-radius:16px;
+  border:2px solid hsl(var(--h) calc(var(--tsat) - 12%) var(--tbd));
+  background:linear-gradient(155deg,hsl(var(--h) var(--tsat) var(--tl1)),hsl(var(--h) var(--tsat) var(--tl2)));
+  color:hsl(var(--h) 30% var(--tink));font:inherit;text-align:left;cursor:pointer;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 3px 8px var(--tsh);
+  transition:transform .12s ease,box-shadow .12s ease;-webkit-tap-highlight-color:transparent}
+.tegel:active{transform:scale(.97);box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 1px 3px var(--tsh)}
+.tegel .tico{flex:0 0 auto;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:21px;
+  background:hsl(var(--h) calc(var(--tsat) - 8%) calc(var(--tl2) - 6%));box-shadow:inset 0 0 0 1.5px hsl(var(--h) calc(var(--tsat) - 12%) var(--tbd))}
+.tegel .ttxt{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.22}
+.tegel .ttxt b{font-size:17px}
+.tegel .ttxt small{font-size:13px;opacity:.8}
+.tegel .tgo{flex:0 0 auto;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;padding-left:2px;
+  background:hsl(var(--h) 46% var(--tgo));color:#fff}
+.tegel.off{cursor:default;filter:grayscale(.85);opacity:.6;box-shadow:none}
+.tegel.off:active{transform:none}
+.fcacts{display:flex;gap:8px}
+.blad{border:2px solid hsl(var(--h) calc(var(--tsat) - 12%) var(--tbd));background:linear-gradient(170deg,hsl(var(--h) var(--tsat) var(--tl1)),var(--card) 38%)}
+.blad h2{display:flex;align-items:center;gap:10px;margin-top:0}
+.blad .hico{width:38px;height:38px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:21px;
+  background:hsl(var(--h) calc(var(--tsat) - 8%) calc(var(--tl2) - 6%));box-shadow:inset 0 0 0 1.5px hsl(var(--h) calc(var(--tsat) - 12%) var(--tbd))}
 .oef li.off{color:var(--mut);padding:13px 0}
 @media (min-width:700px){body{font-size:18px}main{padding:22px}}
 </style>
@@ -1079,6 +1099,13 @@ function selLabel() {
   return (b ? 'alles t/m ' + b.naam : 'hele lijst') + (S.settings.soorten.length ? ' · ' + S.settings.soorten.join(', ') : '');
 }
 
+// Een oefening op Home: de hele tegel is de startknop. Zonder kaarten is ze grijs en niet tikbaar.
+function tegel(cls, ico, naam, status, act) {
+  const inh = `<span class="tico">${ico}</span><span class="ttxt"><b>${naam}</b><small>${status}</small></span>`;
+  return act ? `<li><button class="tegel ${cls}" data-act="${act}">${inh}<span class="tgo" aria-hidden="true">▶</span></button></li>`
+    : `<li><div class="tegel off ${cls}">${inh}</div></li>`;
+}
+
 function viewStart() {
   if (!S.words.length && !S.verbs.length) {
     return `<section class="card"><h2>Welkom</h2><p>Er staan nog geen woorden in de app. Importeer eerst je woordenlijst (CSV uit Numbers) en je werkwoorden.</p>
@@ -1102,20 +1129,13 @@ function viewStart() {
   return `<section class="card selbar"><div><small>Selectie</small><br><b>${esc(selLabel())}</b> · ${sel.length} woorden${verbsOn() ? ' + ' + S.verbs.length + ' werkwoorden' : ''}</div>
       <button class="btn ghost small" data-act="nav" data-v="selectie">Wijzigen</button></section>
     <section class="tegels"><ul class="list oef">
-      <li><div class="oeftxt" data-act="nav" data-v="flashhome"><b>Flashcards</b><small>${fcStatus}</small></div>
-        ${plan.cards.length ? '<button class="btn small" data-act="fc-start">Start</button>' : ''}</li>
-      <li><div class="oeftxt" data-act="nav" data-v="genushome"><b>Lidwoord en genus</b><small>${grStatus}</small></div>
-        ${gp.cards.length ? '<button class="btn small" data-act="gr-start">Start</button>' : ''}</li>
-      <li><div class="oeftxt" data-act="nav" data-v="meervoudhome"><b>Meervoud</b><small>${mrStatus}</small></div>
-        ${mp.cards.length ? '<button class="btn small" data-act="mr-start">Start</button>' : ''}</li>
-      <li><div class="oeftxt" data-act="nav" data-v="overeenhome"><b>Overeenstemming</b><small>${ovStatus}</small></div>
-        ${op.cards.length ? '<button class="btn small" data-act="ov-start">Start</button>' : ''}</li>
-      <li><div class="oeftxt" data-act="nav" data-v="werkwoordhome"><b>Werkwoordtabel</b><small>${wtStatus}</small></div>
-        ${wp.cards.length ? '<button class="btn small" data-act="wt-start">Start</button>' : ''}</li>
-      <li><div class="oeftxt" data-act="nav" data-v="spreekhome"><b>Spreekoefening</b><small>${znStatus}</small></div>
-        ${zp.cards.length ? '<button class="btn small" data-act="zn-start">Start</button>' : ''}</li>
-      <li><div class="oeftxt" data-act="nav" data-v="gesprekhome"><b>Gesprek</b><small>${gvStatus}</small></div>
-        ${gp2.cards.length ? '<button class="btn small" data-act="gv-start">Start</button>' : ''}</li></ul></section>
+      ${tegel('t1', '🗂️', 'Flashcards', fcStatus, plan.cards.length ? 'fc-start' : '')}
+      ${tegel('t2', '🏷️', 'Lidwoord en genus', grStatus, gp.cards.length ? 'gr-start' : '')}
+      ${tegel('t3', '👥', 'Meervoud', mrStatus, mp.cards.length ? 'mr-start' : '')}
+      ${tegel('t4', '🎯', 'Overeenstemming', ovStatus, op.cards.length ? 'ov-start' : '')}
+      ${tegel('t5', '📋', 'Werkwoordtabel', wtStatus, wp.cards.length ? 'wt-start' : '')}
+      ${tegel('t6', '🎤', 'Spreekoefening', znStatus, zp.cards.length ? 'zn-start' : '')}
+      ${tegel('t7', '💬', 'Gesprek', gvStatus, gp2.cards.length ? 'gv-start' : '')}</ul></section>
     <section class="card dagstand">
       <p class="hint">${(() => { const n = activityToday(S.activity, Date.now()); return n ? 'Vandaag geoefend: <b>' + plural(n, 'kaart', 'kaarten') + '</b>.' : 'Vandaag nog niet geoefend.'; })()}</p>
       ${(() => { const bs = backupStatus(S.lastBackup, S.progress.size > 0 || S.words.length > 0, Date.now());
@@ -1164,7 +1184,7 @@ function flashStartCard(sel) {
   if (!plan.cards.length) { info = 'Er zijn geen kaarten in je selectie.'; btn = 'Start flashcards'; }
   else if (plan.extra) { info = 'Niets is vandaag nog aan de beurt. Je kunt toch oefenen: dan komen de kaarten die het eerst terugkomen.'; btn = 'Toch oefenen (' + plan.cards.length + ' kaarten)'; }
   else { info = `Volgende sessie: <b>${plan.cards.length}</b> kaarten (${plan.due} herhalen, ${plan.nieuw} nieuw).`; btn = 'Start flashcards'; }
-  return `<section class="card"><h2>Flashcards</h2>
+  return `<section class="card blad t1"><h2><span class="hico">🗂️</span> Flashcards</h2>
     <p><b>${plan.dueTotal}</b> aan de beurt · <b>${plan.newTotal}</b> nieuw beschikbaar · <b>${plan.learned}</b> al geoefend</p>
     <p class="hint">Hoe goed ken je je kaarten?</p>
     <div class="boxes">${boxes}</div>
@@ -1227,7 +1247,7 @@ function viewFlash() {
   const front = card.dir === 'a' ? face.es : face.nl, back = card.dir === 'a' ? face.nl : face.es;
   const frontSp = card.dir === 'a', pos = Math.min(sess.answered + 1, sess.total);
   const pct = Math.round(sess.answered / sess.total * 100);
-  let h = `<div class="fcbar"><span>${card.retry ? 'Herhaling' : 'Kaart ' + pos + ' van ' + sess.total}</span><button class="btn ghost small" data-act="fc-stop">Stoppen</button></div>
+  let h = `<div class="fcbar"><span>${card.retry ? 'Herhaling' : 'Kaart ' + pos + ' van ' + sess.total}</span><span class="fcacts"><button class="btn ghost small" data-act="fc-stop">⚙ Instellingen</button><button class="btn ghost small" data-act="nav" data-v="start">Stoppen</button></span></div>
     <div class="prog"><i style="width:${pct}%"></i></div>
     <section class="card fcard" ${F.revealed ? '' : 'data-act="fc-reveal"'}>
       <div class="tag">${esc(tag)}</div>
@@ -1260,7 +1280,7 @@ function viewFlashEnd() {
     <p>Je beantwoordde <b>${s.answered}</b> kaarten: <b>${s.juist}</b> juist en <b>${s.fout}</b> fout (${pct}%).</p>
     ${missed ? `<h3>Om te onthouden</h3><div class="tablewrap"><table><thead><tr><th>Spaans</th><th>Nederlands</th></tr></thead><tbody>${missed}</tbody></table></div>` : '<p>Geen enkele fout. Mooi werk!</p>'}
     <p class="hint">Je kaarten nu: ${plan.boxes.map((n, i) => LEVELS[i][0].toLowerCase() + ' ' + n).join(' · ')}.</p>
-    <p><button class="btn" data-act="fc-start" ${plan.cards.length ? '' : 'disabled'}>${plan.extra ? 'Toch nog oefenen' : 'Nog een sessie'}</button> <button class="btn ghost" data-act="fc-stop">Klaar</button></p></section>`;
+    <p><button class="btn" data-act="fc-start" ${plan.cards.length ? '' : 'disabled'}>${plan.extra ? 'Toch nog oefenen' : 'Nog een sessie'}</button> <button class="btn ghost" data-act="nav" data-v="start">Klaar</button> <button class="btn ghost" data-act="fc-stop">⚙ Instellingen</button></p></section>`;
 }
 
 async function fcAnswer(correct) {
@@ -1289,7 +1309,7 @@ function viewGenusHome() {
   else if (plan.extra) { info = 'Niets is vandaag nog aan de beurt. Je kunt toch oefenen: dan komen de woorden die het eerst terugkomen.'; btn = 'Toch oefenen (' + plan.cards.length + ' woorden)'; }
   else info = `Volgende sessie: <b>${plan.cards.length}</b> woorden (${plan.due} herhalen, ${plan.nieuw} nieuw).`;
   return `<p><button class="btn ghost small" data-act="nav" data-v="start">← Home</button></p>
-    <section class="card"><h2>Lidwoord en genus</h2>
+    <section class="card blad t2"><h2><span class="hico">🏷️</span> Lidwoord en genus</h2>
     <p class="hint">Je ziet een Spaans zelfstandig naamwoord zonder lidwoord. Kies <b>el</b> (mannelijk) of <b>la</b> (vrouwelijk). Woorden met twee vormen (el/la) en woorden die alleen in het meervoud bestaan komen hier niet in.</p>
     <p><b>${plan.dueTotal}</b> aan de beurt · <b>${plan.newTotal}</b> nieuw beschikbaar · <b>${plan.learned}</b> al geoefend</p>
     <p class="hint">Hoe goed ken je je woorden?</p>
@@ -1328,7 +1348,7 @@ function viewGenus() {
 
 function genusBar(label) {
   const s = S.gr.sess, pct = Math.round(s.answered / s.total * 100);
-  return `<div class="fcbar"><span>${label}</span><button class="btn ghost small" data-act="gr-stop">Stoppen</button></div><div class="prog"><i style="width:${pct}%"></i></div>`;
+  return `<div class="fcbar"><span>${label}</span><span class="fcacts"><button class="btn ghost small" data-act="gr-stop">⚙ Instellingen</button><button class="btn ghost small" data-act="nav" data-v="start">Stoppen</button></span></div><div class="prog"><i style="width:${pct}%"></i></div>`;
 }
 
 function genusFeedback() {
@@ -1353,7 +1373,7 @@ function genusEnd() {
     <p>Je beantwoordde <b>${s.answered}</b> woorden: <b>${s.juist}</b> juist en <b>${s.fout}</b> fout (${pct}%).</p>
     ${missed ? `<h3>Om te onthouden</h3><div class="tablewrap"><table><thead><tr><th>Spaans</th><th>Nederlands</th></tr></thead><tbody>${missed}</tbody></table></div>` : '<p>Geen enkele fout. Mooi werk!</p>'}
     <p class="hint">Je woorden nu: ${plan.boxes.map((n, i) => LEVELS[i][0].toLowerCase() + ' ' + n).join(' · ')}.</p>
-    <p><button class="btn" data-act="gr-start" ${plan.cards.length ? '' : 'disabled'}>${plan.extra ? 'Toch nog oefenen' : 'Nog een sessie'}</button> <button class="btn ghost" data-act="gr-stop">Klaar</button></p></section>`;
+    <p><button class="btn" data-act="gr-start" ${plan.cards.length ? '' : 'disabled'}>${plan.extra ? 'Toch nog oefenen' : 'Nog een sessie'}</button> <button class="btn ghost" data-act="nav" data-v="start">Klaar</button> <button class="btn ghost" data-act="gr-stop">⚙ Instellingen</button></p></section>`;
 }
 
 async function grPick(choice) {
@@ -1381,7 +1401,7 @@ function viewMeervoudHome() {
   else if (plan.extra) { info = 'Niets is vandaag nog aan de beurt. Je kunt toch oefenen: dan komen de woorden die het eerst terugkomen.'; btn = 'Toch oefenen (' + plan.cards.length + ' woorden)'; }
   else info = `Volgende sessie: <b>${plan.cards.length}</b> woorden (${plan.due} herhalen, ${plan.nieuw} nieuw).`;
   return `<p><button class="btn ghost small" data-act="nav" data-v="start">← Home</button></p>
-    <section class="card"><h2>Meervoud</h2>
+    <section class="card blad t3"><h2><span class="hico">👥</span> Meervoud</h2>
     <p class="hint">Je ziet een Spaans zelfstandig naamwoord in het enkelvoud, met lidwoord en vertaling. Typ het meervoud of spreek het uit${recSupported() ? ' (tik op 🎤; werkt alleen online)' : ''}. Getypt moet het accent kloppen, want <i>examen</i> wordt <i>exámenes</i>. Bijvoeglijke naamwoorden (mucho, muchos) komen bij de oefening overeenstemming.</p>
     <p><b>${plan.dueTotal}</b> aan de beurt · <b>${plan.newTotal}</b> nieuw beschikbaar · <b>${plan.learned}</b> al geoefend</p>
     <p class="hint">Hoe goed ken je je woorden?</p>
@@ -1404,7 +1424,7 @@ function startMeervoud() {
 
 function mrBar(label) {
   const s = S.mr.sess, pct = Math.round(s.answered / s.total * 100);
-  return `<div class="fcbar"><span>${label}</span><button class="btn ghost small" data-act="mr-stop">Stoppen</button></div><div class="prog"><i style="width:${pct}%"></i></div>`;
+  return `<div class="fcbar"><span>${label}</span><span class="fcacts"><button class="btn ghost small" data-act="mr-stop">⚙ Instellingen</button><button class="btn ghost small" data-act="nav" data-v="start">Stoppen</button></span></div><div class="prog"><i style="width:${pct}%"></i></div>`;
 }
 
 function viewMeervoud() {
@@ -1454,7 +1474,7 @@ function mrEnd() {
     <p>Je beantwoordde <b>${s.answered}</b> woorden: <b>${s.juist}</b> juist en <b>${s.fout}</b> fout (${pct}%).</p>
     ${missed ? `<h3>Om te onthouden</h3><div class="tablewrap"><table><thead><tr><th>Enkelvoud</th><th>Meervoud</th></tr></thead><tbody>${missed}</tbody></table></div>` : '<p>Geen enkele fout. Mooi werk!</p>'}
     <p class="hint">Je woorden nu: ${plan.boxes.map((n, i) => LEVELS[i][0].toLowerCase() + ' ' + n).join(' · ')}.</p>
-    <p><button class="btn" data-act="mr-start" ${plan.cards.length ? '' : 'disabled'}>${plan.extra ? 'Toch nog oefenen' : 'Nog een sessie'}</button> <button class="btn ghost" data-act="mr-stop">Klaar</button></p></section>`;
+    <p><button class="btn" data-act="mr-start" ${plan.cards.length ? '' : 'disabled'}>${plan.extra ? 'Toch nog oefenen' : 'Nog een sessie'}</button> <button class="btn ghost" data-act="nav" data-v="start">Klaar</button> <button class="btn ghost" data-act="mr-stop">⚙ Instellingen</button></p></section>`;
 }
 
 async function mrSubmit(given, spoken, skip) {
@@ -1580,7 +1600,7 @@ function viewOvereenHome() {
   else if (plan.extra) { info = 'Niets is vandaag nog aan de beurt. Je kunt toch oefenen: dan komen de woorden die het eerst terugkomen.'; btn = 'Toch oefenen (' + plan.cards.length + ' woorden)'; }
   else info = `Volgende sessie: <b>${plan.cards.length}</b> woorden (${plan.due} herhalen, ${plan.nieuw} nieuw).`;
   return `<p><button class="btn ghost small" data-act="nav" data-v="start">← Home</button></p>
-    <section class="card"><h2>Overeenstemming</h2>
+    <section class="card blad t4"><h2><span class="hico">🎯</span> Overeenstemming</h2>
     <p class="hint">Een bijvoeglijk naamwoord past zich aan het zelfstandig naamwoord aan: <i>mucho, mucha, muchos, muchas</i>. Je ziet een zelfstandig naamwoord uit je lijst (enkelvoud of meervoud) en kiest uit vier vormen de juiste. Het zelfstandig naamwoord wisselt, het bijvoeglijk naamwoord is wat je oefent.</p>
     <p><b>${plan.dueTotal}</b> aan de beurt · <b>${plan.newTotal}</b> nieuw beschikbaar · <b>${plan.learned}</b> al geoefend</p>
     <p class="hint">Hoe goed ken je je woorden?</p>
@@ -1603,7 +1623,7 @@ function startOvereen() {
 
 function ovBar(label) {
   const s = S.ov.sess, pct = Math.round(s.answered / s.total * 100);
-  return `<div class="fcbar"><span>${label}</span><button class="btn ghost small" data-act="ov-stop">Stoppen</button></div><div class="prog"><i style="width:${pct}%"></i></div>`;
+  return `<div class="fcbar"><span>${label}</span><span class="fcacts"><button class="btn ghost small" data-act="ov-stop">⚙ Instellingen</button><button class="btn ghost small" data-act="nav" data-v="start">Stoppen</button></span></div><div class="prog"><i style="width:${pct}%"></i></div>`;
 }
 
 function viewOvereen() {
@@ -1649,7 +1669,7 @@ function ovEnd() {
     <p>Je beantwoordde <b>${s.answered}</b> woorden: <b>${s.juist}</b> juist en <b>${s.fout}</b> fout (${pct}%).</p>
     ${missed ? `<h3>Om te onthouden</h3><div class="tablewrap"><table><thead><tr><th>Woord</th><th>Vormen</th></tr></thead><tbody>${missed}</tbody></table></div>` : '<p>Geen enkele fout. Mooi werk!</p>'}
     <p class="hint">Je woorden nu: ${plan.boxes.map((n, i) => LEVELS[i][0].toLowerCase() + ' ' + n).join(' · ')}.</p>
-    <p><button class="btn" data-act="ov-start" ${plan.cards.length ? '' : 'disabled'}>${plan.extra ? 'Toch nog oefenen' : 'Nog een sessie'}</button> <button class="btn ghost" data-act="ov-stop">Klaar</button></p></section>`;
+    <p><button class="btn" data-act="ov-start" ${plan.cards.length ? '' : 'disabled'}>${plan.extra ? 'Toch nog oefenen' : 'Nog een sessie'}</button> <button class="btn ghost" data-act="nav" data-v="start">Klaar</button> <button class="btn ghost" data-act="ov-stop">⚙ Instellingen</button></p></section>`;
 }
 
 async function ovPick(choice) {
@@ -1676,7 +1696,7 @@ function viewWerkwoordHome() {
   else if (plan.extra) { info = 'Niets is vandaag nog aan de beurt. Je kunt toch oefenen: dan komen de vormen die het eerst terugkomen.'; btn = 'Toch oefenen (' + plan.cards.length + ' vormen)'; }
   else info = `Volgende sessie: <b>${plan.cards.length}</b> vormen (${plan.due} herhalen, ${plan.nieuw} nieuw).`;
   return `<p><button class="btn ghost small" data-act="nav" data-v="start">← Home</button></p>
-    <section class="card"><h2>Werkwoordtabel</h2>
+    <section class="card blad t5"><h2><span class="hico">📋</span> Werkwoordtabel</h2>
     <p class="hint">Je ziet een werkwoord met een persoon, bijvoorbeeld <i>querer · nosotros</i>, en geeft de vorm: <i>queremos</i>. Typ de vorm of spreek hem uit${recSupported() ? ' (tik op 🎤; werkt alleen online)' : ''}. Getypt moet het accent kloppen. Een voornaamwoord ervoor (yo, nosotros…) mag. Werkwoorden hebben geen les; het filter op Home geldt hier niet.</p>
     <p><b>${plan.dueTotal}</b> aan de beurt · <b>${plan.newTotal}</b> nieuw beschikbaar · <b>${plan.learned}</b> al geoefend</p>
     <p class="hint">Hoe goed ken je je vormen?</p>
@@ -1700,7 +1720,7 @@ function startWerkwoord() {
 
 function wtBar(label) {
   const s = S.wt.sess, pct = Math.round(s.answered / s.total * 100);
-  return `<div class="fcbar"><span>${label}</span><button class="btn ghost small" data-act="wt-stop">Stoppen</button></div><div class="prog"><i style="width:${pct}%"></i></div>`;
+  return `<div class="fcbar"><span>${label}</span><span class="fcacts"><button class="btn ghost small" data-act="wt-stop">⚙ Instellingen</button><button class="btn ghost small" data-act="nav" data-v="start">Stoppen</button></span></div><div class="prog"><i style="width:${pct}%"></i></div>`;
 }
 
 function viewWerkwoord() {
@@ -1752,7 +1772,7 @@ function wtEnd() {
     <p>Je beantwoordde <b>${s.answered}</b> vormen: <b>${s.juist}</b> juist en <b>${s.fout}</b> fout (${pct}%).</p>
     ${missed ? `<h3>Om te onthouden</h3><div class="tablewrap"><table><thead><tr><th>Werkwoord · persoon</th><th>Vorm</th></tr></thead><tbody>${missed}</tbody></table></div>` : '<p>Geen enkele fout. Mooi werk!</p>'}
     <p class="hint">Je vormen nu: ${plan.boxes.map((n, i) => LEVELS[i][0].toLowerCase() + ' ' + n).join(' · ')}.</p>
-    <p><button class="btn" data-act="wt-start" ${plan.cards.length ? '' : 'disabled'}>${plan.extra ? 'Toch nog oefenen' : 'Nog een sessie'}</button> <button class="btn ghost" data-act="wt-stop">Klaar</button></p></section>`;
+    <p><button class="btn" data-act="wt-start" ${plan.cards.length ? '' : 'disabled'}>${plan.extra ? 'Toch nog oefenen' : 'Nog een sessie'}</button> <button class="btn ghost" data-act="nav" data-v="start">Klaar</button> <button class="btn ghost" data-act="wt-stop">⚙ Instellingen</button></p></section>`;
 }
 
 async function wtSubmit(given, spoken, skip) {
@@ -1787,7 +1807,7 @@ function viewSpreekHome() {
   else if (plan.extra) { info = 'Niets is vandaag nog aan de beurt. Je kunt toch oefenen.'; btn = 'Toch oefenen (' + plan.cards.length + ' zinnen)'; }
   else info = `Volgende sessie: <b>${plan.cards.length}</b> zinnen (${plan.due} herhalen, ${plan.nieuw} nieuw).`;
   return `<p><button class="btn ghost small" data-act="nav" data-v="start">← Home</button></p>
-    <section class="card"><h2>Spreekoefening</h2>
+    <section class="card blad t6"><h2><span class="hico">🎤</span> Spreekoefening</h2>
     <p class="hint">Je krijgt een Nederlandse zin en zegt hem in het Spaans${recSupported() ? ': tik op 🎤 en spreek (werkt alleen online), of typ hem' : ': typ hem'}. De zinnen worden gemaakt van de woorden in je selectie en van je werkwoorden, steeds met een ander woord en een andere persoon. Het voornaamwoord (yo, tú…) mag je weglaten of zeggen. Spreken: accenten tellen niet; typen: wel.</p>
     <p><b>${plan.dueTotal}</b> aan de beurt · <b>${plan.newTotal}</b> nieuw beschikbaar · <b>${plan.learned}</b> al geoefend</p>
     <p class="hint">Hoe goed ken je de zinsbouw? (per zinsvorm, bijvoorbeeld "Ik wil …")</p>
@@ -1811,7 +1831,7 @@ function startSpreek() {
 
 function znBar(label) {
   const s = S.zn.sess, pct = Math.round(s.answered / s.total * 100);
-  return `<div class="fcbar"><span>${label}</span><button class="btn ghost small" data-act="zn-stop">Stoppen</button></div><div class="prog"><i style="width:${pct}%"></i></div>`;
+  return `<div class="fcbar"><span>${label}</span><span class="fcacts"><button class="btn ghost small" data-act="zn-stop">⚙ Instellingen</button><button class="btn ghost small" data-act="nav" data-v="start">Stoppen</button></span></div><div class="prog"><i style="width:${pct}%"></i></div>`;
 }
 
 function viewSpreek() {
@@ -1863,7 +1883,7 @@ function znEnd() {
     <p>Je beantwoordde <b>${s.answered}</b> zinnen: <b>${s.juist}</b> juist en <b>${s.fout}</b> fout (${pct}%).</p>
     ${missed ? `<h3>Om te onthouden</h3><div class="tablewrap"><table><thead><tr><th>Nederlands</th><th>Spaans</th></tr></thead><tbody>${missed}</tbody></table></div>` : '<p>Geen enkele fout. Mooi werk!</p>'}
     <p class="hint">Je zinsvormen nu: ${plan.boxes.map((n, i) => LEVELS[i][0].toLowerCase() + ' ' + n).join(' · ')}.</p>
-    <p><button class="btn" data-act="zn-start" ${plan.cards.length ? '' : 'disabled'}>${plan.extra ? 'Toch nog oefenen' : 'Nog een sessie'}</button> <button class="btn ghost" data-act="zn-stop">Klaar</button></p></section>`;
+    <p><button class="btn" data-act="zn-start" ${plan.cards.length ? '' : 'disabled'}>${plan.extra ? 'Toch nog oefenen' : 'Nog een sessie'}</button> <button class="btn ghost" data-act="nav" data-v="start">Klaar</button> <button class="btn ghost" data-act="zn-stop">⚙ Instellingen</button></p></section>`;
 }
 
 async function znSubmit(given, spoken, skip) {
@@ -1902,7 +1922,7 @@ function viewGesprekHome() {
   else info = `Volgende sessie: <b>${plan.cards.length}</b> vragen (${plan.due} herhalen, ${plan.nieuw} nieuw).`;
   const tg = S.tochgoed || [];
   return `<p><button class="btn ghost small" data-act="nav" data-v="start">← Home</button></p>
-    <section class="card"><h2>Gesprek</h2>
+    <section class="card blad t7"><h2><span class="hico">💬</span> Gesprek</h2>
     <p class="hint">Je hoort een Spaanse vraag en antwoordt in het Spaans, ${recSupported() ? 'hardop (🎤, werkt alleen online) of getypt' : 'getypt'}. Je zegt iets dat bij de vraag past en gebruikt het juiste werkwoord: bij "¿Dónde vives?" zeg je "Vivo en …", bij "¿Dónde vive Marta?" zeg je "Vive en …". Je antwoord is niet voorgeschreven, er zijn meestal veel goede antwoorden. Accenten tellen niet. Het is een oefening, geen examen: na je antwoord zie je een voorbeeld en beslis jij zelf met "Toch goed" of "Toch fout".</p>
     <label class="field">Thema<select id="gv-thema">${GV_THEMAS.map(([v, t]) => opt(v, g.thema || 'alle', t)).join('')}</select></label>
     <p><b>${plan.dueTotal}</b> aan de beurt · <b>${plan.newTotal}</b> nieuw beschikbaar · <b>${plan.learned}</b> al geoefend</p>
@@ -1928,7 +1948,7 @@ function startGesprek() {
 
 function gvBar(label) {
   const s = S.gv.sess, pct = Math.round(s.answered / s.total * 100);
-  return `<div class="fcbar"><span>${label}</span><button class="btn ghost small" data-act="gv-stop">Stoppen</button></div><div class="prog"><i style="width:${pct}%"></i></div>`;
+  return `<div class="fcbar"><span>${label}</span><span class="fcacts"><button class="btn ghost small" data-act="gv-stop">⚙ Instellingen</button><button class="btn ghost small" data-act="nav" data-v="start">Stoppen</button></span></div><div class="prog"><i style="width:${pct}%"></i></div>`;
 }
 
 function viewGesprek() {
@@ -1978,7 +1998,7 @@ function gvEnd() {
     <p>Je beantwoordde <b>${s.answered}</b> vragen: <b>${s.juist}</b> juist en <b>${s.fout}</b> fout (${pct}%).</p>
     ${missed ? `<h3>Om te onthouden</h3><div class="tablewrap"><table><thead><tr><th>Vraag</th><th>Voorbeeldantwoord</th></tr></thead><tbody>${missed}</tbody></table></div>` : '<p>Geen enkele fout. Mooi werk!</p>'}
     <p class="hint">Je vragen nu: ${plan.boxes.map((n, i) => LEVELS[i][0].toLowerCase() + ' ' + n).join(' · ')}.</p>
-    <p><button class="btn" data-act="gv-start" ${plan.cards.length ? '' : 'disabled'}>${plan.extra ? 'Toch nog oefenen' : 'Nog een sessie'}</button> <button class="btn ghost" data-act="gv-stop">Klaar</button></p></section>`;
+    <p><button class="btn" data-act="gv-start" ${plan.cards.length ? '' : 'disabled'}>${plan.extra ? 'Toch nog oefenen' : 'Nog een sessie'}</button> <button class="btn ghost" data-act="nav" data-v="start">Klaar</button> <button class="btn ghost" data-act="gv-stop">⚙ Instellingen</button></p></section>`;
 }
 
 async function gvSubmit(given, spoken, skip) {
@@ -2086,7 +2106,7 @@ function viewBeheer() {
     <p><button class="btn ghost" data-act="fc-reset">Voortgang wissen</button></p></section>
     <section class="card"><h2>Alles wissen</h2><p>Verwijdert alle woorden, werkwoorden en voortgang van dit toestel.</p>
     <p><button class="btn danger" data-act="wissen">Alles wissen</button></p></section>
-    <section class="card"><p class="hint">Spaans leren — Versie 0.12.1.</p></section>`;
+    <section class="card"><p class="hint">Spaans leren — Versie 0.13.</p></section>`;
 }
 
 // ---------- Acties ----------
